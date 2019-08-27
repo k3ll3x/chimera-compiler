@@ -1,2 +1,5 @@
 # chimera-compiler
-chimera-compiiler
+chimera-compiler:
+
+
+chimera-phase1/ Lexical Analyzer
