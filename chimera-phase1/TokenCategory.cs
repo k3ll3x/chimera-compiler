@@ -72,7 +72,10 @@ namespace Chimera {
         SEMICOL,
         THEN,
         TRUE,
-        ILLEGAL_CHAR
+        ILLEGAL_CHAR,
+        LIST,
+        OF,
+        BEGIN
     }
 }
 

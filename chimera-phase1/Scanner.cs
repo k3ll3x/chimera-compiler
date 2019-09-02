@@ -35,10 +35,11 @@ namespace Chimera {
         readonly string input;
 
         static readonly Regex regex = new Regex(
-            @"                             
+            @"                          
                 (?<Assign>      :=      )
               | (?<BoolIneq>   [<][>]    )
-              | (?<Comment>    [/][*](.|\n)*?[*][/]     )
+              | (?<Comment>    [/][*](.|\n)*?[*][/] | [/][/](.)*?$)
+              | (?<String>     ""[^""]*""        )
               | (?<Identifier> [a-zA-Z]+([_]|[0-9])*    )
               | (?<IntLiteral> \d+       )
               | (?<Less>       [<]       )
@@ -93,7 +94,10 @@ namespace Chimera {
                 {"then", TokenCategory.THEN},
                 {"div", TokenCategory.DIV},
                 {"rem", TokenCategory.REM},
-                {"not", TokenCategory.NOT}
+                {"not", TokenCategory.NOT},
+                {"list",TokenCategory.LIST},
+                {"of", TokenCategory.OF},
+                {"begin",TokenCategory.BEGIN}
             };
 
         static readonly IDictionary<string, TokenCategory> nonKeywords =
@@ -157,7 +161,10 @@ namespace Chimera {
                         yield return newTok(m, TokenCategory.IDENTIFIER);
                     }
 
-                } else if (m.Groups["Other"].Success) {
+                } else if(m.Groups["String"].Success) {
+                    yield return newTok(m,TokenCategory.STR);
+
+                }else if (m.Groups["Other"].Success) {
 
                     // Found an illegal character.
                     yield return newTok(m, TokenCategory.ILLEGAL_CHAR);
