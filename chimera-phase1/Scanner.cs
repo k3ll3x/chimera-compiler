@@ -37,9 +37,10 @@ namespace Chimera {
         static readonly Regex regex = new Regex(
             @"                          
                 (?<Assign>      :=      )
-              | (?<BoolIneq>   [<][>]    )
-              | (?<Comment>    [/][*](.|\n)*?[*][/] | [/][/](.)*?$)
-              | (?<String>     ""[^""]*""        )
+              | (?<BoolIneq>   [<][>]   )
+              | (?<LongComment> [/][*](.|\n)*?[*][/]    )
+              | (?<Comment>     [/][/](.)*?$    )
+              | (?<String>     [""]([^""\n]|""{2})*[""]        )
               | (?<Identifier> [a-zA-Z]+([_]|[0-9])*    )
               | (?<IntLiteral> \d+       )
               | (?<Less>       [<]       )
@@ -148,6 +149,8 @@ namespace Chimera {
 
                     // Skip white space and comments.
 
+                } else if (m.Groups["LongComment"].Success) {
+                   row+= m.Value.Split('\n').Length - 1; 
                 } else if (m.Groups["Identifier"].Success) {
 
                     if (keywords.ContainsKey(m.Value)) {
