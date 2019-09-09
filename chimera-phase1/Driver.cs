@@ -18,8 +18,8 @@
 
 /* 
  * Siegfried Paul Keller Schippner A01375356
- *
- *
+ * José Javier Rodríguez Mota A01372812
+ * Ana Paula Mejía Quiroz A01371880
  */
 
 using System;
