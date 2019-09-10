@@ -150,7 +150,11 @@ namespace Chimera {
                     // Skip white space and comments.
 
                 } else if (m.Groups["LongComment"].Success) {
-                   row+= m.Value.Split('\n').Length - 1; 
+                    try{
+                        row+= m.Value.Split('\n').Length - 1; 
+                    }catch{
+                        
+                    }
                 } else if (m.Groups["Identifier"].Success) {
 
                     if (keywords.ContainsKey(m.Value)) {
