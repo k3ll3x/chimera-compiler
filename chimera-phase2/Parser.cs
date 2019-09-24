@@ -1,5 +1,5 @@
 /*
-  Buttercup compiler - This class performs the syntactic analysis,
+  Chimera compiler - This class performs the syntactic analysis,
   (a.k.a. parsing).
   Copyright (C) 2013 Ariel Ortiz, ITESM CEM
   
@@ -17,10 +17,16 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* 
+ * Siegfried Paul Keller Schippner A01375356
+ * José Javier Rodríguez Mota A01372812
+ * Ana Paula Mejía Quiroz A01371880
+ */
+
 using System;
 using System.Collections.Generic;
 
-namespace Buttercup {
+namespace Chimera {
 
     class Parser {      
 

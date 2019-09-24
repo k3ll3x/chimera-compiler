@@ -1,5 +1,5 @@
 /*
-  Buttercup compiler - Syntax error exception class.
+  Chimera compiler - Syntax error exception class.
   Copyright (C) 2013 Ariel Ortiz, ITESM CEM
   
   This program is free software: you can redistribute it and/or modify
@@ -16,11 +16,17 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* 
+ * Siegfried Paul Keller Schippner A01375356
+ * José Javier Rodríguez Mota A01372812
+ * Ana Paula Mejía Quiroz A01371880
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Buttercup {
+namespace Chimera {
 
     class SyntaxError: Exception {
 
