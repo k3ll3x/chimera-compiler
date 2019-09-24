@@ -1,4 +1,4 @@
-Chimera compiler, version 0.1
+Chimera compiler, version 0.2
 ===============================
 
 This program is free software. You may redistribute it under the terms of
