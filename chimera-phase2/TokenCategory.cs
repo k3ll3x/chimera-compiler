@@ -1,5 +1,5 @@
 /*
-  Buttercup compiler - Token categories for the scanner.
+  Chimera compiler - Token categories for the scanner.
   Copyright (C) 2013 Ariel Ortiz, ITESM CEM
   
   This program is free software: you can redistribute it and/or modify
@@ -16,29 +16,66 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Buttercup {
+/* 
+ * Siegfried Paul Keller Schippner A01375356
+ * José Javier Rodríguez Mota A01372812
+ * Ana Paula Mejía Quiroz A01371880
+ */
+
+namespace Chimera {
 
     enum TokenCategory {
+        CONST,
+        VAR,
+        PROG,
+        END,
+        STR,
+        PROC,
         AND,
+        OR,
+        XOR,
         ASSIGN,
         BOOL,
-        END,
         EOF,
+        NOT,
         FALSE,
         IDENTIFIER,
         IF,
+        ELSEIF,
+        ELSE,
+        LOOP,
+        FOR,
+        IN,
+        DO,
+        RETURN,
+        BOOLINEQ,
         INT,
         INT_LITERAL,
         LESS,
+        MORE,
+        LESSEQ,
+        MOREEQ,
+        DIV,
+        REM,
         MUL,
         NEG,
         PARENTHESIS_OPEN,
         PARENTHESIS_CLOSE,
+        CURLYBRACKET_OPEN,
+        CURLYBRACKET_CLOSE,
+        SQUAREDBRACKET_OPEN,
+        SQUAREDBRACKET_CLOSE,
         PLUS,
         PRINT,
+        COMA,
+        TWOPOINTS,
+        SEMICOL,
         THEN,
         TRUE,
-        ILLEGAL_CHAR
+        ILLEGAL_CHAR,
+        LIST,
+        OF,
+        BEGIN
     }
 }
 

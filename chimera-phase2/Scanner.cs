@@ -1,5 +1,5 @@
 /*
-  Buttercup compiler - This class performs the lexical analysis, 
+  Chimera compiler - This class performs the lexical analysis, 
   (a.k.a. scanning).
   Copyright (C) 2013 Ariel Ortiz, ITESM CEM
   
@@ -17,33 +17,49 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* 
+ * Siegfried Paul Keller Schippner A01375356
+ * José Javier Rodríguez Mota A01372812
+ * Ana Paula Mejía Quiroz A01371880
+ */
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Buttercup {
+namespace Chimera {
 
     class Scanner {
 
         readonly string input;
 
         static readonly Regex regex = new Regex(
-            @"                             
-                (?<And>        [&]       )
-              | (?<Assign>     [=]       )
-              | (?<Comment>    ;.*       )
-              | (?<False>      [#]f      )
-              | (?<Identifier> [a-zA-Z]+ )
+            @"                          
+                (?<Assign>      :=      )
+              | (?<BoolIneq>   [<][>]   )
+              | (?<LongComment> [/][*](.|\n)*?[*][/]    )
+              | (?<Comment>     [/][/](.)*?$    )
+              | (?<String>     [""]([^""\n]|""{2})*[""]        )
+              | (?<Identifier> [a-zA-Z]+([_]|[0-9])*    )
               | (?<IntLiteral> \d+       )
               | (?<Less>       [<]       )
+              | (?<LessEq>     [<][=]    )
+              | (?<More>       [>]       )
+              | (?<MoreEq>     [>][=]    )
               | (?<Mul>        [*]       )
               | (?<Neg>        [-]       )
               | (?<Newline>    \n        )
               | (?<ParLeft>    [(]       )
               | (?<ParRight>   [)]       )
-              | (?<Plus>       [+]       )              
-              | (?<True>       [#]t      )
+              | (?<CurLeft>    [{]       )
+              | (?<CurRight>   [}]       )
+              | (?<SquLeft>     \[       )
+              | (?<SquRight>    \]       )
+              | (?<Plus>       [+]       )
+              | (?<Coma>       [,]       )
+              | (?<SemiCol>    [;]       )
+              | (?<TwoPoints>  [:]       )
               | (?<WhiteSpace> \s        )     # Must go anywhere after Newline.
               | (?<Other>      .         )     # Must be last: match any other character.
             ", 
@@ -54,27 +70,58 @@ namespace Buttercup {
 
         static readonly IDictionary<string, TokenCategory> keywords =
             new Dictionary<string, TokenCategory>() {
-                {"bool", TokenCategory.BOOL},
+                {"const", TokenCategory.CONST},
+                {"var", TokenCategory.VAR},
+                {"program", TokenCategory.PROG},
+                {"integer", TokenCategory.INT},
+                {"string", TokenCategory.STR},
+                {"boolean", TokenCategory.BOOL},
+                {"and", TokenCategory.AND},
+                {"procedure", TokenCategory.PROC},
+                {"or", TokenCategory.OR},
+                {"xor", TokenCategory.XOR},
+                {"true", TokenCategory.TRUE},
+                {"false", TokenCategory.FALSE},
                 {"end", TokenCategory.END},
                 {"if", TokenCategory.IF},
-                {"int", TokenCategory.INT},
+                {"elseif", TokenCategory.ELSEIF},
+                {"else", TokenCategory.ELSE},
+                {"loop", TokenCategory.LOOP},
+                {"for", TokenCategory.FOR},
+                {"in", TokenCategory.IN},
+                {"do", TokenCategory.DO},
+                {"return", TokenCategory.RETURN},
                 {"print", TokenCategory.PRINT},
-                {"then", TokenCategory.THEN}
+                {"then", TokenCategory.THEN},
+                {"div", TokenCategory.DIV},
+                {"rem", TokenCategory.REM},
+                {"not", TokenCategory.NOT},
+                {"list",TokenCategory.LIST},
+                {"of", TokenCategory.OF},
+                {"begin",TokenCategory.BEGIN}
             };
 
         static readonly IDictionary<string, TokenCategory> nonKeywords =
             new Dictionary<string, TokenCategory>() {
-                {"And", TokenCategory.AND},
                 {"Assign", TokenCategory.ASSIGN},
-                {"False", TokenCategory.FALSE},
-                {"IntLiteral", TokenCategory.INT_LITERAL},
+                {"BoolIneq", TokenCategory.BOOLINEQ},
                 {"Less", TokenCategory.LESS},
+                {"LessEq", TokenCategory.LESSEQ},
+                {"More", TokenCategory.MORE},
+                {"MoreEq", TokenCategory.MOREEQ},
+                {"IntLiteral", TokenCategory.INT_LITERAL},
                 {"Mul", TokenCategory.MUL},
                 {"Neg", TokenCategory.NEG},
                 {"ParLeft", TokenCategory.PARENTHESIS_OPEN},
                 {"ParRight", TokenCategory.PARENTHESIS_CLOSE},
+                {"CurLeft", TokenCategory.CURLYBRACKET_OPEN},
+                {"CurRight", TokenCategory.CURLYBRACKET_CLOSE},
+                {"SquRight", TokenCategory.SQUAREDBRACKET_CLOSE},
+                {"SquLeft", TokenCategory.SQUAREDBRACKET_OPEN},
                 {"Plus", TokenCategory.PLUS},
-                {"True", TokenCategory.TRUE}                
+                {"Coma", TokenCategory.COMA},
+                {"SemiCol", TokenCategory.SEMICOL},
+                {"TwoPoints", TokenCategory.TWOPOINTS},
             };
 
         public Scanner(string input) {
@@ -102,11 +149,17 @@ namespace Buttercup {
 
                     // Skip white space and comments.
 
+                } else if (m.Groups["LongComment"].Success) {
+                    try{
+                        row+= m.Value.Split('\n').Length - 1; 
+                    }catch{
+                        
+                    }
                 } else if (m.Groups["Identifier"].Success) {
 
                     if (keywords.ContainsKey(m.Value)) {
 
-                        // Matched string is a Buttercup keyword.
+                        // Matched string is a Chimera keyword.
                         yield return newTok(m, keywords[m.Value]);                                               
 
                     } else { 
@@ -115,7 +168,10 @@ namespace Buttercup {
                         yield return newTok(m, TokenCategory.IDENTIFIER);
                     }
 
-                } else if (m.Groups["Other"].Success) {
+                } else if(m.Groups["String"].Success) {
+                    yield return newTok(m,TokenCategory.STR);
+
+                }else if (m.Groups["Other"].Success) {
 
                     // Found an illegal character.
                     yield return newTok(m, TokenCategory.ILLEGAL_CHAR);

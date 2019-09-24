@@ -1,5 +1,5 @@
 /*
-  Buttercup compiler - Token class for the scanner.
+  Chimera compiler - Token class for the scanner.
   Copyright (C) 2013 Ariel Ortiz, ITESM CEM
   
   This program is free software: you can redistribute it and/or modify
@@ -16,9 +16,15 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* 
+ * Siegfried Paul Keller Schippner A01375356
+ * José Javier Rodríguez Mota A01372812
+ * Ana Paula Mejía Quiroz A01371880
+ */
+
 using System;
 
-namespace Buttercup {
+namespace Chimera {
 
     class Token {
 
