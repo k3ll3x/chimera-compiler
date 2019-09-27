@@ -83,7 +83,7 @@ namespace Chimera {
         }
 
         public void Program() {            
-
+            Expect(TokenCategory.PROG);
             while (firstOfDeclaration.Contains(CurrentToken)) {
                 Declaration();
             }
