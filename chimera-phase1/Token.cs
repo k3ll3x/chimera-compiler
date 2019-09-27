@@ -24,7 +24,7 @@
 
 using System;
 
-namespace Chimera {
+namespace Chimera1 {
 
     class Token {
 

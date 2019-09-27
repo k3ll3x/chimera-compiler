@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Chimera {
+namespace Chimera1 {
 
     class Scanner {
 
