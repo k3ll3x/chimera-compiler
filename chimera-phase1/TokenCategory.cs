@@ -30,6 +30,7 @@ namespace Chimera1 {
         PROG,
         END,
         STR,
+        STR_LITERAL,
         PROC,
         AND,
         OR,

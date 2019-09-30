@@ -169,7 +169,7 @@ namespace Chimera1 {
                     }
 
                 } else if(m.Groups["String"].Success) {
-                    yield return newTok(m,TokenCategory.STR);
+                    yield return newTok(m,TokenCategory.STR_LITERAL);
 
                 }else if (m.Groups["Other"].Success) {
 

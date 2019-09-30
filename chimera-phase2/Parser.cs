@@ -32,17 +32,16 @@ namespace Chimera {
 
         static readonly ISet<TokenCategory> firstOfDeclaration =
             new HashSet<TokenCategory>() {
-                TokenCategory.INT,
-                TokenCategory.BOOL
+                TokenCategory.CONST,
+                TokenCategory.VAR,
+                TokenCategory.PROC
             };
 
         static readonly ISet<TokenCategory> firstOfStatement =
             new HashSet<TokenCategory>() {
                 TokenCategory.IDENTIFIER,
-                TokenCategory.PRINT,
                 TokenCategory.IF, 
                 TokenCategory.LOOP,
-
             };
 
         static readonly ISet<TokenCategory> firstOfOperator =
@@ -67,6 +66,7 @@ namespace Chimera {
             new HashSet<TokenCategory>() {
                 TokenCategory.IDENTIFIER,
                 TokenCategory.INT_LITERAL,
+                TokenCategory.STR_LITERAL,
                 TokenCategory.TRUE,
                 TokenCategory.FALSE,
                 TokenCategory.PARENTHESIS_OPEN,
@@ -109,8 +109,92 @@ namespace Chimera {
         }
 
         public void Declaration() {
-            Type();
+            switch(CurrentToken)
+            {
+                case TokenCategory.VAR:
+                    Var();
+                    break;
+                case TokenCategory.CONST:
+                    Const();
+                    break;
+                case TokenCategory.PROC:
+                    Proc();
+                    break;
+            }
+        }
+
+        public void Var(){
+            Expect(TokenCategory.VAR);
+            VarDeclaration();
+            while (CurrentToken == TokenCategory.IDENTIFIER) {
+                VarDeclaration();
+            } 
+        }
+        public void VarDeclaration() {
             Expect(TokenCategory.IDENTIFIER);
+            while (CurrentToken != TokenCategory.TWOPOINTS) {
+                Expect(TokenCategory.COMA);
+                Expect(TokenCategory.IDENTIFIER);
+            }
+            Expect(TokenCategory.TWOPOINTS);
+            Type();
+            Expect(TokenCategory.SEMICOL);
+        }
+        public void Const(){
+            Expect(TokenCategory.CONST);
+            ConstDeclaration();
+            while (CurrentToken == TokenCategory.IDENTIFIER) {
+                ConstDeclaration();
+            }
+        }
+        public void ConstDeclaration() {
+            Expect(TokenCategory.IDENTIFIER);
+            Expect(TokenCategory.ASSIGN);
+            Literal();
+            Expect(TokenCategory.SEMICOL);
+        }
+
+        public void Proc(){
+            Expect(TokenCategory.PROC);
+            Expect(TokenCategory.IDENTIFIER);
+            Expect(TokenCategory.PARENTHESIS_OPEN);
+            while(CurrentToken == TokenCategory.IDENTIFIER) {
+                ParamDeclaration();
+            }
+            Expect(TokenCategory.PARENTHESIS_CLOSE);
+            if (CurrentToken == TokenCategory.TWOPOINTS) {
+                Expect(TokenCategory.TWOPOINTS);
+                Type();
+            }
+            Expect(TokenCategory.SEMICOL);
+            if (CurrentToken == TokenCategory.CONST) {
+                Const();
+            }
+            if (CurrentToken == TokenCategory.VAR) {
+                Var();
+            }
+            Expect(TokenCategory.BEGIN);
+            while (firstOfStatement.Contains(CurrentToken)) {
+                Statement();
+            }
+            Expect(TokenCategory.END);
+            Expect(TokenCategory.SEMICOL);
+
+        }
+
+        public void ParamDeclaration() {
+            Expect(TokenCategory.IDENTIFIER);
+            while (CurrentToken != TokenCategory.TWOPOINTS) {
+                Expect(TokenCategory.COMA);
+                Expect(TokenCategory.IDENTIFIER);
+            }
+            Expect(TokenCategory.TWOPOINTS);
+            Type();
+            Expect(TokenCategory.SEMICOL);
+
+        }
+        public void Literal() {
+
         }
 
         public void Statement() {
@@ -152,6 +236,10 @@ namespace Chimera {
 
             case TokenCategory.BOOL:
                 Expect(TokenCategory.BOOL);
+                break;
+
+            case TokenCategory.STR:
+                Expect(TokenCategory.STR);
                 break;
 
             default:
@@ -217,12 +305,14 @@ namespace Chimera {
             Expect(TokenCategory.END);
         }
 
+        //Expression can ba a call...
         public void Expression() {
             SimpleExpression();
             while (firstOfOperator.Contains(CurrentToken)) {
                 Operator();
                 SimpleExpression();
             }
+            Expect(TokenCategory.SEMICOL);
         }
 
         public void SimpleExpression() {
@@ -256,8 +346,8 @@ namespace Chimera {
                 SimpleExpression();
                 break;
 
-            case TokenCategory.STR:
-                Expect(TokenCategory.STR);
+            case TokenCategory.STR_LITERAL:
+                Expect(TokenCategory.STR_LITERAL);
                 break;
 
             default:
