@@ -40,7 +40,9 @@ namespace Chimera {
             new HashSet<TokenCategory>() {
                 TokenCategory.IDENTIFIER,
                 TokenCategory.PRINT,
-                TokenCategory.IF
+                TokenCategory.IF, 
+                TokenCategory.LOOP,
+
             };
 
         static readonly ISet<TokenCategory> firstOfOperator =
@@ -48,7 +50,17 @@ namespace Chimera {
                 TokenCategory.AND,
                 TokenCategory.LESS,
                 TokenCategory.PLUS,
-                TokenCategory.MUL
+                TokenCategory.MUL,
+                TokenCategory.OR,
+                TokenCategory.DIV,
+                TokenCategory.XOR,
+                TokenCategory.LESSEQ,
+                TokenCategory.MORE,
+                TokenCategory.MOREEQ,
+                TokenCategory.REM,
+                TokenCategory.NOT,
+                TokenCategory.NEG,
+
             };
 
         static readonly ISet<TokenCategory> firstOfSimpleExpression =
@@ -83,15 +95,16 @@ namespace Chimera {
         }
 
         public void Program() {            
-            Expect(TokenCategory.PROG);
+            
             while (firstOfDeclaration.Contains(CurrentToken)) {
                 Declaration();
             }
-
+            Expect(TokenCategory.PROG);
             while (firstOfStatement.Contains(CurrentToken)) {
                 Statement();
             }
-
+            Expect(TokenCategory.END);
+            Expect(TokenCategory.SEMICOL);
             Expect(TokenCategory.EOF);
         }
 
@@ -105,11 +118,19 @@ namespace Chimera {
             switch (CurrentToken) {
 
             case TokenCategory.IDENTIFIER:
-                Assignment();
+                Identify();
                 break;
 
-            case TokenCategory.PRINT:
-                Print();
+            case TokenCategory.LOOP:
+                Loop();
+                break;
+            
+            case TokenCategory.FOR:
+                For();
+                break;
+            
+            case TokenCategory.RETURN:
+                Return();
                 break;
 
             case TokenCategory.IF:
@@ -139,11 +160,47 @@ namespace Chimera {
             }
         }
 
-        public void Assignment() {
+        public void Identify() {
             Expect(TokenCategory.IDENTIFIER);
-            Expect(TokenCategory.ASSIGN);
+            switch(CurrentToken) {
+                case TokenCategory.ASSIGN:
+                    Expect(TokenCategory.ASSIGN);
+                    Expression();
+                    break;
+                case TokenCategory.PARENTHESIS_OPEN:
+                    Call();
+                    break;
+            }
+        }
+
+        public void Call(){
+            Expect(TokenCategory.PARENTHESIS_OPEN);
+            bool first = true;
+            while(CurrentToken != TokenCategory.PARENTHESIS_CLOSE) {
+                if (!first) {
+                    Expect(TokenCategory.COMA);
+                } else {
+                    first = false;
+                }
+                Expression();
+            }
+            Expect(TokenCategory.PARENTHESIS_CLOSE);
+            Expect(TokenCategory.SEMICOL);
+        }
+
+        public void For() {
+
+        }
+
+        public void Loop() {
+
+        }
+
+        public void Return() {
+            Expect(TokenCategory.RETURN);
             Expression();
         }
+
 
         public void Print() {
             Expect(TokenCategory.PRINT);
@@ -197,6 +254,10 @@ namespace Chimera {
             case TokenCategory.NEG:
                 Expect(TokenCategory.NEG);
                 SimpleExpression();
+                break;
+
+            case TokenCategory.STR:
+                Expect(TokenCategory.STR);
                 break;
 
             default:
