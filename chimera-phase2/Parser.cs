@@ -72,6 +72,17 @@ namespace Chimera {
                 TokenCategory.PARENTHESIS_OPEN,
                 TokenCategory.NEG
             };
+        static readonly ISet<TokenCategory> nextOfIdentifier = 
+            new HashSet<TokenCategory>() {
+                TokenCategory.PARENTHESIS_OPEN,
+                TokenCategory.ASSIGN,
+            };
+        static readonly ISet<TokenCategory> type = 
+            new HashSet<TokenCategory>() {
+                TokenCategory.BOOL,
+                TokenCategory.STR,
+                TokenCategory.INT
+            };
                 
         IEnumerator<Token> tokenStream;
 
@@ -120,6 +131,9 @@ namespace Chimera {
                 case TokenCategory.PROC:
                     Proc();
                     break;
+                default:
+                    throw new SyntaxError(firstOfDeclaration, 
+                                      tokenStream.Current);
             }
         }
 
@@ -202,7 +216,7 @@ namespace Chimera {
             switch (CurrentToken) {
 
             case TokenCategory.IDENTIFIER:
-                Identify();
+                Identifier();
                 break;
 
             case TokenCategory.LOOP:
@@ -243,12 +257,12 @@ namespace Chimera {
                 break;
 
             default:
-                throw new SyntaxError(firstOfDeclaration, 
+                throw new SyntaxError(type, 
                                       tokenStream.Current);
             }
         }
 
-        public void Identify() {
+        public void Identifier() {
             Expect(TokenCategory.IDENTIFIER);
             switch(CurrentToken) {
                 case TokenCategory.ASSIGN:
@@ -258,6 +272,9 @@ namespace Chimera {
                 case TokenCategory.PARENTHESIS_OPEN:
                     Call();
                     break;
+                default:
+                    throw new SyntaxError(nextOfIdentifier, 
+                                      tokenStream.Current);
             }
         }
 
@@ -305,7 +322,6 @@ namespace Chimera {
             Expect(TokenCategory.END);
         }
 
-        //Expression can ba a call...
         public void Expression() {
             SimpleExpression();
             while (firstOfOperator.Contains(CurrentToken)) {
@@ -320,7 +336,7 @@ namespace Chimera {
             switch (CurrentToken) {
 
             case TokenCategory.IDENTIFIER:
-                Expect(TokenCategory.IDENTIFIER);
+                Identifier();
                 break;
 
             case TokenCategory.INT_LITERAL:
