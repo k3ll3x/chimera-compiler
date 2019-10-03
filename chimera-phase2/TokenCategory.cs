@@ -76,7 +76,8 @@ namespace Chimera {
         ILLEGAL_CHAR,
         LIST,
         OF,
-        BEGIN
+        BEGIN,
+        EXIT
     }
 }
 

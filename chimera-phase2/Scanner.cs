@@ -83,6 +83,7 @@ namespace Chimera {
                 {"true", TokenCategory.TRUE},
                 {"false", TokenCategory.FALSE},
                 {"end", TokenCategory.END},
+                {"exit", TokenCategory.EXIT},
                 {"if", TokenCategory.IF},
                 {"elseif", TokenCategory.ELSEIF},
                 {"else", TokenCategory.ELSE},

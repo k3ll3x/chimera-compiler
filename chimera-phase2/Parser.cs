@@ -42,6 +42,8 @@ namespace Chimera {
                 TokenCategory.IDENTIFIER,
                 TokenCategory.IF, 
                 TokenCategory.LOOP,
+                TokenCategory.EXIT,
+                TokenCategory.RETURN,
             };
 
         static readonly ISet<TokenCategory> firstOfOperator =
@@ -53,13 +55,13 @@ namespace Chimera {
                 TokenCategory.OR,
                 TokenCategory.DIV,
                 TokenCategory.XOR,
+                TokenCategory.BOOLINEQ,
                 TokenCategory.LESSEQ,
                 TokenCategory.MORE,
                 TokenCategory.MOREEQ,
                 TokenCategory.REM,
                 TokenCategory.NOT,
                 TokenCategory.NEG,
-
             };
 
         static readonly ISet<TokenCategory> firstOfSimpleExpression =
@@ -72,11 +74,21 @@ namespace Chimera {
                 TokenCategory.PARENTHESIS_OPEN,
                 TokenCategory.NEG
             };
+
+            static readonly ISet<TokenCategory> simpleLiteral =
+            new HashSet<TokenCategory>() {
+                TokenCategory.INT_LITERAL,
+                TokenCategory.STR_LITERAL,
+                TokenCategory.TRUE,
+                TokenCategory.FALSE,
+            };
+
         static readonly ISet<TokenCategory> nextOfIdentifier = 
             new HashSet<TokenCategory>() {
                 TokenCategory.PARENTHESIS_OPEN,
                 TokenCategory.ASSIGN,
             };
+
         static readonly ISet<TokenCategory> type = 
             new HashSet<TokenCategory>() {
                 TokenCategory.BOOL,
@@ -208,7 +220,44 @@ namespace Chimera {
 
         }
         public void Literal() {
+            if (simpleLiteral.Contains(CurrentToken)) {
+                SimpleLiteral();
+            } else {
+                Expect(TokenCategory.CURLYBRACKET_OPEN);
+                bool first = true;
+                while (CurrentToken != TokenCategory.CURLYBRACKET_CLOSE) {
+                    if (!first) {
+                        Expect(TokenCategory.COMA);
+                    } else {
+                        first = false;
+                    }
+                    SimpleLiteral();
+                }
+                Expect(TokenCategory.CURLYBRACKET_CLOSE);
+            }
+        }
+        public void SimpleLiteral() {
+            switch(CurrentToken) {
+                case TokenCategory.INT_LITERAL:
+                    Expect(TokenCategory.INT_LITERAL);
+                    break;
+                
+                case TokenCategory.STR_LITERAL:
+                    Expect(TokenCategory.STR_LITERAL);
+                    break;
 
+                case TokenCategory.TRUE:
+                    Expect(TokenCategory.TRUE);
+                    break;
+
+                case TokenCategory.FALSE:
+                    Expect(TokenCategory.FALSE);
+                    break;
+
+                default:
+                    throw new SyntaxError(simpleLiteral, 
+                                      tokenStream.Current);
+            }
         }
 
         public void Statement() {
@@ -217,6 +266,7 @@ namespace Chimera {
 
             case TokenCategory.IDENTIFIER:
                 Identifier();
+                Expect(TokenCategory.SEMICOL);
                 break;
 
             case TokenCategory.LOOP:
@@ -229,10 +279,15 @@ namespace Chimera {
             
             case TokenCategory.RETURN:
                 Return();
+                Expect(TokenCategory.SEMICOL);
                 break;
 
             case TokenCategory.IF:
                 If();
+                break;
+            case TokenCategory.EXIT:
+                Expect(TokenCategory.EXIT);
+                Expect(TokenCategory.SEMICOL);
                 break;
 
             default:
@@ -278,6 +333,13 @@ namespace Chimera {
             }
         }
 
+        public void IdentifierExp() {
+            Expect(TokenCategory.IDENTIFIER);
+            if (CurrentToken == TokenCategory.PARENTHESIS_OPEN) {
+                Call();
+            }
+        }
+
         public void Call(){
             Expect(TokenCategory.PARENTHESIS_OPEN);
             bool first = true;
@@ -290,25 +352,33 @@ namespace Chimera {
                 Expression();
             }
             Expect(TokenCategory.PARENTHESIS_CLOSE);
-            Expect(TokenCategory.SEMICOL);
         }
 
         public void For() {
-
+            Expect(TokenCategory.FOR);
+            Expect(TokenCategory.IDENTIFIER);
+            Expect(TokenCategory.IN);
+            Expression();
+            Expect(TokenCategory.DO);
+            while (firstOfStatement.Contains(CurrentToken)) {
+                Statement();
+            }
+            Expect(TokenCategory.END);
+            Expect(TokenCategory.SEMICOL);
         }
 
         public void Loop() {
+            Expect(TokenCategory.LOOP);
+            while (firstOfStatement.Contains(CurrentToken)) {
+                Statement();
+            }
+            Expect(TokenCategory.END);
+            Expect(TokenCategory.SEMICOL);
 
         }
 
         public void Return() {
             Expect(TokenCategory.RETURN);
-            Expression();
-        }
-
-
-        public void Print() {
-            Expect(TokenCategory.PRINT);
             Expression();
         }
 
@@ -319,7 +389,22 @@ namespace Chimera {
             while (firstOfStatement.Contains(CurrentToken)) {
                 Statement();
             }
+            while (CurrentToken == TokenCategory.ELSEIF) {
+                Expect(TokenCategory.ELSEIF);
+                Expression();
+                Expect(TokenCategory.THEN);
+                while (firstOfStatement.Contains(CurrentToken)) {
+                    Statement();
+                }
+            }
+            if (CurrentToken == TokenCategory.ELSE) {
+                Expect(TokenCategory.ELSE);
+                while (firstOfStatement.Contains(CurrentToken)) {
+                    Statement();
+                }
+            }
             Expect(TokenCategory.END);
+            Expect(TokenCategory.SEMICOL);
         }
 
         public void Expression() {
@@ -328,7 +413,6 @@ namespace Chimera {
                 Operator();
                 SimpleExpression();
             }
-            Expect(TokenCategory.SEMICOL);
         }
 
         public void SimpleExpression() {
@@ -336,7 +420,7 @@ namespace Chimera {
             switch (CurrentToken) {
 
             case TokenCategory.IDENTIFIER:
-                Identifier();
+                IdentifierExp();
                 break;
 
             case TokenCategory.INT_LITERAL:
@@ -376,14 +460,6 @@ namespace Chimera {
 
             switch (CurrentToken) {
 
-            case TokenCategory.AND:
-                Expect(TokenCategory.AND);
-                break;
-
-            case TokenCategory.LESS:
-                Expect(TokenCategory.LESS);
-                break;
-
             case  TokenCategory.PLUS:
                 Expect(TokenCategory.PLUS);
                 break;
@@ -391,7 +467,55 @@ namespace Chimera {
             case TokenCategory.MUL:
                 Expect(TokenCategory.MUL);
                 break;
+            
+            case TokenCategory.NEG:
+                Expect(TokenCategory.NEG);
+                break;
 
+            case TokenCategory.DIV:
+                Expect(TokenCategory.DIV);
+                break;
+
+            case TokenCategory.REM:
+                Expect(TokenCategory.REM);
+                break;
+            
+            case TokenCategory.NOT:
+                Expect(TokenCategory.NOT);
+                break;
+
+            case TokenCategory.AND:
+                Expect(TokenCategory.AND);
+                break;
+            
+            case TokenCategory.OR:
+                Expect(TokenCategory.OR);
+                break;
+
+            case TokenCategory.XOR:
+                Expect(TokenCategory.XOR);
+                break;
+
+            case TokenCategory.LESS:
+                Expect(TokenCategory.LESS);
+                break;
+
+            case TokenCategory.LESSEQ:
+                Expect(TokenCategory.LESSEQ);
+                break;
+            
+            case TokenCategory.MORE:
+                Expect(TokenCategory.MORE);
+                break;
+            
+            case TokenCategory.MOREEQ:
+                Expect(TokenCategory.MOREEQ);
+                break;
+
+            case TokenCategory.BOOLINEQ:
+                Expect(TokenCategory.BOOLINEQ);
+                break;
+            
             default:
                 throw new SyntaxError(firstOfOperator, 
                                       tokenStream.Current);
