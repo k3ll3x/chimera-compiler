@@ -48,6 +48,7 @@ namespace Chimera1 {
               | (?<More>       [>]       )
               | (?<MoreEq>     [>][=]    )
               | (?<Mul>        [*]       )
+              | (?<Equal>        [=]       )
               | (?<Neg>        [-]       )
               | (?<Newline>    \n        )
               | (?<ParLeft>    [(]       )
@@ -111,6 +112,7 @@ namespace Chimera1 {
                 {"MoreEq", TokenCategory.MOREEQ},
                 {"IntLiteral", TokenCategory.INT_LITERAL},
                 {"Mul", TokenCategory.MUL},
+                {"Equal", TokenCategory.EQUAL},
                 {"Neg", TokenCategory.NEG},
                 {"ParLeft", TokenCategory.PARENTHESIS_OPEN},
                 {"ParRight", TokenCategory.PARENTHESIS_CLOSE},

@@ -54,6 +54,7 @@ namespace Chimera1 {
         INT_LITERAL,
         LESS,
         MORE,
+        EQUAL,
         LESSEQ,
         MOREEQ,
         DIV,

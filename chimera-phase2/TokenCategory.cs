@@ -39,6 +39,7 @@ namespace Chimera {
         BOOL,
         EOF,
         NOT,
+        EQUAL,
         FALSE,
         IDENTIFIER,
         IF,

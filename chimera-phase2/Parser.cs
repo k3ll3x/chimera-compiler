@@ -59,6 +59,7 @@ namespace Chimera {
                 TokenCategory.LESSEQ,
                 TokenCategory.MORE,
                 TokenCategory.MOREEQ,
+                TokenCategory.EQUAL,
                 TokenCategory.REM,
                 TokenCategory.NOT,
                 TokenCategory.NEG,
@@ -514,6 +515,10 @@ namespace Chimera {
 
             case TokenCategory.BOOLINEQ:
                 Expect(TokenCategory.BOOLINEQ);
+                break;
+            
+            case TokenCategory.EQUAL:
+                Expect(TokenCategory.EQUAL);
                 break;
             
             default:
