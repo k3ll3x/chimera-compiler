@@ -26,7 +26,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace Chimera2 {
+namespace Chimera {
 
     public class Driver {
 
@@ -35,7 +35,8 @@ namespace Chimera2 {
         //-----------------------------------------------------------
         static readonly string[] ReleaseIncludes = {
             "Lexical analysis",
-            "Syntax analysis"
+            "Syntax analysis",
+            "AST construction"
         };
 
         //-----------------------------------------------------------
@@ -76,8 +77,8 @@ namespace Chimera2 {
                 var inputPath = args[0];                
                 var input = File.ReadAllText(inputPath);
                 var parser = new Parser(new Scanner(input).Start().GetEnumerator());
-                parser.Program();
-                Console.WriteLine("Syntax OK.");
+                var program = parser.Program();
+                Console.Write(program.ToStringTree());
 
             } catch (Exception e) {
 
