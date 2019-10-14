@@ -436,59 +436,87 @@ namespace Chimera {
         }
 
         public Node For() {
-            Expect(TokenCategory.FOR);
-            Expect(TokenCategory.IDENTIFIER);
+            var result = new For() {
+                AnchorToken = Expect(TokenCategory.FOR)
+            };
+            result.Add( new Identifier() {
+                AnchorToken =  Expect(TokenCategory.IDENTIFIER)
+            });
             Expect(TokenCategory.IN);
-            Expression();
-            Expect(TokenCategory.DO);
+            result.Add(Expression());
+            var dostatement = new Do() {
+                AnchorToken = Expect(TokenCategory.DO)
+            };
             while (firstOfStatement.Contains(CurrentToken)) {
-                Statement();
+                dostatement.Add(Statement());
             }
             Expect(TokenCategory.END);
             Expect(TokenCategory.SEMICOL);
+            result.Add(dostatement);
+            return result;
         }
 
         public Node Loop() {
-            Expect(TokenCategory.LOOP);
+            var result = new Loop() {
+                AnchorToken = Expect(TokenCategory.LOOP)
+            };
             while (firstOfStatement.Contains(CurrentToken)) {
-                Statement();
+                result.Add(Statement());
             }
             Expect(TokenCategory.END);
             Expect(TokenCategory.SEMICOL);
+            return result;
 
         }
 
         public Node Return() {
-            Expect(TokenCategory.RETURN);
+            var result = new Return() {
+                AnchorToken = Expect(TokenCategory.RETURN)
+            };
             if(firstOfSimpleExpression.Contains(CurrentToken)){
-                Expression();
+               result.Add(Expression());
             }
             Expect(TokenCategory.SEMICOL);
+            return result;
         }
 
         public Node If() {
-            Expect(TokenCategory.IF);
-            Expression();
-            Expect(TokenCategory.THEN);
+            var result = new If() {
+                AnchorToken = Expect(TokenCategory.IF)
+            };
+            result.Add(Expression());
+            var thenstatement = new Then() {
+                AnchorToken = Expect(TokenCategory.THEN)
+            };
             while (firstOfStatement.Contains(CurrentToken)) {
-                Statement();
+                thenstatement.Add(Statement());
             }
+            result.Add(thenstatement);
             while (CurrentToken == TokenCategory.ELSEIF) {
-                Expect(TokenCategory.ELSEIF);
-                Expression();
-                Expect(TokenCategory.THEN);
+                var elif = new ElseIf() {
+                    AnchorToken = Expect(TokenCategory.ELSEIF)
+                };
+                elif.Add(Expression());
+                var thenst = new Then() {
+                    AnchorToken = Expect(TokenCategory.THEN)
+                };
                 while (firstOfStatement.Contains(CurrentToken)) {
-                    Statement();
+                    thenst.Add(Statement());
                 }
+                elif.Add(thenst);
+                result.Add(elif);
             }
             if (CurrentToken == TokenCategory.ELSE) {
-                Expect(TokenCategory.ELSE);
+                var elsestatement = new Else(){
+                    AnchorToken = Expect(TokenCategory.ELSE)
+                };
                 while (firstOfStatement.Contains(CurrentToken)) {
-                    Statement();
+                    elsestatement.Add(Statement());
                 }
             }
             Expect(TokenCategory.END);
             Expect(TokenCategory.SEMICOL);
+            return result;
         }
 
         public Node LogicOperator(){

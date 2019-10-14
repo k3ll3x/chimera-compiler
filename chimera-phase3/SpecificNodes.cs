@@ -46,10 +46,14 @@ namespace Chimera {
     class Assignment: Node {}
 
     class If: Node {}
+    class Then: Node {}
+    class ElseIf: Node {}
+    class Else: Node {}
     
     class Loop: Node {}
 
     class For: Node {}
+    class Do: Node {}
 
     class CallStatement: Node {}
 
@@ -86,4 +90,5 @@ namespace Chimera {
     class Div: Node {}
     class Rem: Node {}
     class Exit: Node {}
+    class Return: Node {}
 }
