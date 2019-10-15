@@ -616,8 +616,9 @@ namespace Chimera {
         public Node SimpleExpression(){
             if(CurrentToken == TokenCategory.PARENTHESIS_OPEN){
                 Expect(TokenCategory.PARENTHESIS_OPEN);
-                Expression();
+                var result =  Expression();
                 Expect(TokenCategory.PARENTHESIS_CLOSE);
+                return result;
             }else if(CurrentToken == TokenCategory.IDENTIFIER){
                 Expect(TokenCategory.IDENTIFIER);
                 if(CurrentToken == TokenCategory.PARENTHESIS_OPEN){
@@ -635,63 +636,85 @@ namespace Chimera {
 
         public Node UnaryExpression(){
             if(CurrentToken == TokenCategory.NOT){
-                Expect(TokenCategory.NOT);
-                UnaryExpression();
+                var result = new Not() {
+                    AnchorToken = Expect(TokenCategory.NOT)
+                };
+                result.Add(UnaryExpression());
+                return result;
             }else if(CurrentToken == TokenCategory.NEG){
-                Expect(TokenCategory.NEG);
-                UnaryExpression();
+                var result = new Neg() {
+                    AnchorToken = Expect(TokenCategory.NEG)
+                };
+                result.Add(UnaryExpression());
+                return result;
             }else{
-                SimpleExpression();
+                return SimpleExpression();
             }
         }
 
         public Node MulExpression(){
-            UnaryExpression();
+            var expr1 = UnaryExpression();
             while(mulOperatorTokens.Contains(CurrentToken)){
-                MulOperator();
-                UnaryExpression();
+                var expr2 = MulOperator();
+                expr2.Add(expr1);
+                expr2.Add(UnaryExpression());
+                expr1 = expr2;
             }
+            return expr1;
         }
 
         public Node SumOperator(){
             switch(CurrentToken){
                 case TokenCategory.PLUS:
-                Expect(TokenCategory.PLUS);
-                break;
+                return new Plus() {
+                    AnchorToken = Expect(TokenCategory.PLUS)
+                };
+
                 case TokenCategory.NEG:
-                Expect(TokenCategory.NEG);
-                break;
+                return new Neg() {
+                    AnchorToken = Expect(TokenCategory.NEG)
+                };
+
                 default:
                 throw new SyntaxError(sumOperatorTokens, tokenStream.Current);
             }
         }
 
         public Node SumExpression(){
-            MulExpression();
+            var expr1 = MulExpression();
             while(sumOperatorTokens.Contains(CurrentToken)){
-                SumOperator();
-                MulExpression();
+                var expr2 = SumOperator();
+                expr2.Add(expr1);
+                expr2.Add(MulExpression());
+                expr1 = expr2;
             }
+            return expr1;
         }
 
         public Node RelationalExpression(){
-            SumExpression();
+            var expr1  =  SumExpression();
             while(relationalOperatorTokens.Contains(CurrentToken)){
-                RelationalOperator();
-                SumExpression();
+                var expr2 = RelationalOperator();
+                expr2.Add(expr1);
+                expr2.Add(SumExpression());
+                expr1 = expr2;
             }
+            return expr1;
         }
 
         public Node LogicExpression(){
-            RelationalExpression();
+            var expr1  = RelationalExpression();
             while(logicOperatorTokens.Contains(CurrentToken)){
-                LogicOperator();
-                RelationalExpression();
+                var expr2 = LogicOperator();
+                expr2.Add(expr1);
+                expr2.Add(RelationalExpression());
+                expr1 = expr2;
             }
+            return expr1;
         }
 
         public Node Expression(){
-            LogicExpression();
+            return LogicExpression();
         }
     }
 }

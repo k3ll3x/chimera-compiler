@@ -73,6 +73,7 @@ namespace Chimera {
     class False: Node {}
 
     class Neg: Node {}
+    class Not: Node {}
 
     class And: Node {}
     class Or: Node {}
@@ -91,4 +92,5 @@ namespace Chimera {
     class Rem: Node {}
     class Exit: Node {}
     class Return: Node {}
+    class Expression: Node {}
 }
