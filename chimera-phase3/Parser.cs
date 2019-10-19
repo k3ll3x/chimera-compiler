@@ -193,7 +193,7 @@ namespace Chimera {
                 });
             }
             Expect(TokenCategory.TWOPOINTS);
-            Type();
+            result.Add(Type());
             Expect(TokenCategory.SEMICOL);
             return result;
         }
@@ -626,7 +626,7 @@ namespace Chimera {
             Node result;
             if(CurrentToken == TokenCategory.PARENTHESIS_OPEN){
                 Expect(TokenCategory.PARENTHESIS_OPEN);
-                result =  Expression();
+                result = Expression();
                 Expect(TokenCategory.PARENTHESIS_CLOSE);
             }else if(CurrentToken == TokenCategory.IDENTIFIER){
                 var id = Expect(TokenCategory.IDENTIFIER);
