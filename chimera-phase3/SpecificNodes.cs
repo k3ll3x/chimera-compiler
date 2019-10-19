@@ -25,72 +25,72 @@
  
 namespace Chimera {    
 
-    class Program: Node {}
+  class Program: Node {}
 
-    class DeclarationList: Node {}
+  class DeclarationList: Node {}
 
-    class VarDeclaration: Node {}
+  class VarDeclaration: Node {}
 
-    class ConstList: Node {}
-    class ConstDeclaration: Node {}
-    class ParamDeclaration: Node{}
+  class ConstList: Node {}
+  class ConstDeclaration: Node {}
+  class ParamDeclaration: Node{}
 
-    class ProcDeclaration: Node {}
-    class ProcStatement: Node {}
-    class ProcVar: Node {}
-    class ProcConst: Node {}
-    class ProcParam: Node {}
+  class ProcDeclaration: Node {}
+  class ProcStatement: Node {}
+  class ProcVar: Node {}
+  class ProcConst: Node {}
+  class ProcParam: Node {}
 
-    class StatementList: Node {}
+  class StatementList: Node {}
 
-    class Assignment: Node {}
+  class Assignment: Node {}
 
-    class If: Node {}
-    class Then: Node {}
-    class ElseIf: Node {}
-    class Else: Node {}
-    
-    class Loop: Node {}
+  class If: Node {}
+  class Then: Node {}
+  class ElseIf: Node {}
+  class Else: Node {}
+  
+  class Loop: Node {}
 
-    class For: Node {}
-    class Do: Node {}
+  class For: Node {}
+  class Do: Node {}
 
-    class CallStatement: Node {}
+  class CallStatement: Node {}
 
-    class CallExpression: Node {}
+  class CallExpression: Node {}
 
-    class Identifier: Node {}
+  class Identifier: Node {}
 
-    class IntLiteral: Node {}
-    
-    class StrLiteral: Node {}
-    class List: Node {}
-    class Type: Node {}
-    class ListType: Node {}
+  class IntLiteral: Node {}
+  
+  class StrLiteral: Node {}
+  class List: Node {}
+  class Type: Node {}
+  class ListType: Node {}
 
-    class True: Node {}
+  class True: Node {}
+  class False: Node {}
+  
 
-    class False: Node {}
+  class Neg: Node {}
+  class Not: Node {}
 
-    class Neg: Node {}
-    class Not: Node {}
+  class And: Node {}
+  class Or: Node {}
+  class Xor: Node {}
+  class Equal: Node {}
+  class BoolIneq: Node {}
+  class LessEq: Node {}
+  class Less: Node {}
+  class More: Node {}
+  class MoreEq: Node {}
 
-    class And: Node {}
-    class Or: Node {}
-    class Xor: Node {}
-    class Equal: Node {}
-    class BoolIneq: Node {}
-    class LessEq: Node {}
-    class Less: Node {}
-    class More: Node {}
-    class MoreEq: Node {}
+  class Plus: Node {}
 
-    class Plus: Node {}
-
-    class Mul: Node {}
-    class Div: Node {}
-    class Rem: Node {}
-    class Exit: Node {}
-    class Return: Node {}
-    class Expression: Node {}
+  class Mul: Node {}
+  class Div: Node {}
+  class Rem: Node {}
+  class Exit: Node {}
+  class Return: Node {}
+  class Expression: Node {}
 }
