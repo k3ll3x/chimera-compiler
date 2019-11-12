@@ -75,7 +75,7 @@ namespace Chimera {
             globalFunctionTable["StrToInt"] = 1;
         }
 
-        //-----------------------------------------------------------
+        /*-----------------------------------------------------------
         public Type Visit(Program node) {
             VisitChildren(node);//containing something
             Visit((dynamic) node[0]);
@@ -249,6 +249,6 @@ namespace Chimera {
                         type),
                     node.AnchorToken);
             }
-        }
+        }*/
     }
 }

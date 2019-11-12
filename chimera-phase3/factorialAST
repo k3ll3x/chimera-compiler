@@ -1,0 +1,117 @@
+Chimera compiler, version 0.2
+Copyright © 2013 by A. Ortiz, ITESM CEM.
+This program is free software; you may redistribute it under the terms of
+the GNU General Public License version 3 or later.
+This program has absolutely no warranty.
+
+Included in this release:
+   * Lexical analysis
+   * Syntax analysis
+   * AST construction
+
+Program {PROG, "program", @(42, 1)}
+  DeclarationList 
+    VarDeclaration {VAR, "var", @(6, 1)}
+      Identifier {IDENTIFIER, "option", @(7, 5)}
+        Type {STR, "string", @(7, 13)}
+      Identifier {IDENTIFIER, "num", @(8, 5)}
+        Type {INT, "integer", @(8, 10)}
+    ProcDeclaration {PROC, "procedure", @(10, 1)}
+      Identifier {IDENTIFIER, "IterativeFactorial", @(10, 11)}
+      ProcParam 
+        ParamDeclaration 
+          Identifier {IDENTIFIER, "n", @(11, 9)}
+          Type {INT, "integer", @(11, 12)}
+      Type {INT, "integer", @(12, 8)}
+      VarDeclaration {VAR, "var", @(14, 5)}
+        Identifier {IDENTIFIER, "i", @(15, 9)}
+          Identifier {IDENTIFIER, "r", @(15, 12)}
+          Type {INT, "integer", @(15, 15)}
+      ProcStatement {BEGIN, "begin", @(17, 5)}
+        Assignment {ASSIGN, ":=", @(18, 11)}
+          Identifier {IDENTIFIER, "r", @(18, 9)}
+          IntLiteral {INT_LITERAL, "1", @(18, 14)}
+        Assignment {ASSIGN, ":=", @(19, 11)}
+          Identifier {IDENTIFIER, "i", @(19, 9)}
+          IntLiteral {INT_LITERAL, "2", @(19, 14)}
+        Loop {LOOP, "loop", @(21, 9)}
+          If {IF, "if", @(22, 13)}
+            More {MORE, ">", @(22, 18)}
+              Identifier {IDENTIFIER, "i", @(22, 16)}
+              Identifier {IDENTIFIER, "n", @(22, 20)}
+            Then {THEN, "then", @(22, 22)}
+              ConstDeclaration {EXIT, "exit", @(22, 27)}
+          Assignment {ASSIGN, ":=", @(23, 15)}
+            Identifier {IDENTIFIER, "r", @(23, 13)}
+            Mul {MUL, "*", @(23, 20)}
+              Identifier {IDENTIFIER, "r", @(23, 18)}
+              Identifier {IDENTIFIER, "i", @(23, 22)}
+          Assignment {ASSIGN, ":=", @(24, 15)}
+            Identifier {IDENTIFIER, "i", @(24, 13)}
+            Plus {PLUS, "+", @(24, 20)}
+              Identifier {IDENTIFIER, "i", @(24, 18)}
+              IntLiteral {INT_LITERAL, "1", @(24, 22)}
+        Return {RETURN, "return", @(27, 9)}
+          Identifier {IDENTIFIER, "r", @(27, 16)}
+    ProcDeclaration {PROC, "procedure", @(30, 1)}
+      Identifier {IDENTIFIER, "RecursiveFactorial", @(30, 11)}
+      ProcParam 
+        ParamDeclaration 
+          Identifier {IDENTIFIER, "n", @(31, 9)}
+          Type {INT, "integer", @(31, 12)}
+      Type {INT, "integer", @(32, 7)}
+      ProcStatement {BEGIN, "begin", @(34, 5)}
+        If {IF, "if", @(35, 9)}
+          LessEq {LESSEQ, "<=", @(35, 14)}
+            Identifier {IDENTIFIER, "n", @(35, 12)}
+            IntLiteral {INT_LITERAL, "1", @(35, 17)}
+          Then {THEN, "then", @(35, 19)}
+            Return {RETURN, "return", @(36, 13)}
+              IntLiteral {INT_LITERAL, "1", @(36, 20)}
+  StatementList 
+    Loop {LOOP, "loop", @(43, 5)}
+      CallStatement {IDENTIFIER, "WrStr", @(44, 9)}
+        StrLiteral {STR_LITERAL, ""Input a number: "", @(44, 15)}
+      Assignment {ASSIGN, ":=", @(45, 13)}
+        Identifier {IDENTIFIER, "num", @(45, 9)}
+        CallStatement {IDENTIFIER, "RdInt", @(45, 16)}
+      CallStatement {IDENTIFIER, "WrStr", @(47, 9)}
+        StrLiteral {STR_LITERAL, ""Iterative factorial: "", @(47, 15)}
+      CallStatement {IDENTIFIER, "WrInt", @(48, 9)}
+        CallStatement {IDENTIFIER, "IterativeFactorial", @(48, 15)}
+          Identifier {IDENTIFIER, "num", @(48, 34)}
+      CallStatement {IDENTIFIER, "WrLn", @(50, 9)}
+      CallStatement {IDENTIFIER, "WrStr", @(52, 9)}
+        StrLiteral {STR_LITERAL, ""Recursive factorial: "", @(52, 15)}
+      CallStatement {IDENTIFIER, "WrInt", @(53, 9)}
+        CallStatement {IDENTIFIER, "RecursiveFactorial", @(53, 15)}
+          Identifier {IDENTIFIER, "num", @(53, 34)}
+      CallStatement {IDENTIFIER, "WrLn", @(55, 9)}
+      CallStatement {IDENTIFIER, "WrStr", @(57, 9)}
+        StrLiteral {STR_LITERAL, ""Compute another factorial? "", @(57, 15)}
+      Assignment {ASSIGN, ":=", @(58, 16)}
+        Identifier {IDENTIFIER, "option", @(58, 9)}
+        CallStatement {IDENTIFIER, "RdStr", @(58, 19)}
+      If {IF, "if", @(60, 9)}
+        Equal {EQUAL, "=", @(60, 27)}
+          CallStatement {IDENTIFIER, "LenStr", @(60, 12)}
+            Identifier {IDENTIFIER, "option", @(60, 19)}
+          IntLiteral {INT_LITERAL, "0", @(60, 29)}
+        Then {THEN, "then", @(60, 31)}
+          Assignment {ASSIGN, ":=", @(61, 20)}
+            Identifier {IDENTIFIER, "option", @(61, 13)}
+            StrLiteral {STR_LITERAL, ""N"", @(61, 23)}
+      If {IF, "if", @(66, 9)}
+        And {AND, "and", @(66, 37)}
+          BoolIneq {BOOLINEQ, "<>", @(66, 32)}
+            CallStatement {IDENTIFIER, "CmpStr", @(66, 12)}
+              Identifier {IDENTIFIER, "option", @(66, 19)}
+              StrLiteral {STR_LITERAL, ""Y"", @(66, 27)}
+            IntLiteral {INT_LITERAL, "0", @(66, 35)}
+          BoolIneq {BOOLINEQ, "<>", @(66, 61)}
+            CallStatement {IDENTIFIER, "CmpStr", @(66, 41)}
+              Identifier {IDENTIFIER, "option", @(66, 48)}
+              StrLiteral {STR_LITERAL, ""y"", @(66, 56)}
+            IntLiteral {INT_LITERAL, "0", @(66, 64)}
+        Then {THEN, "then", @(66, 66)}
+          ConstDeclaration {EXIT, "exit", @(67, 13)}
