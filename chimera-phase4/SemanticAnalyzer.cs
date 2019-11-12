@@ -75,6 +75,91 @@ namespace Chimera {
             globalFunctionTable["StrToInt"] = 1;
         }
 
+        //types
+        //-----------------------------------------------------------
+        public Type Visit(True node) {
+            return Type.BOOL;
+        }
+
+        //-----------------------------------------------------------
+        public Type Visit(False node) {
+            return Type.BOOL;
+        }
+
+        //operators
+        //-----------------------------------------------------------
+        void VisitBinaryOperator(string op, Node node, Type type) {
+            /*if(node.TokenCategory == BOOLINEQ //two cases for BoolIneq and IntIneq
+            && (
+                (Visit((dynamic) node[0]) != type || Visit((dynamic) node[1]) != type)
+                || (Visit((dynamic) node[0]) != Type.INT || Visit((dynamic) node[1]) != Type.INT))){
+                    throw new SemanticError(
+                        String.Format(
+                            "Operator {0} requires two operands of type {1} or {2}",
+                            op, 
+                            type,
+                            Type.INT),
+                        node.AnchorToken);
+            }*/
+            if (Visit((dynamic) node[0]) != type || 
+                Visit((dynamic) node[1]) != type) {
+                throw new SemanticError(
+                    String.Format(
+                        "Operator {0} requires two operands of type {1}",
+                        op, 
+                        type),
+                    node.AnchorToken);
+            }
+        }
+
+        public Type Visit(And node){
+            VisitBinaryOperator("and",node, Type.BOOL);
+            return Type.BOOL;
+        }
+
+        public Type Visit(Or node){
+            VisitBinaryOperator("or",node, Type.BOOL);
+            return Type.BOOL;
+        }
+
+        public Type Visit(Xor node){
+            VisitBinaryOperator("xor",node, Type.BOOL);
+            return Type.BOOL;
+        }
+
+        public Type Visit(Equal node){
+            VisitBinaryOperator("=",node, Type.INT);
+            return Type.BOOL;
+        }
+
+        public Type Visit(BoolIneq node){//also for int ineq
+            if(Visit((dynamic) node[0]) == Type.INT){
+                VisitBinaryOperator("<>",node, Type.INT);
+            }else{
+                VisitBinaryOperator("<>",node, Type.BOOL);
+            }
+            return Type.BOOL;
+        }
+
+        public Type Visit(Less node){
+            VisitBinaryOperator("<",node,Type.INT);
+            return Type.BOOL;
+        }
+
+        public Type Visit(More node){
+            VisitBinaryOperator(">",node,Type.INT);
+            return Type.BOOL;
+        }
+
+        public Type Visit(LessEq node){
+            VisitBinaryOperator("<=",node,Type.INT);
+            return Type.BOOL;
+        }
+
+        public Type Visit(MoreEq node){
+            VisitBinaryOperator(">=",node,Type.INT);
+            return Type.BOOL;
+        }
         /*-----------------------------------------------------------
         public Type Visit(Program node) {
             VisitChildren(node);//containing something

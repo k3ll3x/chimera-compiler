@@ -554,7 +554,7 @@ namespace Chimera {
                     AnchorToken = Expect(TokenCategory.EQUAL)
                 };
 
-                case TokenCategory.BOOLINEQ:
+                case TokenCategory.BOOLINEQ://also for IntIneq
                 return new BoolIneq(){
                     AnchorToken = Expect(TokenCategory.BOOLINEQ)
                 };
