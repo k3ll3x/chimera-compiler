@@ -160,6 +160,52 @@ namespace Chimera {
             VisitBinaryOperator(">=",node,Type.INT);
             return Type.BOOL;
         }
+
+        public Type Visit(Plus node){
+            VisitBinaryOperator("+",node,Type.INT);
+            return Type.INT;
+        }
+
+        public Type Visit(Neg node){//also for substraction?
+            if(node[1]){//two operands -> substraction
+                VisitBinaryOperator("-",node,Type.INT);
+            }else{//one operand -> negation
+                if(Visit((dynamic) node[0]) != Type.INT){
+                    throw new SemanticError(
+                        String.Format(
+                            "Operator - requires one operand of type {1}",
+                            Type.INT),
+                        node.AnchorToken);
+                }
+            }
+            return Type.INT;
+        }
+
+        public Type Visit(Mul node){
+            VisitBinaryOperator("*",node,Type.INT);
+            return Type.INT;
+        }
+
+        public Type Visit(Div node){
+            VisitBinaryOperator("div",node,Type.INT);
+            return Type.INT;
+        }
+
+        public Type Visit(Rem node){
+            VisitBinaryOperator("rem",node,Type.INT);
+            return Type.INT;
+        }
+
+        public Type Visit(Not node){
+            if(Visit((dynamic) node[0]) != Type.BOOL){
+                throw new SemanticError(
+                    String.Format(
+                        "Operator not requires one operand of type {1}",
+                        Type.BOOL),
+                    node.AnchorToken);
+            }
+            return Type.BOOL;
+        }
         /*-----------------------------------------------------------
         public Type Visit(Program node) {
             VisitChildren(node);//containing something
