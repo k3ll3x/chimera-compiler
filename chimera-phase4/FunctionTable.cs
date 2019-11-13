@@ -1,53 +1,29 @@
-/*
-  Chimera compiler - Symbol table class.
-  Copyright (C) 2013 Ariel Ortiz, ITESM CEM
-  
-  This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-  
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-  
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-/* 
- * Siegfried Paul Keller Schippner A01375356
- * José Javier Rodríguez Mota A01372812
- * Ana Paula Mejía Quiroz A01371880
- */
+//Authors:
+//Alfonso Antonio Alquìcer Mèndez A01373252
+//Marco Isaac Buendìa Mejìa A01271519
 
 using System;
 using System.Text;
 using System.Collections.Generic;
 
 namespace Chimera {
-
-    public class FunctionTable: IEnumerable<KeyValuePair<string, Type>> {
-
-        IDictionary<string, Type> data = new SortedDictionary<string, Type>();
+    public class FunctionTable: IEnumerable<KeyValuePair<string, int>> {
+        IDictionary<string, int> data = new SortedDictionary<string, int>();
 
         //-----------------------------------------------------------
         public override string ToString() {
             var sb = new StringBuilder();
-            sb.Append("Symbol Table\n");
+            sb.Append("Function Table\n");
             sb.Append("====================\n");
             foreach (var entry in data) {
-                sb.Append(String.Format("{0}: {1}\n", 
-                                        entry.Key, 
-                                        entry.Value));
+                sb.Append(String.Format("{0}: {1}\n", entry.Key, entry.Value));
             }
             sb.Append("====================\n");
             return sb.ToString();
         }
 
         //-----------------------------------------------------------
-        public Type this[string key] {
+        public int this[string key] {
             get {
                 return data[key];
             }
@@ -62,7 +38,7 @@ namespace Chimera {
         }
 
         //-----------------------------------------------------------
-        public IEnumerator<KeyValuePair<string, Type>> GetEnumerator() {
+        public IEnumerator<KeyValuePair<string, int>> GetEnumerator() {
             return data.GetEnumerator();
         }
 

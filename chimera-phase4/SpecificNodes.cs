@@ -65,7 +65,7 @@ namespace Chimera {
     
     class StrLiteral: Node {}
     class List: Node {}
-    class Type: Node {}
+    class ChimeraType: Node {}
     class ListType: Node {}
 
     class True: Node {}

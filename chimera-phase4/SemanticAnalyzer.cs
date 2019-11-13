@@ -42,14 +42,14 @@ namespace Chimera {
             };
 
         //-----------------------------------------------------------
-        /*public SymbolTable Table {
+        public SymbolTable Table {
             get;
             private set;
-        }*/
+        }
 
         //-----------------------------------------------------------
         public SemanticAnalyzer() {
-            //Table = new SymbolTable();
+            Table = new SymbolTable();
             globalSymbolTable = new SymbolTable();
             globalFunctionTable = new FunctionTable();
             namespaceTable = new SymbolTable();
@@ -167,7 +167,7 @@ namespace Chimera {
         }
 
         public Type Visit(Neg node){//also for substraction?
-            if(node[1]){//two operands -> substraction
+            if(node[1] != null){//two operands -> substraction
                 VisitBinaryOperator("-",node,Type.INT);
             }else{//one operand -> negation
                 if(Visit((dynamic) node[0]) != Type.INT){

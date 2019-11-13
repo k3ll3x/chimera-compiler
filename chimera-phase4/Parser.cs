@@ -193,7 +193,7 @@ namespace Chimera {
                 });
             }
             Expect(TokenCategory.TWOPOINTS);
-            result.Add(Type());
+            result.Add(ChimeraType());
             Expect(TokenCategory.SEMICOL);
             return result;
         }
@@ -234,9 +234,9 @@ namespace Chimera {
             }
         }
 
-        public Node Type() {
+        public Node ChimeraType() {
             if(type.Contains(CurrentToken)){
-                return new Type() {
+                return new ChimeraType() {
                     AnchorToken = SimpleType()
                 };
             }else{
@@ -267,7 +267,7 @@ namespace Chimera {
                 AnchorToken = Expect(TokenCategory.LIST)
             };
             Expect(TokenCategory.OF);
-            result.Add(new Type() {
+            result.Add(new ChimeraType() {
                 AnchorToken = SimpleType()
             });
             return result;   
@@ -304,7 +304,7 @@ namespace Chimera {
             result.Add(param);
             if (CurrentToken == TokenCategory.TWOPOINTS) {
                 Expect(TokenCategory.TWOPOINTS);
-                result.Add(Type());
+                result.Add(ChimeraType());
             }
             Expect(TokenCategory.SEMICOL);
             if (CurrentToken == TokenCategory.CONST) {
@@ -337,7 +337,7 @@ namespace Chimera {
                 });
             }
             Expect(TokenCategory.TWOPOINTS);
-            result.Add(Type());
+            result.Add(ChimeraType());
             Expect(TokenCategory.SEMICOL);
             return result;
         }
