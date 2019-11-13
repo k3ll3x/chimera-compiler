@@ -69,7 +69,6 @@ namespace Chimera {
     class ListType: Node {}
 
     class True: Node {}
-
     class False: Node {}
 
     class Neg: Node {}

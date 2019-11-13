@@ -1,6 +1,8 @@
-//Authors:
-//Alfonso Antonio Alquìcer Mèndez A01373252
-//Marco Isaac Buendìa Mejìa A01271519
+/* 
+ * Siegfried Paul Keller Schippner A01375356
+ * José Javier Rodríguez Mota A01372812
+ * Ana Paula Mejía Quiroz A01371880
+ */
 
 using System;
 using System.Text;
