@@ -86,6 +86,30 @@ namespace Chimera {
             return Type.BOOL;
         }
 
+        public Type Visit(If node){
+            VisitChildren(node);
+        }
+
+        public Type Visit(ElseIf node){
+            VisitChildren(node);
+        }
+
+        public Type Visit(Else node){
+            VisitChildren(node);
+        }
+
+        public Type Visit(Assignment node){
+            var varName = node.AnchorToken.Lexeme;
+            if(!namespaceTable.Contains(varName) && !globalSymbolTable.Contains(varName)){
+                throw new SemanticError("Undeclared function: " + varName, node.AnchorToken);
+            }
+            VisitChildren(node);
+        }
+
+        public Type Visit(StatementList node){
+            VisitChildren(node);
+        }
+
         //operators
         //-----------------------------------------------------------
         void VisitBinaryOperator(string op, Node node, Type type) {
