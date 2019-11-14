@@ -86,19 +86,19 @@ namespace Chimera {
             return Type.BOOL;
         }
 
-        public Type Visit(If node){
+        public void Visit(If node){
             VisitChildren(node);
         }
 
-        public Type Visit(ElseIf node){
+        public void Visit(ElseIf node){
             VisitChildren(node);
         }
 
-        public Type Visit(Else node){
+        public void Visit(Else node){
             VisitChildren(node);
         }
 
-        public Type Visit(Assignment node){
+        public void Visit(Assignment node){
             var varName = node.AnchorToken.Lexeme;
             if(!namespaceTable.Contains(varName) && !globalSymbolTable.Contains(varName)){
                 throw new SemanticError("Undeclared function: " + varName, node.AnchorToken);
@@ -106,7 +106,7 @@ namespace Chimera {
             VisitChildren(node);
         }
 
-        public Type Visit(StatementList node){
+        public void Visit(StatementList node){
             VisitChildren(node);
         }
 
