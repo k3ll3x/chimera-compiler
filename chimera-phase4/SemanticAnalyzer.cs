@@ -122,6 +122,17 @@ namespace Chimera {
             inLoop--;
         }
 
+        public void Visit(Return node){
+            VisitChildren(node);
+        }
+
+        public void Visit(Identifier node){
+            var varName = node.AnchorToken.Lexeme;
+            if(!namespaceTable.Contains(varName) && !globalSymbolTable.Contains(varName)){
+                throw new SemanticError("No defined variable: " + varName, node.AnchorToken);
+            }
+        }
+
         //operators
         //-----------------------------------------------------------
         void VisitBinaryOperator(string op, Node node, Type type) {
