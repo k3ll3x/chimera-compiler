@@ -77,6 +77,10 @@ namespace Chimera {
             globalFunctionTable["StrToInt"] = 1;
         }
 
+        public void Visit(Expression node){
+            VisitChildren(node);
+        }
+
         //types
         //-----------------------------------------------------------
         public Type Visit(True node) {
