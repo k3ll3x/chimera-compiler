@@ -32,6 +32,7 @@ namespace Chimera {
         public FunctionTable globalFunctionTable;
         public SymbolTable namespaceTable;
         public IDictionary<string, SymbolTable> localSymbolTables = new SortedDictionary<string, SymbolTable>();
+        public int inLoop;
 
         //-----------------------------------------------------------
         static readonly IDictionary<TokenCategory, Type> typeMapper =
@@ -53,6 +54,7 @@ namespace Chimera {
             globalSymbolTable = new SymbolTable();
             globalFunctionTable = new FunctionTable();
             namespaceTable = new SymbolTable();
+            inLoop = 0;
 
             //global functions, chimera API with number of params
             globalFunctionTable["WrInt"] = 1;
@@ -108,6 +110,12 @@ namespace Chimera {
 
         public void Visit(StatementList node){
             VisitChildren(node);
+        }
+
+        public void Visit(Loop node){
+            inLoop++;
+            VisitChildren(node);
+            inLoop--;
         }
 
         //operators
