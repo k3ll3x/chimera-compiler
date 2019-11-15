@@ -28,9 +28,15 @@ using System.Collections.Generic;
 
 namespace Chimera {
 
-    public class SymbolTable: IEnumerable<KeyValuePair<string, Type>> {
+    public class SymbolTable{//: IEnumerable<KeyValuePair<string, Type>> {
 
-        IDictionary<string, Type> data = new SortedDictionary<string, Type>();
+        //IDictionary<string, Type> data = new SortedDictionary<string, Type>();
+
+        public HashSet<string> data;
+
+        public SymbolTable(){
+            data = new HashSet<string>();
+        }
 
         //-----------------------------------------------------------
         public override string ToString() {
@@ -38,15 +44,20 @@ namespace Chimera {
             sb.Append("Symbol Table\n");
             sb.Append("====================\n");
             foreach (var entry in data) {
-                sb.Append(String.Format("{0}: {1}\n", 
+                /*sb.Append(String.Format("{0}: {1}\n", 
                                         entry.Key, 
-                                        entry.Value));
+                                        entry.Value));*/
+                sb.Append(String.Format("- {0} \n", entry));
             }
             sb.Append("====================\n");
             return sb.ToString();
         }
 
-        //-----------------------------------------------------------
+        public void Add(string value){
+            data.Add(value);
+        }
+
+        /*-----------------------------------------------------------
         public Type this[string key] {
             get {
                 return data[key];
@@ -54,21 +65,23 @@ namespace Chimera {
             set {
                 data[key] = value;
             }
-        }
+        }*/
 
         //-----------------------------------------------------------
         public bool Contains(string key) {
-            return data.ContainsKey(key);
+            //return data.ContainsKey(key);
+            return data.Contains(key);
         }
 
         //-----------------------------------------------------------
-        public IEnumerator<KeyValuePair<string, Type>> GetEnumerator() {
+        //public IEnumerator<KeyValuePair<string, Type>> GetEnumerator() {
+        public IEnumerator<string> GetEnumerator() {
             return data.GetEnumerator();
         }
 
-        //-----------------------------------------------------------
+        /*-----------------------------------------------------------
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
             throw new NotImplementedException();
-        }
+        }*/
     }
 }

@@ -33,6 +33,8 @@ namespace Chimera {
         public SymbolTable namespaceTable;
         public IDictionary<string, SymbolTable> localSymbolTables = new SortedDictionary<string, SymbolTable>();
         public int inLoop;
+        public bool localscope;
+        public bool flag;
 
         //-----------------------------------------------------------
         static readonly IDictionary<TokenCategory, Type> typeMapper =
@@ -55,6 +57,8 @@ namespace Chimera {
             globalFunctionTable = new FunctionTable();
             namespaceTable = new SymbolTable();
             inLoop = 0;
+            localscope = false;
+            flag = true;
 
             //global functions, chimera API with number of params
             globalFunctionTable["WrInt"] = 1;
@@ -132,6 +136,27 @@ namespace Chimera {
                 Convert.ToInt32(intStr);
             }catch (OverflowException){
                 throw new SemanticError("Integer literal exceeds 32 bits (too large): " + intStr, node.AnchorToken);
+            }
+        }
+
+        public void Visit(VarDeclaration node){
+            foreach(var n in node[0]){
+                var varName = n.AnchorToken.Lexeme;
+                if(localscope){
+                    if(namespaceTable.Contains(varName)){
+                        throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
+                    }
+                    namespaceTable.Add(varName);
+                }else{
+                    if(flag){
+                        if(globalSymbolTable.Contains(varName)){
+                            throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
+                        }else{
+                            globalSymbolTable.Add(varName);
+                        }
+                    }
+                }
+                VisitChildren(n);
             }
         }
 
