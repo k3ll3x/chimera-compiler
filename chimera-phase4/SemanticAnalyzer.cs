@@ -126,6 +126,15 @@ namespace Chimera {
             VisitChildren(node);
         }
 
+        public void Visit(IntLiteral node){
+            var intStr = node.AnchorToken.Lexeme;
+            try {
+                Convert.ToInt32(intStr);
+            }catch (OverflowException){
+                throw new SemanticError("Integer literal exceeds 32 bits (too large): " + intStr, node.AnchorToken);
+            }
+        }
+
         public void Visit(Identifier node){
             var varName = node.AnchorToken.Lexeme;
             if(!namespaceTable.Contains(varName) && !globalSymbolTable.Contains(varName)){
