@@ -60,6 +60,7 @@ namespace Chimera {
     class CallExpression: Node {}
 
     class Identifier: Node {}
+    class IdentifierList: Node {}
 
     class IntLiteral: Node {}
     

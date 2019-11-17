@@ -28,10 +28,22 @@ using System.Collections.Generic;
 namespace Chimera {
 
     class SemanticAnalyzer {
-        public SymbolTable globalSymbolTable;
-        public FunctionTable globalFunctionTable;
-        public SymbolTable namespaceTable;
-        public IDictionary<string, SymbolTable> localSymbolTables = new SortedDictionary<string, SymbolTable>();
+        public SymbolTable globalSymbolTable {
+            get;
+            private set;
+        }
+        public FunctionTable globalFunctionTable {
+            get;
+            private set;
+        }
+        public SymbolTable globalConstTable {
+            get;
+            private set;
+        }
+        public SymbolTable localSymbolTables {
+            get;
+            private set;
+        }
         public int inLoop;
         public bool localscope;
         public bool flag;
@@ -55,7 +67,8 @@ namespace Chimera {
             Table = new SymbolTable();
             globalSymbolTable = new SymbolTable();
             globalFunctionTable = new FunctionTable();
-            namespaceTable = new SymbolTable();
+            globalConstTable = new SymbolTable();
+            localSymbolTables = new SymbolTable();
             inLoop = 0;
             localscope = false;
             flag = true;
@@ -144,22 +157,47 @@ namespace Chimera {
         }
 
         public Type Visit(Assignment node){
-            var varName = node.AnchorToken.Lexeme;
-            if(!namespaceTable.Contains(varName) && !globalSymbolTable.Contains(varName)){
-                throw new SemanticError("Undeclared function: " + varName, node.AnchorToken);
+            var variableName = node[0].AnchorToken.Lexeme;
+
+            if (globalSymbolTable.Contains(variableName)) {
+
+                var expectedType = globalSymbolTable[variableName];
+
+                if (expectedType != Visit((dynamic) node[1])) {
+                    throw new SemanticError(
+                        "Expecting type " + expectedType 
+                        + " in assignment statement",
+                        node.AnchorToken);
+                }
+
+            } else {
+                throw new SemanticError(
+                    "Undeclared variable: " + variableName,
+                    node.AnchorToken);
             }
-            VisitChildren(node);
+
             return Type.VOID;
         }
 
-        public void Visit(Loop node){
+        public Type Visit(Loop node){
             inLoop++;
             VisitChildren(node);
             inLoop--;
+            return Type.VOID;
         }
 
-        public void Visit(Return node){
+        public Type Visit(Return node){
+            Type t = Visit((dynamic) node[0]);
+            return Type.VOID;
+        }
+
+        public Type Visit(Exit node){
             VisitChildren(node);
+            if (inLoop > 0) {
+                return Type.VOID;
+            } else {
+                throw new SemanticError("Unexpected {0} outside loop" , node.AnchorToken);
+            }
         }
 
         public Type Visit(IntLiteral node){
@@ -177,29 +215,29 @@ namespace Chimera {
         }
 
         public void Visit(VarDeclaration node){
+            TokenCategory t = node[1].AnchorToken.Category;
             foreach(var n in node[0]){
                 var varName = n.AnchorToken.Lexeme;
                 if(localscope){
-                    if(namespaceTable.Contains(varName)){
+                    if(localSymbolTables.Contains(varName)){
                         throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
                     }
-                    namespaceTable.Add(varName);
+                    localSymbolTables[varName] = typeMapper[t];
                 }else{
                     if(flag){
                         if(globalSymbolTable.Contains(varName)){
                             throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
                         }else{
-                            globalSymbolTable.Add(varName);
+                            globalSymbolTable[varName] = typeMapper[t];
                         }
                     }
                 }
-                VisitChildren(n);
             }
         }
 
         public void Visit(Identifier node){
             var varName = node.AnchorToken.Lexeme;
-            if(!namespaceTable.Contains(varName) && !globalSymbolTable.Contains(varName)){
+            if(!globalSymbolTable.Contains(varName)){
                 throw new SemanticError("No defined variable: " + varName, node.AnchorToken);
             }
         }

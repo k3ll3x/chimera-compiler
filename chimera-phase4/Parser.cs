@@ -400,16 +400,18 @@ namespace Chimera {
             var result = new VarDeclaration {
                 AnchorToken = Expect(TokenCategory.VAR)
             };
-            result.Add(new Identifier() {
+            var idList  = new IdentifierList();
+            idList.Add(new Identifier() {
                     AnchorToken = Expect(TokenCategory.IDENTIFIER)
             });
             while (CurrentToken != TokenCategory.TWOPOINTS) {
                 Expect(TokenCategory.COMA);
-                result.Add(new Identifier() {
+                idList.Add(new Identifier() {
                     AnchorToken = Expect(TokenCategory.IDENTIFIER)
                 });
             }
             Expect(TokenCategory.TWOPOINTS);
+            result.Add(idList);
             result.Add(ChimeraType());
             Expect(TokenCategory.SEMICOL);
             return result;
