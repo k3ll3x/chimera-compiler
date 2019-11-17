@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Chimera {
+namespace Chimera3 {
 
     class Node: IEnumerable<Node> {
 

@@ -22,7 +22,7 @@
  * Ana Paula Mejía Quiroz A01371880
  */
 
-namespace Chimera {
+namespace Chimera3 {
 
     enum TokenCategory {
         CONST,

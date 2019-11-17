@@ -26,7 +26,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Chimera {
+namespace Chimera3 {
 
     class Parser {      
 

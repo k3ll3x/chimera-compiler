@@ -80,9 +80,24 @@ namespace Chimera {
             globalFunctionTable["IntToStr"] = 1;
             globalFunctionTable["StrToInt"] = 1;
         }
+        public Type Visit(Program node) {
+            Visit((dynamic) node[0]);
+            Visit((dynamic) node[1]);
+            return Type.VOID;
+        }
 
         public void Visit(Expression node){
             VisitChildren(node);
+        }
+
+        public Type Visit(DeclarationList node) {
+            VisitChildren(node);
+            return Type.VOID;
+        }
+
+        public Type Visit(StatementList node) {
+            VisitChildren(node);
+            return Type.VOID;
         }
 
         //types
@@ -96,28 +111,45 @@ namespace Chimera {
             return Type.BOOL;
         }
 
-        public void Visit(If node){
-            VisitChildren(node);
+        public Type Visit(If node){
+           if (Visit((dynamic) node[0]) != Type.BOOL) {
+                throw new SemanticError(
+                    "Expecting type " + Type.BOOL 
+                    + " in conditional statement",                   
+                    node.AnchorToken);
+            }
+            VisitChildren(node[1]);
+            return Type.VOID;
         }
 
-        public void Visit(ElseIf node){
-            VisitChildren(node);
+        public Type Visit(ElseIf node){
+           if (Visit((dynamic) node[0]) != Type.BOOL) {
+                throw new SemanticError(
+                    "Expecting type " + Type.BOOL 
+                    + " in conditional statement",                   
+                    node.AnchorToken);
+            }
+            VisitChildren(node[1]);
+            return Type.VOID;
         }
 
-        public void Visit(Else node){
+        public Type Visit(Else node){
             VisitChildren(node);
+            return Type.VOID;
         }
 
-        public void Visit(Assignment node){
+        public Type Visit(Then node){
+            VisitChildren(node);
+            return Type.VOID;
+        }
+
+        public Type Visit(Assignment node){
             var varName = node.AnchorToken.Lexeme;
             if(!namespaceTable.Contains(varName) && !globalSymbolTable.Contains(varName)){
                 throw new SemanticError("Undeclared function: " + varName, node.AnchorToken);
             }
             VisitChildren(node);
-        }
-
-        public void Visit(StatementList node){
-            VisitChildren(node);
+            return Type.VOID;
         }
 
         public void Visit(Loop node){
@@ -130,13 +162,18 @@ namespace Chimera {
             VisitChildren(node);
         }
 
-        public void Visit(IntLiteral node){
+        public Type Visit(IntLiteral node){
             var intStr = node.AnchorToken.Lexeme;
             try {
                 Convert.ToInt32(intStr);
             }catch (OverflowException){
                 throw new SemanticError("Integer literal exceeds 32 bits (too large): " + intStr, node.AnchorToken);
             }
+            return Type.INT;
+        }
+
+         public Type Visit(StrLiteral node){
+            return Type.STR;
         }
 
         public void Visit(VarDeclaration node){
@@ -280,13 +317,6 @@ namespace Chimera {
                     node.AnchorToken);
             }
             return Type.BOOL;
-        }
-
-        public Type Visit(Program node) {
-            VisitChildren(node);//containing something
-            Visit((dynamic) node[0]);
-            Visit((dynamic) node[1]);
-            return Type.VOID;
         }
     }
 }
