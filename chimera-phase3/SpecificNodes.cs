@@ -30,6 +30,8 @@ namespace Chimera3 {
     class DeclarationList: Node {}
 
     class VarDeclaration: Node {}
+    
+    class Var: Node {}
 
     class ConstList: Node {}
     class ConstDeclaration: Node {}
@@ -60,6 +62,8 @@ namespace Chimera3 {
     class CallExpression: Node {}
 
     class Identifier: Node {}
+    
+    class IdentifierList: Node {}
 
     class IntLiteral: Node {}
     

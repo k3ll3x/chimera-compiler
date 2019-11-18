@@ -40,7 +40,12 @@ namespace Chimera {
             get;
             private set;
         }
+        //TODO: Esto sí deberían ser varias tablas, pero cómo sabemos cual es cual?
         public SymbolTable localSymbolTables {
+            get;
+            private set;
+        }
+        public SymbolTable localConstTables {
             get;
             private set;
         }
@@ -69,6 +74,7 @@ namespace Chimera {
             globalFunctionTable = new FunctionTable();
             globalConstTable = new SymbolTable();
             localSymbolTables = new SymbolTable();
+            localConstTables = new SymbolTable();
             inLoop = 0;
             localscope = false;
             flag = true;
@@ -214,7 +220,12 @@ namespace Chimera {
             return Type.STR;
         }
 
-        public void Visit(VarDeclaration node){
+        public Type Visit(VarDeclaration node){
+            VisitChildren(node);
+            return Type.VOID;
+        }
+
+        public Type Visit(Var node) {
             TokenCategory t = node[1].AnchorToken.Category;
             foreach(var n in node[0]){
                 var varName = n.AnchorToken.Lexeme;
@@ -224,15 +235,33 @@ namespace Chimera {
                     }
                     localSymbolTables[varName] = typeMapper[t];
                 }else{
-                    if(flag){
-                        if(globalSymbolTable.Contains(varName)){
-                            throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
-                        }else{
-                            globalSymbolTable[varName] = typeMapper[t];
-                        }
+                    if (globalSymbolTable.Contains(varName)){
+                        throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
+                    } else{
+                        globalSymbolTable[varName] = typeMapper[t];
                     }
                 }
             }
+            return Type.VOID;
+        }
+
+        public Type Visit(ConstDeclaration node) {
+            var varName = node[0].AnchorToken.Lexeme;
+                if (localscope) {
+                    if (localConstTables.Contains(varName)) {
+                        throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
+                    }
+                    localSymbolTables[varName] = typeMapper[Visit((dynamic) node[1])];
+                } else {
+                    if (globalConstTable.Contains(varName)) {
+                        throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
+                    } else if (globalSymbolTable.Contains(varName)) {
+                        throw new SemanticError("Constant and variable cannot have the same name: " + varName, node[0].AnchorToken);
+                    } else  {
+                        globalSymbolTable[varName] = typeMapper[Visit((dynamic) node[1])];
+                    }
+                }
+            return Type.VOID;
         }
 
         public void Visit(Identifier node){

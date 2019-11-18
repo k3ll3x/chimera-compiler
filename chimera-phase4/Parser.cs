@@ -182,6 +182,25 @@ namespace Chimera {
             return result;
         }
 
+         public Node VarDeclaration() {
+            var result = new Var();
+            var id = new IdentifierList();
+            id.Add(new Identifier() {
+                    AnchorToken = Expect(TokenCategory.IDENTIFIER)
+                });
+            while (CurrentToken != TokenCategory.TWOPOINTS) {
+                Expect(TokenCategory.COMA);
+                id.Add(new Identifier() {
+                    AnchorToken = Expect(TokenCategory.IDENTIFIER)
+                });
+            }
+            result.Add(id);
+            Expect(TokenCategory.TWOPOINTS);
+            result.Add(ChimeraType());
+            Expect(TokenCategory.SEMICOL);
+            return result;
+        }
+
         public Node Literal() {
             if (simpleLiteral.Contains(CurrentToken)) {
                 return SimpleLiteral();
@@ -400,20 +419,9 @@ namespace Chimera {
             var result = new VarDeclaration {
                 AnchorToken = Expect(TokenCategory.VAR)
             };
-            var idList  = new IdentifierList();
-            idList.Add(new Identifier() {
-                    AnchorToken = Expect(TokenCategory.IDENTIFIER)
-            });
-            while (CurrentToken != TokenCategory.TWOPOINTS) {
-                Expect(TokenCategory.COMA);
-                idList.Add(new Identifier() {
-                    AnchorToken = Expect(TokenCategory.IDENTIFIER)
-                });
-            }
-            Expect(TokenCategory.TWOPOINTS);
-            result.Add(idList);
-            result.Add(ChimeraType());
-            Expect(TokenCategory.SEMICOL);
+            do {
+                result.Add(VarDeclaration());
+            } while (CurrentToken == TokenCategory.IDENTIFIER);
             return result;
         }
         

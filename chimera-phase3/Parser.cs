@@ -179,19 +179,23 @@ namespace Chimera3 {
             result.Add(id);
             result.Add(Literal());
             Expect(TokenCategory.SEMICOL);
+            Console.WriteLine(result.AnchorToken.Category);
             return result;
         }
 
         public Node VarDeclaration() {
-            var result = new Identifier() {
-                AnchorToken = Expect(TokenCategory.IDENTIFIER)
-            };
+            var result = new Var();
+            var id = new IdentifierList();
+            id.Add(new Identifier() {
+                    AnchorToken = Expect(TokenCategory.IDENTIFIER)
+                });
             while (CurrentToken != TokenCategory.TWOPOINTS) {
                 Expect(TokenCategory.COMA);
-                result.Add(new Identifier() {
+                id.Add(new Identifier() {
                     AnchorToken = Expect(TokenCategory.IDENTIFIER)
                 });
             }
+            result.Add(id);
             Expect(TokenCategory.TWOPOINTS);
             result.Add(Type());
             Expect(TokenCategory.SEMICOL);

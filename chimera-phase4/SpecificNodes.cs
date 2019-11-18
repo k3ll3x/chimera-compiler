@@ -31,6 +31,7 @@ namespace Chimera {
 
     class VarDeclaration: Node {}
 
+    class Var: Node {}
     class ConstList: Node {}
     class ConstDeclaration: Node {}
     class ParamDeclaration: Node{}
