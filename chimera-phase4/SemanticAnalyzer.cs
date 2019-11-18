@@ -192,6 +192,31 @@ namespace Chimera {
             return Type.VOID;
         }
 
+        public Type Visit(For node){
+            VisitChildren(node);
+            return Type.VOID;
+        }
+
+        public Type Visit(Do node){
+            VisitChildren(node);
+            return Type.VOID;
+        }
+
+        public Type Visit(List node){
+            VisitChildren(node);
+            return Type.VOID;
+        }
+
+        public Type Visit(ChimeraType node){
+            VisitChildren(node);
+            return Type.VOID;
+        }
+
+        public Type Visit(ListType node){
+            VisitChildren(node);
+            return Type.VOID;
+        }
+
         public Type Visit(Return node){
             Type t = Visit((dynamic) node[0]);
             return Type.VOID;
