@@ -79,7 +79,7 @@ namespace Chimera {
                 var input = File.ReadAllText(inputPath);
                 var parser = new Parser(new Scanner(input).Start().GetEnumerator());
                 var program = parser.Program();
-                Console.Write("Syntax OK.");
+                Console.WriteLine("Syntax OK.");
                 //semantic
                 var semantic = new SemanticAnalyzer();
                 semantic.Visit((dynamic) program);

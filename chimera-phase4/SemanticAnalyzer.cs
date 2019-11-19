@@ -208,11 +208,14 @@ namespace Chimera {
         }
 
         public Type Visit(ChimeraType node){
-            VisitChildren(node);
-            return Type.VOID;
+            Console.WriteLine(typeMapper[node.AnchorToken.Category]);
+            return typeMapper[node.AnchorToken.Category];
+            //VisitChildren(node);
+            //return Type.VOID;
         }
 
         public Type Visit(ListType node){
+            Console.WriteLine(node.ToStringTree());
             VisitChildren(node);
             return Type.VOID;
         }
@@ -242,6 +245,7 @@ namespace Chimera {
         }
 
          public Type Visit(StrLiteral node){
+            var str = node.AnchorToken.Lexeme;
             return Type.STR;
         }
 
@@ -251,8 +255,8 @@ namespace Chimera {
         }
 
         public Type Visit(Var node) {
-            TokenCategory t = node[1].AnchorToken.Category;
             foreach(var n in node[0]){
+                TokenCategory t = n.AnchorToken.Category;
                 var varName = n.AnchorToken.Lexeme;
                 if(localscope){
                     if(localSymbolTables.Contains(varName)){
@@ -263,10 +267,18 @@ namespace Chimera {
                     if (globalSymbolTable.Contains(varName)){
                         throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
                     } else{
-                        globalSymbolTable[varName] = typeMapper[t];
+                        Type something = new Type();
+                        foreach (var ni in node) {
+                            something = Visit((dynamic) ni);
+                        }
+                        if(something == Type.INT){
+                            Console.WriteLine("Satanás");
+                        }
+                        globalSymbolTable[varName] = something;//typeMapper[t];
                     }
                 }
             }
+            Console.WriteLine(globalSymbolTable.ToString());
             return Type.VOID;
         }
 
