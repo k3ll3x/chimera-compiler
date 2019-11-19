@@ -271,14 +271,14 @@ namespace Chimera {
                         foreach (var ni in node) {
                             something = Visit((dynamic) ni);
                         }
-                        if(something == Type.INT){
+                        /*if(something == Type.INT){
                             Console.WriteLine("Satanás");
-                        }
+                        }*/
                         globalSymbolTable[varName] = something;//typeMapper[t];
                     }
                 }
+                //Console.WriteLine(globalSymbolTable.ToString());
             }
-            Console.WriteLine(globalSymbolTable.ToString());
             return Type.VOID;
         }
 
