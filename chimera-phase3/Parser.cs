@@ -179,11 +179,10 @@ namespace Chimera3 {
             result.Add(id);
             result.Add(Literal());
             Expect(TokenCategory.SEMICOL);
-            Console.WriteLine(result.AnchorToken.Category);
             return result;
         }
 
-        public Node VarDeclaration() {
+         public Node VarDeclaration() {
             var result = new Var();
             var id = new IdentifierList();
             id.Add(new Identifier() {
@@ -197,7 +196,7 @@ namespace Chimera3 {
             }
             result.Add(id);
             Expect(TokenCategory.TWOPOINTS);
-            result.Add(Type());
+            result.Add(ChimeraType());
             Expect(TokenCategory.SEMICOL);
             return result;
         }
@@ -238,9 +237,9 @@ namespace Chimera3 {
             }
         }
 
-        public Node Type() {
+        public Node ChimeraType() {
             if(type.Contains(CurrentToken)){
-                return new Type() {
+                return new ChimeraType() {
                     AnchorToken = SimpleType()
                 };
             }else{
@@ -271,7 +270,7 @@ namespace Chimera3 {
                 AnchorToken = Expect(TokenCategory.LIST)
             };
             Expect(TokenCategory.OF);
-            result.Add(new Type() {
+            result.Add(new ChimeraType() {
                 AnchorToken = SimpleType()
             });
             return result;   
@@ -306,17 +305,23 @@ namespace Chimera3 {
             }
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             result.Add(param);
+            var type = new ProcType();
             if (CurrentToken == TokenCategory.TWOPOINTS) {
                 Expect(TokenCategory.TWOPOINTS);
-                result.Add(Type());
+                type.Add(ChimeraType());
             }
+            result.Add(type);
+            var con = new ProcConst();
             Expect(TokenCategory.SEMICOL);
             if (CurrentToken == TokenCategory.CONST) {
-                result.Add(Const());
+                con.Add(Const());
             }
+            result.Add(con);
+            var va = new ProcVar();
             if (CurrentToken == TokenCategory.VAR) {
-                result.Add(Var());
+                va.Add(Var());
             }
+            result.Add(va);
             var procStatement = new ProcStatement(){
                 AnchorToken = Expect(TokenCategory.BEGIN)
             };
@@ -331,17 +336,19 @@ namespace Chimera3 {
 
         public Node ParamDeclaration() {
             var result = new ParamDeclaration();
-            result.Add(new Identifier(){
+            var idList = new IdentifierList();
+            idList.Add(new Identifier(){
                 AnchorToken =  Expect(TokenCategory.IDENTIFIER)
             });
             while (CurrentToken != TokenCategory.TWOPOINTS) {
                 Expect(TokenCategory.COMA);
-                result.Add(new Identifier(){
+                idList.Add(new Identifier(){
                     AnchorToken =  Expect(TokenCategory.IDENTIFIER)
                 });
             }
+            result.Add(idList);
             Expect(TokenCategory.TWOPOINTS);
-            result.Add(Type());
+            result.Add(ChimeraType());
             Expect(TokenCategory.SEMICOL);
             return result;
         }
@@ -558,7 +565,7 @@ namespace Chimera3 {
                     AnchorToken = Expect(TokenCategory.EQUAL)
                 };
 
-                case TokenCategory.BOOLINEQ:
+                case TokenCategory.BOOLINEQ://also for IntIneq
                 return new BoolIneq(){
                     AnchorToken = Expect(TokenCategory.BOOLINEQ)
                 };

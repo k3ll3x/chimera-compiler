@@ -30,14 +30,14 @@ namespace Chimera3 {
     class DeclarationList: Node {}
 
     class VarDeclaration: Node {}
-    
-    class Var: Node {}
 
+    class Var: Node {}
     class ConstList: Node {}
     class ConstDeclaration: Node {}
     class ParamDeclaration: Node{}
 
     class ProcDeclaration: Node {}
+    class ProcType: Node {}
     class ProcStatement: Node {}
     class ProcVar: Node {}
     class ProcConst: Node {}
@@ -62,18 +62,16 @@ namespace Chimera3 {
     class CallExpression: Node {}
 
     class Identifier: Node {}
-    
     class IdentifierList: Node {}
 
     class IntLiteral: Node {}
-    
     class StrLiteral: Node {}
+    
     class List: Node {}
-    class Type: Node {}
+    class ChimeraType: Node {}
     class ListType: Node {}
 
     class True: Node {}
-
     class False: Node {}
 
     class Neg: Node {}
