@@ -37,6 +37,7 @@ namespace Chimera {
     class ParamDeclaration: Node{}
 
     class ProcDeclaration: Node {}
+    class ProcType: Node {}
     class ProcStatement: Node {}
     class ProcVar: Node {}
     class ProcConst: Node {}

@@ -305,10 +305,12 @@ namespace Chimera {
             }
             Expect(TokenCategory.PARENTHESIS_CLOSE);
             result.Add(param);
+            var type = new ProcType();
             if (CurrentToken == TokenCategory.TWOPOINTS) {
                 Expect(TokenCategory.TWOPOINTS);
-                result.Add(ChimeraType());
+                type.Add(ChimeraType());
             }
+            result.Add(type);
             Expect(TokenCategory.SEMICOL);
             if (CurrentToken == TokenCategory.CONST) {
                 result.Add(Const());

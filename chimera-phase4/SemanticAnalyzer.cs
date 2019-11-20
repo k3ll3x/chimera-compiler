@@ -40,25 +40,34 @@ namespace Chimera {
             get;
             private set;
         }
+
+        public IDictionary<string, SymbolTable> localSymbolTables = new SortedDictionary<string, SymbolTable>();
+        public IDictionary<string, SymbolTable> localConstTables = new SortedDictionary<string, SymbolTable>();
+        public IDictionary<string, SymbolTable> functionParamTables = new SortedDictionary<string, SymbolTable>();
         //TODO: Esto sí deberían ser varias tablas, pero cómo sabemos cual es cual?
-        public SymbolTable localSymbolTables {
+        public SymbolTable currentLocalSymbolTable {
             get;
             private set;
         }
-        public SymbolTable localConstTables {
+        public SymbolTable currentLocalConstTable {
+            get;
+            private set;
+        }
+         public SymbolTable currentFunctionParamTable {
             get;
             private set;
         }
         public int inLoop;
-        public bool localscope;
-        public bool flag;
+        public string localscope;
 
         //-----------------------------------------------------------
         static readonly IDictionary<TokenCategory, Type> typeMapper =
             new Dictionary<TokenCategory, Type>() {
                 { TokenCategory.BOOL, Type.BOOL },
                 { TokenCategory.INT, Type.INT },               
-                { TokenCategory.STR, Type.STR }
+                { TokenCategory.STR, Type.STR },
+                {TokenCategory.INT_LITERAL, Type.INT},
+                {TokenCategory.STR_LITERAL, Type.STR},
             };
 
         //-----------------------------------------------------------
@@ -73,11 +82,11 @@ namespace Chimera {
             globalSymbolTable = new SymbolTable();
             globalFunctionTable = new FunctionTable();
             globalConstTable = new SymbolTable();
-            localSymbolTables = new SymbolTable();
-            localConstTables = new SymbolTable();
+            currentLocalSymbolTable = new SymbolTable();
+            currentLocalConstTable = new SymbolTable();
+            currentFunctionParamTable = new SymbolTable();
             inLoop = 0;
-            localscope = false;
-            flag = true;
+            localscope = null;
 
             //global functions, chimera API with number of params
             globalFunctionTable["WrInt"] = 1;
@@ -117,6 +126,24 @@ namespace Chimera {
         public Type Visit(StatementList node) {
             VisitChildren(node);
             return Type.VOID;
+        }
+
+        public Type Visit(ProcDeclaration node) {
+            localscope = node[0].AnchorToken.Lexeme;
+            currentLocalConstTable = new SymbolTable();
+            currentLocalSymbolTable = new SymbolTable();
+            Visit((dynamic) node[1]);
+            globalSymbolTable[localscope] = Visit((dynamic) node[2]);
+
+            globalFunctionTable[localscope] = currentFunctionParamTable.Size();
+            localSymbolTables.Add(localscope, currentLocalSymbolTable);
+            localConstTables.Add(localscope, currentLocalConstTable);
+
+            return Type.VOID;
+        }
+
+        public Type Visit(ParamDeclaration node) {
+            
         }
 
         //types
@@ -164,8 +191,16 @@ namespace Chimera {
 
         public Type Visit(Assignment node){
             var variableName = node[0].AnchorToken.Lexeme;
+            if (localscope != null && currentLocalSymbolTable.Contains(variableName)) {
+                var expectedType = currentLocalSymbolTable[variableName];
 
-            if (globalSymbolTable.Contains(variableName)) {
+                if (expectedType != Visit((dynamic) node[1])) {
+                    throw new SemanticError(
+                        "Expecting type " + expectedType 
+                        + " in assignment statement",
+                        node.AnchorToken);
+                }
+            } else if (globalSymbolTable.Contains(variableName)) {
 
                 var expectedType = globalSymbolTable[variableName];
 
@@ -258,11 +293,11 @@ namespace Chimera {
             foreach(var n in node[0]){
                 TokenCategory t = n.AnchorToken.Category;
                 var varName = n.AnchorToken.Lexeme;
-                if(localscope){
-                    if(localSymbolTables.Contains(varName)){
+                if(localscope != null){
+                    if(currentLocalSymbolTable.Contains(varName)){
                         throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
                     }
-                    localSymbolTables[varName] = typeMapper[t];
+                    currentLocalSymbolTable[varName] = typeMapper[t];
                 }else{
                     if (globalSymbolTable.Contains(varName)){
                         throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
@@ -284,11 +319,11 @@ namespace Chimera {
 
         public Type Visit(ConstDeclaration node) {
             var varName = node[0].AnchorToken.Lexeme;
-                if (localscope) {
-                    if (localConstTables.Contains(varName)) {
+                if (localscope != null) {
+                    if (currentLocalConstTable.Contains(varName)) {
                         throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
                     }
-                    localSymbolTables[varName] = typeMapper[Visit((dynamic) node[1])];
+                    currentLocalConstTable[varName] = typeMapper[Visit((dynamic) node[1])];
                 } else {
                     if (globalConstTable.Contains(varName)) {
                         throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);

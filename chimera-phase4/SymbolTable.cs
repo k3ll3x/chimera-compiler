@@ -69,5 +69,9 @@ namespace Chimera {
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
             throw new NotImplementedException();
         }
+
+        public int Size() {
+            return data.Count;
+        }
     }
 }
