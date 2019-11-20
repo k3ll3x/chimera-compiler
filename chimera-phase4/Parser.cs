@@ -311,13 +311,17 @@ namespace Chimera {
                 type.Add(ChimeraType());
             }
             result.Add(type);
+            var con = new ProcConst();
             Expect(TokenCategory.SEMICOL);
             if (CurrentToken == TokenCategory.CONST) {
-                result.Add(Const());
+                con.Add(Const());
             }
+            result.Add(con);
+            var va = new ProcVar();
             if (CurrentToken == TokenCategory.VAR) {
-                result.Add(Var());
+                va.Add(Var());
             }
+            result.Add(va);
             var procStatement = new ProcStatement(){
                 AnchorToken = Expect(TokenCategory.BEGIN)
             };
@@ -332,15 +336,17 @@ namespace Chimera {
 
         public Node ParamDeclaration() {
             var result = new ParamDeclaration();
-            result.Add(new Identifier(){
+            var idList = new IdentifierList();
+            idList.Add(new Identifier(){
                 AnchorToken =  Expect(TokenCategory.IDENTIFIER)
             });
             while (CurrentToken != TokenCategory.TWOPOINTS) {
                 Expect(TokenCategory.COMA);
-                result.Add(new Identifier(){
+                idList.Add(new Identifier(){
                     AnchorToken =  Expect(TokenCategory.IDENTIFIER)
                 });
             }
+            result.Add(idList);
             Expect(TokenCategory.TWOPOINTS);
             result.Add(ChimeraType());
             Expect(TokenCategory.SEMICOL);

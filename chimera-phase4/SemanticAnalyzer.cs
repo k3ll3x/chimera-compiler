@@ -134,16 +134,54 @@ namespace Chimera {
             currentLocalSymbolTable = new SymbolTable();
             Visit((dynamic) node[1]);
             globalSymbolTable[localscope] = Visit((dynamic) node[2]);
-
+            Visit((dynamic) node[3]);
+            Visit((dynamic) node[4]);
+            Visit((dynamic) node[5]);
             globalFunctionTable[localscope] = currentFunctionParamTable.Size();
             localSymbolTables.Add(localscope, currentLocalSymbolTable);
             localConstTables.Add(localscope, currentLocalConstTable);
+            localscope = null;
+            return Type.VOID;
+        }
+        public Type Visit(ProcParam node) {
+            VisitChildren(node);
+            return Type.VOID;
+        }
+        public Type Visit(ProcType node) {
+            foreach(var n in node) {
+                return Visit((dynamic) n);
+            }
+            return Type.VOID;
+        }
+        public Type Visit(ProcConst node) {
+            VisitChildren(node);
+            return Type.VOID;
+        }
 
+        public Type Visit(ProcVar node) {
+            VisitChildren(node);
+            return Type.VOID;
+        }
+
+        public Type Visit(ProcStatement node) {
+            VisitChildren(node);
             return Type.VOID;
         }
 
         public Type Visit(ParamDeclaration node) {
-            
+           var idList = node[0];
+           var type = node[1].AnchorToken.Category;
+           foreach( var n in idList) {
+               var name = n.AnchorToken.Lexeme;
+               if (currentFunctionParamTable.Contains(name)) {
+                    throw new SemanticError(
+                    "Parameter " + name 
+                    + " already exists in function "+localscope,                   
+                    n.AnchorToken);
+               }
+               currentFunctionParamTable[name] = typeMapper[type];
+           }
+           return Type.VOID;
         }
 
         //types
@@ -243,7 +281,6 @@ namespace Chimera {
         }
 
         public Type Visit(ChimeraType node){
-            Console.WriteLine(typeMapper[node.AnchorToken.Category]);
             return typeMapper[node.AnchorToken.Category];
             //VisitChildren(node);
             //return Type.VOID;
@@ -336,9 +373,23 @@ namespace Chimera {
             return Type.VOID;
         }
 
-        public void Visit(Identifier node){
+    //Esto no se encarga del call...
+        public Type Visit(Identifier node){
             var varName = node.AnchorToken.Lexeme;
-            if(!globalSymbolTable.Contains(varName)){
+            if (localscope != null) {
+                if (currentFunctionParamTable.Contains(varName)) {
+                    return currentFunctionParamTable[varName];
+                } else if (currentLocalConstTable.Contains(varName)) {
+                    return currentLocalConstTable[varName];
+                } else if (currentLocalSymbolTable.Contains(varName)) {
+                    return currentLocalSymbolTable[varName];
+                }
+            }
+            if (globalConstTable.Contains(varName)) {
+                return globalConstTable[varName];
+            } else if (globalSymbolTable.Contains(varName)){
+                return globalSymbolTable[varName];
+            } else {
                 throw new SemanticError("No defined variable: " + varName, node.AnchorToken);
             }
         }
