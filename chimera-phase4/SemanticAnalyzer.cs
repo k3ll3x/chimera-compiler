@@ -79,14 +79,22 @@ namespace Chimera {
         }
 
         //Helper functions
+        public string printDictionary(IDictionary<string, SymbolTable> dic){
+            string text = "";
+            foreach(KeyValuePair<string, SymbolTable> i in dic){
+                text += i.Key + ":\t" + i.Value +"\n";
+            }
+            return text;
+        }
+
         public void printTables(){
             string[] tables = {
                 globalSymbolTable.ToString(),
                 globalFunctionTable.ToString(),
                 globalConstTable.ToString(),
-                localSymbolTables.ToString(),
-                localConstTables.ToString(),
-                functionParamTables.ToString(),
+                printDictionary(localSymbolTables),
+                printDictionary(localConstTables),
+                printDictionary(functionParamTables),
                 currentLocalSymbolTable.ToString(),
                 currentLocalConstTable.ToString(),
                 currentFunctionParamTable.ToString()                
@@ -104,8 +112,8 @@ namespace Chimera {
             };
             var counter = 0;
             foreach(var i in tables){
-                counter++;
                 Console.WriteLine("Table " + counter + ": " + tableNames[counter]);
+                counter++;
                 Console.WriteLine(i);
             }
         }
@@ -166,6 +174,7 @@ namespace Chimera {
             localscope = node[0].AnchorToken.Lexeme;
             currentLocalConstTable = new SymbolTable();
             currentLocalSymbolTable = new SymbolTable();
+            currentFunctionParamTable = new SymbolTable();
             Visit((dynamic) node[1]);
             globalSymbolTable[localscope] = Visit((dynamic) node[2]);
             Visit((dynamic) node[3]);
@@ -384,10 +393,9 @@ namespace Chimera {
 
         public Type Visit(ConstDeclaration node) {
             printTables();
-            if(node.AnchorToken.Category != TokenCategory.ASSIGN){
+            if(node.AnchorToken.Category == TokenCategory.ASSIGN){
                 var varName = node[0].AnchorToken.Lexeme;
                 var type = node[1].AnchorToken.Category;
-                Console.WriteLine(node[1].ToString());
                 if (localscope != null) {
                     if (currentLocalConstTable.Contains(varName)) {
                         throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
