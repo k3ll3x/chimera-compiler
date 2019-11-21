@@ -293,8 +293,11 @@ namespace Chimera {
         }
 
         public Type Visit(Return node){
-            Type t = Visit((dynamic) node[0]);
-            return Type.VOID;
+            Type t = Visit((dynamic) node[0]) || Type.VOID;
+            if (t != globalSymbolTable[localscope]) {
+                throw new SemanticError("Expected "+globalSymbolTable[localscope]+" as return but got instead "+t , node.AnchorToken);
+            }
+            return t;
         }
 
         public Type Visit(Exit node){
