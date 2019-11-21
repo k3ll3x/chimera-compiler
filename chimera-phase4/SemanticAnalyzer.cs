@@ -32,6 +32,10 @@ namespace Chimera {
             get;
             private set;
         }
+        public SymbolTable globalFunctionTableTypes {
+            get;
+            private set;
+        }
         public FunctionTable globalFunctionTable {
             get;
             private set;
@@ -123,6 +127,7 @@ namespace Chimera {
             Table = new SymbolTable();
             globalSymbolTable = new SymbolTable();
             globalFunctionTable = new FunctionTable();
+            globalFunctionTableTypes = new SymbolTable();
             globalConstTable = new SymbolTable();
             currentLocalSymbolTable = new SymbolTable();
             currentLocalConstTable = new SymbolTable();
@@ -149,6 +154,26 @@ namespace Chimera {
             globalFunctionTable["NewLstBool"] = 1;
             globalFunctionTable["IntToStr"] = 1;
             globalFunctionTable["StrToInt"] = 1;
+
+            //chimera API, functions with their return type
+            globalFunctionTableTypes["WrInt"] = Type.VOID;
+            globalFunctionTableTypes["WrStr"] = Type.VOID;
+            globalFunctionTableTypes["WrBool"] = Type.VOID;
+            globalFunctionTableTypes["WrLn"] = Type.VOID;
+            globalFunctionTableTypes["RdInt"] = Type.INT;//Reads from the standard input an integer and returns its value. Does not return until a valid integer has been read.
+            globalFunctionTableTypes["RdStr"] = Type.STR;//Reads from the standard input a string (until the end of line) and returns its value.
+            globalFunctionTableTypes["AtStr"] = Type.STR;//Returns as a new string the character contained at index i of string s. First character is at index 0. Throws an exception if index i is out of bounds.
+            globalFunctionTableTypes["LenStr"] = Type.INT;//Returns the number of characters contained in string s. 
+            globalFunctionTableTypes["CmpStr"] = Type.INT;//Compares lexicographically the contents of two strings. Returns zero if s1 is equal to s2, a negative number if s1 is less than s2, or a positive number if s1 is greater than s2.
+            globalFunctionTableTypes["CatStr"] = Type.STR;//Returns a new string resulting from the concatenation of s1 and s2. 
+            globalFunctionTableTypes["LenLstInt"] = Type.INT;//Returns the number of elements contained in loi.
+            globalFunctionTableTypes["LenLstStr"] = Type.INT;//Returns the number of elements contained in los.
+            globalFunctionTableTypes["LenLstBool"] = Type.INT;//Returns the number of elements contained in lob.
+            globalFunctionTableTypes["NewLstInt"] = Type.INT;//Creates and returns a new list of integers of the given size. All list elements are initialized with zero.
+            globalFunctionTableTypes["NewLstStr"] = Type.STR;//Creates and returns a new list of strings of the given size. All list elements are initialized with "" (empty string).
+            globalFunctionTableTypes["NewLstBool"] = Type.BOOL;//Creates and returns a new list of booleans of the given size. All list elements are initialized with false.
+            globalFunctionTableTypes["IntToStr"] = Type.STR;//Returns the result of converting i into a string.
+            globalFunctionTableTypes["StrToInt"] = Type.INT;//Returns the result of converting s into an integer. Throws an exception if the conversion cannot be carried out. 
         }
         public Type Visit(Program node) {
             Visit((dynamic) node[0]);
@@ -214,8 +239,14 @@ namespace Chimera {
         public Type Visit(CallStatement node){
             //check if function exists in tables
             var name = node.AnchorToken.Lexeme;
-            if(globalFunctionTable.Contains(node.AnchorToken.Lexeme)){
+            if(globalFunctionTable.Contains(name)){
                 //call function
+                if(globalFunctionTableTypes.Contains(name)){
+                    return globalFunctionTableTypes[name];
+                }
+                if(globalSymbolTable.Contains(name)){
+                    return globalSymbolTable[name];
+                }
                 return Type.VOID;
             }else{
                 throw new SemanticError("Function/Procedure " + name + "not declared!", node.AnchorToken);
@@ -223,19 +254,24 @@ namespace Chimera {
         }
 
         public Type Visit(ParamDeclaration node) {
-           var idList = node[0];
-           var type = node[1].AnchorToken.Category;
-           foreach( var n in idList) {
-               var name = n.AnchorToken.Lexeme;
-               if (currentFunctionParamTable.Contains(name)) {
+            var idList = node[0];
+            var type = node[1].AnchorToken.Category;
+            if(type != TokenCategory.LIST){//not list
+                type = node[1].AnchorToken.Category;
+            }else{
+                type = node[1][0].AnchorToken.Category;
+            }
+            foreach( var n in idList) {
+                var name = n.AnchorToken.Lexeme;
+                if (currentFunctionParamTable.Contains(name)) {
                     throw new SemanticError(
                     "Parameter " + name 
                     + " already exists in function "+localscope,                   
                     n.AnchorToken);
-               }
-               currentFunctionParamTable[name] = typeMapper[type];
-           }
-           return Type.VOID;
+                }
+                currentFunctionParamTable[name] = typeMapper[type];
+            }
+            return Type.VOID;
         }
 
         //types
@@ -283,26 +319,26 @@ namespace Chimera {
 
         public Type Visit(Assignment node){
             var variableName = node[0].AnchorToken.Lexeme;
+            var type = Visit((dynamic) node[1]);
+            /*if(type = Type.VOID){//List
+                type = Visit((dynamic) node[1][0]);
+            }*/
             if (localscope != null && currentLocalSymbolTable.Contains(variableName)) {
                 var expectedType = currentLocalSymbolTable[variableName];
-
-                if (expectedType != Visit((dynamic) node[1])) {
+                if (expectedType != type) {
                     throw new SemanticError(
                         "Expecting type " + expectedType 
                         + " in assignment statement",
                         node.AnchorToken);
                 }
             } else if (globalSymbolTable.Contains(variableName)) {
-
                 var expectedType = globalSymbolTable[variableName];
-
-                if (expectedType != Visit((dynamic) node[1])) {
+                if (expectedType != type) {
                     throw new SemanticError(
                         "Expecting type " + expectedType 
                         + " in assignment statement",
                         node.AnchorToken);
                 }
-
             } else {
                 throw new SemanticError(
                     "Undeclared variable: " + variableName,
@@ -347,7 +383,7 @@ namespace Chimera {
         }
 
         public Type Visit(Return node){
-            Type t = Visit((dynamic) node[0]) || Type.VOID;
+            Type t = Visit((dynamic) node[0]);// || Type.VOID;
             if (t != globalSymbolTable[localscope]) {
                 throw new SemanticError("Expected "+globalSymbolTable[localscope]+" as return but got instead "+t , node.AnchorToken);
             }
@@ -385,18 +421,23 @@ namespace Chimera {
 
         public Type Visit(Var node) {
             foreach(var n in node[0]){
-                TokenCategory t = node[1].AnchorToken.Category;
+                var type = node[1].AnchorToken.Category;;
+                if(type != TokenCategory.LIST){//not list
+                    type = node[1].AnchorToken.Category;
+                }else{
+                    type = node[1][0].AnchorToken.Category;
+                }
                 var varName = n.AnchorToken.Lexeme;
                 if(localscope != null){
                     if(currentLocalSymbolTable.Contains(varName)){
                         throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
                     }
-                    currentLocalSymbolTable[varName] = typeMapper[t];
+                    currentLocalSymbolTable[varName] = typeMapper[type];
                 }else{
                     if (globalSymbolTable.Contains(varName)){
                         throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
                     }
-                    globalSymbolTable[varName] = typeMapper[t];
+                    globalSymbolTable[varName] = typeMapper[type];
                 }
             }
             return Type.VOID;
