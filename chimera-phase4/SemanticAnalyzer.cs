@@ -68,12 +68,46 @@ namespace Chimera {
                 { TokenCategory.STR, Type.STR },
                 {TokenCategory.INT_LITERAL, Type.INT},
                 {TokenCategory.STR_LITERAL, Type.STR},
+                {TokenCategory.TRUE, Type.BOOL},
+                {TokenCategory.FALSE, Type.BOOL},
             };
 
         //-----------------------------------------------------------
         public SymbolTable Table {
             get;
             private set;
+        }
+
+        //Helper functions
+        public void printTables(){
+            string[] tables = {
+                globalSymbolTable.ToString(),
+                globalFunctionTable.ToString(),
+                globalConstTable.ToString(),
+                localSymbolTables.ToString(),
+                localConstTables.ToString(),
+                functionParamTables.ToString(),
+                currentLocalSymbolTable.ToString(),
+                currentLocalConstTable.ToString(),
+                currentFunctionParamTable.ToString()                
+            };
+            string[] tableNames = {
+                "globalSymbolTable",
+                "globalFunctionTable",
+                "globalConstTable",
+                "localSymbolTables",
+                "localConstTables",
+                "functionParamTables",
+                "currentLocalSymbolTable",
+                "currentLocalConstTable",
+                "currentFunctionParamTable"
+            };
+            var counter = 0;
+            foreach(var i in tables){
+                counter++;
+                Console.WriteLine("Table " + counter + ": " + tableNames[counter]);
+                Console.WriteLine(i);
+            }
         }
 
         //-----------------------------------------------------------
@@ -331,7 +365,7 @@ namespace Chimera {
 
         public Type Visit(Var node) {
             foreach(var n in node[0]){
-                TokenCategory t = n.AnchorToken.Category;
+                TokenCategory t = node[1].AnchorToken.Category;
                 var varName = n.AnchorToken.Lexeme;
                 if(localscope != null){
                     if(currentLocalSymbolTable.Contains(varName)){
@@ -341,38 +375,35 @@ namespace Chimera {
                 }else{
                     if (globalSymbolTable.Contains(varName)){
                         throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
-                    } else{
-                        Type something = new Type();
-                        foreach (var ni in node) {
-                            something = Visit((dynamic) ni);
-                        }
-                        /*if(something == Type.INT){
-                            Console.WriteLine("Satanás");
-                        }*/
-                        globalSymbolTable[varName] = something;//typeMapper[t];
                     }
+                    globalSymbolTable[varName] = typeMapper[t];
                 }
-                //Console.WriteLine(globalSymbolTable.ToString());
             }
             return Type.VOID;
         }
 
         public Type Visit(ConstDeclaration node) {
-            var varName = node[0].AnchorToken.Lexeme;
+            printTables();
+            if(node.AnchorToken.Category != TokenCategory.ASSIGN){
+                var varName = node[0].AnchorToken.Lexeme;
+                var type = node[1].AnchorToken.Category;
+                Console.WriteLine(node[1].ToString());
                 if (localscope != null) {
                     if (currentLocalConstTable.Contains(varName)) {
                         throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
                     }
-                    currentLocalConstTable[varName] = typeMapper[Visit((dynamic) node[1])];
+                    currentLocalConstTable[varName] = typeMapper[type];
                 } else {
                     if (globalConstTable.Contains(varName)) {
                         throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
                     } else if (globalSymbolTable.Contains(varName)) {
                         throw new SemanticError("Constant and variable cannot have the same name: " + varName, node[0].AnchorToken);
                     } else  {
-                        globalSymbolTable[varName] = typeMapper[Visit((dynamic) node[1])];
+                        globalSymbolTable[varName] = typeMapper[type];
                     }
                 }
+            }
+            VisitChildren(node);
             return Type.VOID;
         }
 
