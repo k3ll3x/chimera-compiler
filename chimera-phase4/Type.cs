@@ -30,6 +30,9 @@ namespace Chimera {
         BOOL,
         STR,
         INT,         
-        VOID
+        VOID,
+        LIST_STR,
+        LIST_INT,
+        LIST_BOOL,
     }
 }

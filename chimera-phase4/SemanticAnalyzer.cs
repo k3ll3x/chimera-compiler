@@ -181,8 +181,9 @@ namespace Chimera {
             return Type.VOID;
         }
 
-        public void Visit(Expression node){
+        public Type Visit(Expression node){
             VisitChildren(node);
+            return Type.VOID;
         }
 
         public Type Visit(DeclarationList node) {
@@ -255,12 +256,7 @@ namespace Chimera {
 
         public Type Visit(ParamDeclaration node) {
             var idList = node[0];
-            var type = node[1].AnchorToken.Category;
-            if(type != TokenCategory.LIST){//not list
-                type = node[1].AnchorToken.Category;
-            }else{
-                type = node[1][0].AnchorToken.Category;
-            }
+            var type = Visit((dynamic)node[1]);
             foreach( var n in idList) {
                 var name = n.AnchorToken.Lexeme;
                 if (currentFunctionParamTable.Contains(name)) {
@@ -269,7 +265,7 @@ namespace Chimera {
                     + " already exists in function "+localscope,                   
                     n.AnchorToken);
                 }
-                currentFunctionParamTable[name] = typeMapper[type];
+                currentFunctionParamTable[name] = type;
             }
             return Type.VOID;
         }
@@ -320,15 +316,12 @@ namespace Chimera {
         public Type Visit(Assignment node){
             var variableName = node[0].AnchorToken.Lexeme;
             var type = Visit((dynamic) node[1]);
-            /*if(type = Type.VOID){//List
-                type = Visit((dynamic) node[1][0]);
-            }*/
             if (localscope != null && currentLocalSymbolTable.Contains(variableName)) {
                 var expectedType = currentLocalSymbolTable[variableName];
                 if (expectedType != type) {
                     throw new SemanticError(
                         "Expecting type " + expectedType 
-                        + " in assignment statement",
+                        + " in assignment statement but got "+ type,
                         node.AnchorToken);
                 }
             } else if (globalSymbolTable.Contains(variableName)) {
@@ -365,9 +358,24 @@ namespace Chimera {
             return Type.VOID;
         }
 
-        public Type Visit(List node){
-            VisitChildren(node);
-            return Type.VOID;
+        public Type Visit(List node) {
+            Type expectedType = Visit((dynamic) node[0]);
+            foreach( var n  in node) {
+                Type type = Visit((dynamic) n);
+                if (type != expectedType) {
+                    throw new SemanticError("Expected "+expectedType+" as return but got instead "+ type, node.AnchorToken);
+                }
+            }
+            switch (expectedType) {
+                case Type.INT:
+                    return Type.LIST_INT;
+                case Type.BOOL:
+                    return Type.LIST_BOOL;
+                case Type.STR:
+                    return Type.LIST_STR;
+                default:
+                    return Type.VOID;
+            };
         }
 
         public Type Visit(ChimeraType node){
@@ -377,9 +385,20 @@ namespace Chimera {
         }
 
         public Type Visit(ListType node){
-            //Console.WriteLine(node.ToStringTree());
-            VisitChildren(node);
-            return Type.VOID;
+            Type type = Type.VOID;
+            if (node[0] is ChimeraType) {
+                type = Visit((dynamic) node[0]);
+            } 
+            switch (type) {
+                case Type.INT:
+                    return Type.LIST_INT;
+                case Type.BOOL:
+                    return Type.LIST_BOOL;
+                case Type.STR:
+                    return Type.LIST_STR;
+                default:
+                    return Type.VOID;
+            }
         }
 
         public Type Visit(Return node){
@@ -421,23 +440,18 @@ namespace Chimera {
 
         public Type Visit(Var node) {
             foreach(var n in node[0]){
-                var type = node[1].AnchorToken.Category;;
-                if(type != TokenCategory.LIST){//not list
-                    type = node[1].AnchorToken.Category;
-                }else{
-                    type = node[1][0].AnchorToken.Category;
-                }
+                var type = Visit((dynamic) node[1]);
                 var varName = n.AnchorToken.Lexeme;
                 if(localscope != null){
                     if(currentLocalSymbolTable.Contains(varName)){
                         throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
                     }
-                    currentLocalSymbolTable[varName] = typeMapper[type];
+                    currentLocalSymbolTable[varName] = type;
                 }else{
                     if (globalSymbolTable.Contains(varName)){
                         throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
                     }
-                    globalSymbolTable[varName] = typeMapper[type];
+                    globalSymbolTable[varName] = type;
                 }
             }
             return Type.VOID;
@@ -446,19 +460,19 @@ namespace Chimera {
         public Type Visit(ConstDeclaration node) {
             if(node.AnchorToken.Category == TokenCategory.ASSIGN){
                 var varName = node[0].AnchorToken.Lexeme;
-                var type = node[1].AnchorToken.Category;
+                var type = Visit((dynamic) node[1]);
                 if (localscope != null) {
                     if (currentLocalConstTable.Contains(varName)) {
                         throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
                     }
-                    currentLocalConstTable[varName] = typeMapper[type];
+                    currentLocalConstTable[varName] = type;
                 } else {
                     if (globalConstTable.Contains(varName)) {
                         throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
                     } else if (globalSymbolTable.Contains(varName)) {
                         throw new SemanticError("Constant and variable cannot have the same name: " + varName, node[0].AnchorToken);
                     } else  {
-                        globalSymbolTable[varName] = typeMapper[type];
+                        globalSymbolTable[varName] = type;
                     }
                 }
             }
@@ -469,22 +483,49 @@ namespace Chimera {
     //Esto no se encarga del call...
         public Type Visit(Identifier node){
             var varName = node.AnchorToken.Lexeme;
+            Type type = Type.VOID;
+            var found = false;
             if (localscope != null) {
                 if (currentFunctionParamTable.Contains(varName)) {
-                    return currentFunctionParamTable[varName];
+                    type = currentFunctionParamTable[varName];
+                    found = true;
                 } else if (currentLocalConstTable.Contains(varName)) {
-                    return currentLocalConstTable[varName];
+                    type =  currentLocalConstTable[varName];
+                    found = true;
                 } else if (currentLocalSymbolTable.Contains(varName)) {
-                    return currentLocalSymbolTable[varName];
+                    type =  currentLocalSymbolTable[varName];
+                    found = true;
                 }
             }
-            if (globalConstTable.Contains(varName)) {
-                return globalConstTable[varName];
-            } else if (globalSymbolTable.Contains(varName)){
-                return globalSymbolTable[varName];
-            } else {
-                throw new SemanticError("No defined variable: " + varName, node.AnchorToken);
+            if (!found) {
+                if (globalConstTable.Contains(varName)) {
+                    type =  globalConstTable[varName];
+                } else if (globalSymbolTable.Contains(varName)){
+                    type =  globalSymbolTable[varName];
+                } else {
+                    throw new SemanticError("No defined variable: " + varName, node.AnchorToken);
+                }
             }
+            switch (type) {
+                case Type.LIST_INT:
+                    foreach (var n in node) {
+                        type = Type.INT;
+                    }
+                    return type;
+                case Type.LIST_STR:
+                     foreach (var n in node) {
+                        type = Type.STR;
+                    }
+                    return type;
+                case Type.LIST_BOOL:
+                     foreach (var n in node) {
+                        type = Type.BOOL;
+                    }
+                    return type;
+                default:
+                    return type;
+            }
+           
         }
 
         //operators
