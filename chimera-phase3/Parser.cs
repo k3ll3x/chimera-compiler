@@ -444,7 +444,7 @@ namespace Chimera3 {
         }
 
         public Node Exit(){
-            var result = new ConstDeclaration {
+            var result = new Exit {
                AnchorToken = Expect(TokenCategory.EXIT)
             };
             Expect(TokenCategory.SEMICOL);
