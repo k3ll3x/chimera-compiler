@@ -377,7 +377,7 @@ namespace Chimera {
         }
 
         public Type Visit(ListType node){
-            Console.WriteLine(node.ToStringTree());
+            //Console.WriteLine(node.ToStringTree());
             VisitChildren(node);
             return Type.VOID;
         }
