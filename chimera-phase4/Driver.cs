@@ -76,21 +76,23 @@ namespace Chimera {
 
             try {            
                 var inputPath = args[0];                
+                Console.WriteLine("Filename: " + inputPath);
                 var input = File.ReadAllText(inputPath);
                 var parser = new Parser(new Scanner(input).Start().GetEnumerator());
                 var program = parser.Program();
-                Console.WriteLine(program.ToStringTree());
+                //Console.WriteLine(program.ToStringTree());
                 Console.WriteLine("Syntax OK.");
                 //semantic
                 var semantic = new SemanticAnalyzer();
                 semantic.Visit((dynamic) program);
                 Console.WriteLine("Semantics OK.");
                 Console.WriteLine();
-                Console.WriteLine("Symbol Table");
-                Console.WriteLine("============");
-                foreach (var entry in semantic.Table) {
+                /*Console.WriteLine("Symbol Table");
+                Console.WriteLine("============");*/
+                semantic.printTables();
+                /*foreach (var entry in semantic.Table) {
                     Console.WriteLine(entry);                        
-                }
+                }*/
             } catch (Exception e) {
 
                 if (e is FileNotFoundException || e is SyntaxError || e is SemanticError) {

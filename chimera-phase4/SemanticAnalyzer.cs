@@ -179,7 +179,7 @@ namespace Chimera {
             globalSymbolTable[localscope] = Visit((dynamic) node[2]);
             Visit((dynamic) node[3]);
             Visit((dynamic) node[4]);
-            Visit((dynamic) node[5]);
+            Visit((dynamic) node[5]);//ProcStatement
             globalFunctionTable[localscope] = currentFunctionParamTable.Size();
             localSymbolTables.Add(localscope, currentLocalSymbolTable);
             localConstTables.Add(localscope, currentLocalConstTable);
@@ -209,6 +209,17 @@ namespace Chimera {
         public Type Visit(ProcStatement node) {
             VisitChildren(node);
             return Type.VOID;
+        }
+
+        public Type Visit(CallStatement node){
+            //check if function exists in tables
+            var name = node.AnchorToken.Lexeme;
+            if(globalFunctionTable.Contains(node.AnchorToken.Lexeme)){
+                //call function
+                return Type.VOID;
+            }else{
+                throw new SemanticError("Function/Procedure " + name + "not declared!", node.AnchorToken);
+            }
         }
 
         public Type Visit(ParamDeclaration node) {
@@ -392,7 +403,6 @@ namespace Chimera {
         }
 
         public Type Visit(ConstDeclaration node) {
-            printTables();
             if(node.AnchorToken.Category == TokenCategory.ASSIGN){
                 var varName = node[0].AnchorToken.Lexeme;
                 var type = node[1].AnchorToken.Category;
