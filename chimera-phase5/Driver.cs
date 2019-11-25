@@ -69,14 +69,14 @@ namespace Chimera {
             PrintReleaseIncludes();
             Console.WriteLine();
 
-            if (args.Length != 1) {
-                Console.Error.WriteLine(
-                    "Please specify the name of the input file.");
+            if (args.Length != 2) {
+                Console.Error.WriteLine("Please specify the name of the input and output files.");
                 Environment.Exit(1);
             }
 
             try {            
-                var inputPath = args[0];                
+                var inputPath = args[0];
+                var outputPath = args[1];
                 Console.WriteLine("Filename: " + inputPath);
                 var input = File.ReadAllText(inputPath);
                 var parser = new Parser(new Scanner(input).Start().GetEnumerator());
@@ -92,7 +92,10 @@ namespace Chimera {
                 foreach(var i in tables){
                     Console.WriteLine(i);
                 }
-                //var codeGenerator = new CLIGenerator(tables)
+                //var codeGenerator = new CLIGenerator(tables);
+                /*File.WriteAllText(outputPath, codeGenerator.Visit((dynamic) program));
+                Console.WriteLine("Generated CIL code to '" + outputPath + "'.");
+                Console.WriteLine();*/
                 //semantic.printTables();
             } catch (Exception e) {
 
