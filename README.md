@@ -9,3 +9,4 @@ chimera-phase3 / AST
 
 chimera-phase4 / Semantic Analyzer
 
+chimera-phase5 / CLI code generation
