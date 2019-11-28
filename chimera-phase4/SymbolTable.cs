@@ -26,7 +26,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 
-namespace Chimera {
+namespace Chimera4 {
 
     public class SymbolTable: IEnumerable<KeyValuePair<string, Type>>{
 

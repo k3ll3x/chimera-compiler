@@ -25,7 +25,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Chimera {
+namespace Chimera4 {
 
     class SemanticAnalyzer {
         public SymbolTable globalSymbolTable {

@@ -8,7 +8,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 
-namespace Chimera {
+namespace Chimera4 {
     public class FunctionTable: IEnumerable<KeyValuePair<string, int>> {
         IDictionary<string, int> data = new SortedDictionary<string, int>();
 

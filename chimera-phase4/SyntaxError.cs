@@ -26,7 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Chimera {
+namespace Chimera4 {
 
     class SyntaxError: Exception {
 
