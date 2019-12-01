@@ -45,6 +45,8 @@ namespace Chimera {
 
         int labelCounter = 0;
         bool insideFunction = false;
+        string endLoop = "";
+        string ifLabel = "";
 
         //-----------------------------------------------------------
         string GenerateLabel() {
@@ -200,25 +202,29 @@ namespace Chimera {
         }
 
         public string Visit(If node){
-           if (Visit((dynamic) node[0]) != Type.BOOL) {
-                throw new SemanticError(
-                    "Expecting type " + Type.BOOL 
-                    + " in conditional statement",                   
-                    node.AnchorToken);
-            }
-            VisitChildren(node[1]);
-            return Type.VOID;
+            var elseBody = GenerateLabel();
+            var prevEndIf = ifLabel;
+            ifLabel = GenerateLabel();
+            var result = Visit(((dynamic) node[0]))
+            + "ldc.i4.1\n"
+            + "bne.un '" + elseBody + "'\n")
+            + Visit(((dynamic) node[1]))
+            + "br " + ifLabel + "\n"
+            + "'" + elseBody + "':\n"
+            + Visit(((dynamic) node[2]))
+            + "'" + ifLabel + "':\n";
+
+            ifLabel = prevEndIf;
+            return result;
         }
 
         public string Visit(ElseIf node){
-           if (Visit((dynamic) node[0]) != Type.BOOL) {
-                throw new SemanticError(
-                    "Expecting type " + Type.BOOL 
-                    + " in conditional statement",                   
-                    node.AnchorToken);
-            }
-            VisitChildren(node[1]);
-            return Type.VOID;
+            var label = GenerateLabel();
+            return Visit(((dynamic) node[0]))
+            + "ldc.i4.1\n"
+            + "bne.un '" + label + "'\n"
+            + Visit(((dynamic) node[1]))
+            + "'" + label + "':\n";
         }
 
         public string Visit(Else node){
@@ -240,10 +246,14 @@ namespace Chimera {
         }
 
         public string Visit(Loop node){
-            inLoop++;
-            VisitChildren(node);
-            inLoop--;
-            return Type.VOID;
+            var startLoop = GenerateLabel();
+            var currentEndLoop = GenerateLabel();
+            endLoop = currentEndLoop;
+            return = "\t"
+            + startLoop + ":\n"
+            + VisitChildren(node) + "\n"
+            + "br " + startLoop;
+            + currentEndLoop + "\n";
         }
 
         public string Visit(For node){
@@ -303,11 +313,7 @@ namespace Chimera {
 
         public string Visit(Exit node){
             VisitChildren(node);
-            if (inLoop > 0) {
-                return Type.VOID;
-            } else {
-                throw new SemanticError("Unexpected {0} outside loop" , node.AnchorToken);
-            }
+            return "brfalse " + endLoop + "\n";
         }
 
         public string Visit(IntLiteral node){
@@ -322,8 +328,7 @@ namespace Chimera {
         }
 
          public string Visit(StrLiteral node){
-            var str = node.AnchorToken.Lexeme;
-            return Type.STR;
+            return "ldstr " + node.AnchorToken.Lexeme + "\n";
         }
 
         public string Visit(VarDeclaration node){
