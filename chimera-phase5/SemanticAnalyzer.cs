@@ -474,30 +474,32 @@ namespace Chimera {
             return Type.VOID;
         }
 
-        public Type Visit(ConstDeclaration node) {
-            if(node.AnchorToken.Category == TokenCategory.ASSIGN){
-                var varName = node[0].AnchorToken.Lexeme;
-                var type = Visit((dynamic) node[1]);
-                if (localscope != null) {
-                    if (currentLocalConstTable.Contains(varName)) {
-                        throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
-                    } else if (currentLocalSymbolTable.Contains(varName)) {
-                        throw new SemanticError("Constant and variable cannot have the same name: " + varName, node[0].AnchorToken);
-                    }
-                    currentLocalConstTable[varName] = type;
-                } else {
-                    if (globalConstTable.Contains(varName)) {
-                        throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
-                    } else if (globalSymbolTable.Contains(varName)) {
-                        throw new SemanticError("Constant and variable cannot have the same name: " + varName, node[0].AnchorToken);
-                    } else  {
-                        globalConstTable[varName] = type;
-                    }
+       public Type Visit(ConstDeclaration node) {
+            var varName = node[0].AnchorToken.Lexeme;
+            var type = Visit((dynamic) node[1]);
+            if (localscope != null) {
+                if (currentLocalConstTable.Contains(varName)) {
+                    throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
+                } else if (currentLocalSymbolTable.Contains(varName)) {
+                    throw new SemanticError("Constant and variable cannot have the same name: " + varName, node[0].AnchorToken);
+                }
+                currentLocalConstTable[varName] = type;
+            } else {
+                if (globalConstTable.Contains(varName)) {
+                    throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
+                } else if (globalSymbolTable.Contains(varName)) {
+                    throw new SemanticError("Constant and variable cannot have the same name: " + varName, node[0].AnchorToken);
+                } else  {
+                    globalConstTable[varName] = type;
                 }
             }
+            return Type.VOID;
+        }
+        public Type Visit(ConstList node) {
             VisitChildren(node);
             return Type.VOID;
         }
+        
 
     //Esto no se encarga del call...
         public Type Visit(Identifier node){

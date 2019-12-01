@@ -101,6 +101,7 @@ namespace Chimera {
         }
 
         public string Visit(DeclarationList node) {
+            //Var declaration, Const Declaration
             return VisitChildren(node);
         }
 

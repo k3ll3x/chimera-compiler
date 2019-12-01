@@ -434,7 +434,7 @@ namespace Chimera4 {
         }
         
         public Node Const(){
-            var result = new ConstDeclaration {
+            var result = new ConstList {
                AnchorToken = Expect(TokenCategory.CONST)
             };
             do {
