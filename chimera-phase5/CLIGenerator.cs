@@ -220,31 +220,13 @@ namespace Chimera {
         }
 
         public string Visit(Assignment node){
-            var variableName = node[0].AnchorToken.Lexeme;
-            var type = Visit((dynamic) node[1]);
-            if (localscope != null && currentLocalSymbolTable.Contains(variableName)) {
-                var expectedType = currentLocalSymbolTable[variableName];
-                if (expectedType != type) {
-                    throw new SemanticError(
-                        "Expecting type " + expectedType 
-                        + " in assignment statement but got "+ type,
-                        node.AnchorToken);
-                }
-            } else if (globalSymbolTable.Contains(variableName)) {
-                var expectedType = globalSymbolTable[variableName];
-                if (expectedType != type) {
-                    throw new SemanticError(
-                        "Expecting type " + expectedType 
-                        + " in assignment statement",
-                        node.AnchorToken);
-                }
-            } else {
-                throw new SemanticError(
-                    "Undeclared variable: " + variableName,
-                    node.AnchorToken);
+            if(params.Contains(node.AnchorToken.Lexeme)){
+                return VisitChildren(node) + "\tstarg.s" + params[node.AnchorToken.Lexeme] + "\n";
+            }else if(localVariables.Contains(node.AnchorToken.Lexeme)){
+                return VisitChildren(node) + "\tstloc '" + node.AnchorToken.Lexeme + "'\n";
+            }else{
+                return VisitChildren(node) + "\tstsfld int32 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
             }
-
-            return Type.VOID;
         }
 
         public string Visit(Loop node){
