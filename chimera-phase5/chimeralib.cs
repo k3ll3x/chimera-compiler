@@ -14,7 +14,7 @@ namespace Chimera {
         private static Dictionary<int, List<int>> handles = new Dictionary<int, List<int>>();
 
         public static int WrInt(int n){
-            Console.Write(i);
+            Console.Write(n);
             return 0;
         }
 
@@ -28,7 +28,7 @@ namespace Chimera {
             return 0;
         }
 
-        public static int WrBool(int n){
+        public static int WrBool(bool n){
             Console.Write(n ? "true" : "false");
             return 0;
         }

@@ -30,7 +30,7 @@ namespace Chimera {
 
     class CILGenerator {
 
-        FunctionTable params;
+        public FunctionTable @params;
 
         public SymbolTable globalSymbolTable = new SymbolTable();
         public SymbolTable globalFunctionTableTypes = new SymbolTable();
@@ -48,6 +48,8 @@ namespace Chimera {
         string endLoop = "";
         string ifLabel = "";
 
+        string localscope = null;
+
         //-----------------------------------------------------------
         string GenerateLabel() {
             return String.Format("${0:000000}", labelCounter++);
@@ -57,40 +59,29 @@ namespace Chimera {
         static readonly IDictionary<Type, string> CILTypes =
             new Dictionary<Type, string>() {
                 { Type.BOOL, "bool" },
-                { Type.INT, "int32" }
-                { Type.STR, "someStrThingi" }
+                { Type.INT, "int32" },
+                { Type.STR, "ldstr" }
             };
 
         public CILGenerator(Object[] tables) {
             //assign tables given by Semantic Analyzer
-            globalSymbolTable = tables[0];
-            globalFunctionTable = tables[1];
-            globalConstTable = tables[2];
-            localSymbolTables = tables[3];
-            localConstTables = tables[4];
-            functionParamTables = tables[5];
-            currentLocalSymbolTable = tables[6];
-            currentLocalConstTable = tables[7];
-            currentFunctionParamTable = tables[8];
+            globalSymbolTable = (SymbolTable) tables[0];
+            globalFunctionTable = (FunctionTable) tables[1];
+            globalConstTable = (SymbolTable) tables[2];
+            localSymbolTables =  (IDictionary<string, SymbolTable>) tables[3];
+            localConstTables = (IDictionary<string, SymbolTable>) tables[4];
+            functionParamTables = (IDictionary<string, SymbolTable>) tables[5];
+            currentLocalSymbolTable = (SymbolTable) tables[6];
+            currentLocalConstTable = (SymbolTable) tables[7];
+            currentFunctionParamTable = (SymbolTable) tables[8];
+        }
 
-            globalFunctionTable.Add("WrInt");
-            globalFunctionTable.Add("WrStr");
-            globalFunctionTable.Add("WrBool");
-            globalFunctionTable.Add("WrLn");
-            globalFunctionTable.Add("RdInt");
-            globalFunctionTable.Add("RdStr");
-            globalFunctionTable.Add("AtStr");
-            globalFunctionTable.Add("LenStr");
-            globalFunctionTable.Add("CmpStr");
-            globalFunctionTable.Add("CatStr");
-            globalFunctionTable.Add("LenLstInt");
-            globalFunctionTable.Add("LenLstStr");
-            globalFunctionTable.Add("LenLstBool");
-            globalFunctionTable.Add("NewLstInt");
-            globalFunctionTable.Add("NewLstStr");
-            globalFunctionTable.Add("NewLstBool");
-            globalFunctionTable.Add("IntToStr");
-            globalFunctionTable.Add("StrToInt");
+        string VisitChildren(Node node) {
+            var sb = new StringBuilder();
+            foreach (var n in node) {
+                sb.Append(Visit((dynamic) n));
+            }
+            return sb.ToString();
         }
 
         public string Visit(Program node) {
@@ -99,8 +90,8 @@ namespace Chimera {
             + ".assembly extern 'chimeralib' {}\n"
             + ".class public 'ChimeraProgram' extends "
             + "['mscorlib']'System'.'Object' {\n"
-            + VisitChildren(node);
-            + "}\n"
+            + VisitChildren(node)
+            + "}\n";
             //Visit((dynamic) node[0]);
             //Visit((dynamic) node[1]);
         }
@@ -207,7 +198,7 @@ namespace Chimera {
             ifLabel = GenerateLabel();
             var result = Visit(((dynamic) node[0]))
             + "ldc.i4.1\n"
-            + "bne.un '" + elseBody + "'\n")
+            + "bne.un '" + elseBody + "'\n"
             + Visit(((dynamic) node[1]))
             + "br " + ifLabel + "\n"
             + "'" + elseBody + "':\n"
@@ -235,25 +226,27 @@ namespace Chimera {
             return VisitChildren(node);
         }
 
-        public string Visit(Assignment node){
-            if(params.Contains(node.AnchorToken.Lexeme)){
+        public string Visit(Assignment node) {
+            /*if(@params.Contains(node.AnchorToken.Lexeme)){
                 return VisitChildren(node) + "\tstarg.s" + params[node.AnchorToken.Lexeme] + "\n";
-            }else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
+            } else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
                 return VisitChildren(node) + "\tstloc '" + node.AnchorToken.Lexeme + "'\n";
-            }else{
+            } else{
                 return VisitChildren(node) + "\tstsfld int32 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
-            }
+            }*/
+            return " ";
         }
 
-        public string Visit(Loop node){
+        public string Visit(Loop node) {
             var startLoop = GenerateLabel();
             var currentEndLoop = GenerateLabel();
             endLoop = currentEndLoop;
-            return = "\t"
+            var result =  "\t"
             + startLoop + ":\n"
             + VisitChildren(node) + "\n"
-            + "br " + startLoop;
+            + "br " + startLoop
             + currentEndLoop + "\n";
+            return result;
         }
 
         public string Visit(For node){
