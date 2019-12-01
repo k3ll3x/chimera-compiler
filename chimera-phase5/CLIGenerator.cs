@@ -90,10 +90,10 @@ namespace Chimera {
             + ".assembly extern 'chimeralib' {}\n"
             + ".class public 'ChimeraProgram' extends "
             + "['mscorlib']'System'.'Object' {\n"
-            + VisitChildren(node)
+            + Visit((dynamic) node[0]) //DeclarationList
+            + Visit((dynamic) node[1]) //StatementList
             + "}\n";
-            //Visit((dynamic) node[0]);
-            //Visit((dynamic) node[1]);
+           
         }
 
         public string Visit(Expression node){
@@ -278,9 +278,7 @@ namespace Chimera {
         }
 
         public string Visit(ChimeraType node){
-            return typeMapper[node.AnchorToken.Category];
-            //VisitChildren(node);
-            //return Type.VOID;
+            return null;
         }
 
         public string Visit(ListType node){
@@ -325,7 +323,21 @@ namespace Chimera {
         }
 
         public string Visit(VarDeclaration node){
-            return VisitChildren(node);
+           var sb = new StringBuilder();
+            foreach (var entry in globalSymbolTable) {
+                //If not a function
+                if (!globalFunctionTable.Contains(entry.Key)) {
+                    sb.Append(
+                        String.Format(
+                            "\t\t.locals init ({0} '{1}')\n",                              
+                            CILTypes[entry.Value],
+                             entry.Key
+                        )
+                    );
+                }
+                
+            }
+            return sb.ToString();
         }
 
         public string Visit(Var node) {

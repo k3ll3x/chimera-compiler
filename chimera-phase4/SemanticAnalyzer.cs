@@ -464,6 +464,8 @@ namespace Chimera4 {
                 if (localscope != null) {
                     if (currentLocalConstTable.Contains(varName)) {
                         throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
+                    } else if (currentLocalSymbolTable.Contains(varName)) {
+                        throw new SemanticError("Constant and variable cannot have the same name: " + varName, node[0].AnchorToken);
                     }
                     currentLocalConstTable[varName] = type;
                 } else {
@@ -472,7 +474,7 @@ namespace Chimera4 {
                     } else if (globalSymbolTable.Contains(varName)) {
                         throw new SemanticError("Constant and variable cannot have the same name: " + varName, node[0].AnchorToken);
                     } else  {
-                        globalSymbolTable[varName] = type;
+                        globalConstTable[varName] = type;
                     }
                 }
             }
