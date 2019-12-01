@@ -179,12 +179,12 @@ namespace Chimera {
         //types
         //-----------------------------------------------------------
         public string Visit(True node) {
-            return Type.BOOL;
+            return "\tldc.i4 1\n";
         }
 
         //-----------------------------------------------------------
         public string Visit(False node) {
-            return Type.BOOL;
+            return "\tldc.i4 0\n";
         }
 
         public string Visit(If node){
@@ -386,52 +386,14 @@ namespace Chimera {
             return Type.VOID;
         }
 
-    //Esto no se encarga del call...
         public string Visit(Identifier node){
-            var varName = node.AnchorToken.Lexeme;
-            Type type = Type.VOID;
-            var found = false;
-            if (localscope != null) {
-                if (currentFunctionParamTable.Contains(varName)) {
-                    type = currentFunctionParamTable[varName];
-                    found = true;
-                } else if (currentLocalConstTable.Contains(varName)) {
-                    type =  currentLocalConstTable[varName];
-                    found = true;
-                } else if (currentLocalSymbolTable.Contains(varName)) {
-                    type =  currentLocalSymbolTable[varName];
-                    found = true;
-                }
+            if(params.Contains(node.AnchorToken.Lexeme)){
+                return "\tldarg." + params[node.AnchorToken.Lexeme] + "\n";
+            }else if(localVariables.Contains(node.AnchorToken.Lexeme)){
+                return "\tldloc '" + node.AnchorToken.Lexeme + "'\n";
+            }else{
+                return "\tldsfld int32 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
             }
-            if (!found) {
-                if (globalConstTable.Contains(varName)) {
-                    type =  globalConstTable[varName];
-                } else if (globalSymbolTable.Contains(varName)){
-                    type =  globalSymbolTable[varName];
-                } else {
-                    throw new SemanticError("No defined variable: " + varName, node.AnchorToken);
-                }
-            }
-            switch (type) {
-                case Type.LIST_INT:
-                    foreach (var n in node) {
-                        type = Type.INT;
-                    }
-                    return type;
-                case Type.LIST_STR:
-                     foreach (var n in node) {
-                        type = Type.STR;
-                    }
-                    return type;
-                case Type.LIST_BOOL:
-                     foreach (var n in node) {
-                        type = Type.BOOL;
-                    }
-                    return type;
-                default:
-                    return type;
-            }
-           
         }
 
         //operators
