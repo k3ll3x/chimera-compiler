@@ -31,9 +31,17 @@ namespace Chimera {
     class CILGenerator {
 
         FunctionTable params;
-        SymbolTable globalFunctions;
-        SymbolTable globalVariables;
-        SymbolTable localVariables;
+
+        public SymbolTable globalSymbolTable = new SymbolTable();
+        public SymbolTable globalFunctionTableTypes = new SymbolTable();
+        public FunctionTable globalFunctionTable = new FunctionTable();
+        public SymbolTable globalConstTable = new SymbolTable();
+        public IDictionary<string, SymbolTable> localSymbolTables = new SortedDictionary<string, SymbolTable>();
+        public IDictionary<string, SymbolTable> localConstTables = new SortedDictionary<string, SymbolTable>();
+        public IDictionary<string, SymbolTable> functionParamTables = new SortedDictionary<string, SymbolTable>();
+        public SymbolTable currentLocalSymbolTable = new SymbolTable();
+        public SymbolTable currentLocalConstTable = new SymbolTable();
+        public SymbolTable currentFunctionParamTable = new SymbolTable();
 
         int labelCounter = 0;
         bool insideFunction = false;
@@ -52,28 +60,35 @@ namespace Chimera {
             };
 
         public CILGenerator(Object[] tables) {
-            globalFunctions = new SymbolTable();
-            globalVariables = new SymbolTable();
-            localVariables = new SymbolTable();
+            //assign tables given by Semantic Analyzer
+            globalSymbolTable = tables[0];
+            globalFunctionTable = tables[1];
+            globalConstTable = tables[2];
+            localSymbolTables = tables[3];
+            localConstTables = tables[4];
+            functionParamTables = tables[5];
+            currentLocalSymbolTable = tables[6];
+            currentLocalConstTable = tables[7];
+            currentFunctionParamTable = tables[8];
 
-            globalFunctions.Add(WrInt);
-            globalFunctions.Add(WrStr);
-            globalFunctions.Add(WrBool);
-            globalFunctions.Add(WrLn);
-            globalFunctions.Add(RdInt);
-            globalFunctions.Add(RdStr);
-            globalFunctions.Add(AtStr);
-            globalFunctions.Add(LenStr);
-            globalFunctions.Add(CmpStr);
-            globalFunctions.Add(CatStr);
-            globalFunctions.Add(LenLstInt);
-            globalFunctions.Add(LenLstStr);
-            globalFunctions.Add(LenLstBool);
-            globalFunctions.Add(NewLstInt);
-            globalFunctions.Add(NewLstStr);
-            globalFunctions.Add(NewLstBool);
-            globalFunctions.Add(IntToStr);
-            globalFunctions.Add(StrToInt);
+            globalFunctionTable.Add("WrInt");
+            globalFunctionTable.Add("WrStr");
+            globalFunctionTable.Add("WrBool");
+            globalFunctionTable.Add("WrLn");
+            globalFunctionTable.Add("RdInt");
+            globalFunctionTable.Add("RdStr");
+            globalFunctionTable.Add("AtStr");
+            globalFunctionTable.Add("LenStr");
+            globalFunctionTable.Add("CmpStr");
+            globalFunctionTable.Add("CatStr");
+            globalFunctionTable.Add("LenLstInt");
+            globalFunctionTable.Add("LenLstStr");
+            globalFunctionTable.Add("LenLstBool");
+            globalFunctionTable.Add("NewLstInt");
+            globalFunctionTable.Add("NewLstStr");
+            globalFunctionTable.Add("NewLstBool");
+            globalFunctionTable.Add("IntToStr");
+            globalFunctionTable.Add("StrToInt");
         }
 
         public string Visit(Program node) {
@@ -217,7 +232,7 @@ namespace Chimera {
         public string Visit(Assignment node){
             if(params.Contains(node.AnchorToken.Lexeme)){
                 return VisitChildren(node) + "\tstarg.s" + params[node.AnchorToken.Lexeme] + "\n";
-            }else if(localVariables.Contains(node.AnchorToken.Lexeme)){
+            }else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
                 return VisitChildren(node) + "\tstloc '" + node.AnchorToken.Lexeme + "'\n";
             }else{
                 return VisitChildren(node) + "\tstsfld int32 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
@@ -300,7 +315,7 @@ namespace Chimera {
             if(value <= 8){
                 return "\tldc.i4." + value + "\n";
             }else if(value <= 127){
-                return "\tldc.i4.s" + value + "\n";
+                return "\tldc.i4.s " + value + "\n";
             }else{
                 return "\tldc.i4 " + value + "\n";
             }
@@ -312,8 +327,7 @@ namespace Chimera {
         }
 
         public string Visit(VarDeclaration node){
-            VisitChildren(node);
-            return Type.VOID;
+            return VisitChildren(node);
         }
 
         public string Visit(Var node) {
@@ -321,12 +335,12 @@ namespace Chimera {
             if(insideFunction){
                 foreach(var n in node[0]){
                     result = result + "\t.locals init (int32 '" + n.AnchorToken.Lexeme + "')\n";
-                    localVariables.Add(n.AnchorToken.Lexeme);
+                    localSymbolTables.Add(n.AnchorToken.Lexeme);
                 }
             }else{
                 foreach(var n in node[0]){
                     result = result + "\t.field public static int32 '" + n.AnchorToken.Lexeme + "'\n";
-                    globalVariables.Add(n.AnchorToken.Lexeme);
+                    globalSymbolTable.Add(n.AnchorToken.Lexeme);
                 }
             }
             return result;
@@ -336,7 +350,7 @@ namespace Chimera {
             if(node.AnchorToken.Category == TokenCategory.ASSIGN){
                 var varName = node[0].AnchorToken.Lexeme;
                 var type = Visit((dynamic) node[1]);
-                if (localscope != null) {
+                if (localscope) {
                     if (currentLocalConstTable.Contains(varName)) {
                         throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
                     }
@@ -358,7 +372,7 @@ namespace Chimera {
         public string Visit(Identifier node){
             if(params.Contains(node.AnchorToken.Lexeme)){
                 return "\tldarg." + params[node.AnchorToken.Lexeme] + "\n";
-            }else if(localVariables.Contains(node.AnchorToken.Lexeme)){
+            }else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
                 return "\tldloc '" + node.AnchorToken.Lexeme + "'\n";
             }else{
                 return "\tldsfld int32 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
