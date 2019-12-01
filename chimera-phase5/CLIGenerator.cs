@@ -378,9 +378,9 @@ namespace Chimera {
         }
 
         public string Visit(Identifier node){
-            if(params.Contains(node.AnchorToken.Lexeme)){
-                return "\tldarg." + params[node.AnchorToken.Lexeme] + "\n";
-            }else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
+            if(@params.Contains(node.AnchorToken.Lexeme)){
+                return "\tldarg." + @params[node.AnchorToken.Lexeme] + "\n";
+            } else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
                 return "\tldloc '" + node.AnchorToken.Lexeme + "'\n";
             }else{
                 return "\tldsfld int32 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
@@ -399,14 +399,6 @@ namespace Chimera {
                         type),
                     node.AnchorToken);
             }
-        }
-
-        string VisitChildren(Node node) {
-            var sb = new StringBuilder();
-            foreach (var n in node) {
-                sb.Append(Visit((dynamic) n));
-            }
-            return sb.ToString();
         }
 
         public string Visit(And node){
