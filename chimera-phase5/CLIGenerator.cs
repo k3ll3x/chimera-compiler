@@ -135,18 +135,15 @@ namespace Chimera {
             return Type.VOID;
         }
         public string Visit(ProcConst node) {
-            VisitChildren(node);
-            return Type.VOID;
+            return VisitChildren(node);
         }
 
         public string Visit(ProcVar node) {
-            VisitChildren(node);
-            return Type.VOID;
+            return VisitChildren(node);
         }
 
         public string Visit(ProcStatement node) {
-            VisitChildren(node);
-            return Type.VOID;
+            return VisitChildren(node);
         }
 
         public string Visit(CallStatement node){
