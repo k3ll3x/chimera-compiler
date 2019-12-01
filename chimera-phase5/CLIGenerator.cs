@@ -290,11 +290,7 @@ namespace Chimera {
         }
 
         public string Visit(Return node){
-            Type t = Visit((dynamic) node[0]);// || Type.VOID;
-            if (t != globalSymbolTable[localscope]) {
-                throw new SemanticError("Expected "+globalSymbolTable[localscope]+" as return but got instead "+t , node.AnchorToken);
-            }
-            return t;
+            return VisitChildren(node) + "\tret\n";
         }
 
         public string Visit(Exit node){
@@ -307,13 +303,14 @@ namespace Chimera {
         }
 
         public string Visit(IntLiteral node){
-            var intStr = node.AnchorToken.Lexeme;
-            try {
-                Convert.ToInt32(intStr);
-            }catch (OverflowException){
-                throw new SemanticError("Integer literal exceeds 32 bits (too large): " + intStr, node.AnchorToken);
+            var value = Convert.ToInt32(node.AnchorToken.Lexeme);
+            if(value <= 8){
+                return "\tldc.i4." + value + "\n";
+            }else if(value <= 127){
+                return "\tldc.i4.s" + value + "\n";
+            }else{
+                return "\tldc.i4 " + value + "\n";
             }
-            return Type.INT;
         }
 
          public string Visit(StrLiteral node){
@@ -327,22 +324,19 @@ namespace Chimera {
         }
 
         public string Visit(Var node) {
-            foreach(var n in node[0]){
-                var type = Visit((dynamic) node[1]);
-                var varName = n.AnchorToken.Lexeme;
-                if(localscope != null){
-                    if(currentLocalSymbolTable.Contains(varName)){
-                        throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
-                    }
-                    currentLocalSymbolTable[varName] = type;
-                }else{
-                    if (globalSymbolTable.Contains(varName)){
-                        throw new SemanticError("Duplicated variable: " + varName, n.AnchorToken);
-                    }
-                    globalSymbolTable[varName] = type;
+            var result = "";
+            if(insideFunction){
+                foreach(var n in node[0]){
+                    result = result + "\t.locals init (int32 '" + n.AnchorToken.Lexeme + "')\n";
+                    localVariables.Add(n.AnchorToken.Lexeme);
+                }
+            }else{
+                foreach(var n in node[0]){
+                    result = result + "\t.field public static int32 '" + n.AnchorToken.Lexeme + "'\n";
+                    globalVariables.Add(n.AnchorToken.Lexeme);
                 }
             }
-            return Type.VOID;
+            return result;
         }
 
         public string Visit(ConstDeclaration node) {
@@ -392,10 +386,12 @@ namespace Chimera {
             }
         }
 
-        void VisitChildren(Node node) {
+        string VisitChildren(Node node) {
+            var sb = new StringBuilder();
             foreach (var n in node) {
-                Visit((dynamic) n);
+                sb.Append(Visit((dynamic) n));
             }
+            return sb.ToString();
         }
 
         public string Visit(And node){
