@@ -29,9 +29,6 @@ using System.Collections.Generic;
 namespace Chimera {
 
     class CILGenerator {
-
-        public FunctionTable @params;
-
         public SymbolTable globalSymbolTable = new SymbolTable();
         public SymbolTable globalFunctionTableTypes = new SymbolTable();
         public FunctionTable globalFunctionTable = new FunctionTable();
@@ -225,7 +222,7 @@ namespace Chimera {
         }
 
         public string Visit(Assignment node) {
-            /*if(@params.Contains(node.AnchorToken.Lexeme)){
+            /*if(functionParamTables.Contains(node.AnchorToken.Lexeme)){
                 return VisitChildren(node) + "\tstarg.s" + params[node.AnchorToken.Lexeme] + "\n";
             } else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
                 return VisitChildren(node) + "\tstloc '" + node.AnchorToken.Lexeme + "'\n";
@@ -378,8 +375,8 @@ namespace Chimera {
         }
 
         public string Visit(Identifier node){
-            if(@params.Contains(node.AnchorToken.Lexeme)){
-                return "\tldarg." + @params[node.AnchorToken.Lexeme] + "\n";
+            if(functionParamTables.Contains(node.AnchorToken.Lexeme)){
+                return "\tldarg." + functionParamTables[node.AnchorToken.Lexeme] + "\n";
             } else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
                 return "\tldloc '" + node.AnchorToken.Lexeme + "'\n";
             }else{
