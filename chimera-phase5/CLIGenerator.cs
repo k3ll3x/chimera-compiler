@@ -36,6 +36,7 @@ namespace Chimera {
         SymbolTable localVariables;
 
         int labelCounter = 0;
+        bool insideFunction = false;
 
         //-----------------------------------------------------------
         string GenerateLabel() {
@@ -88,18 +89,15 @@ namespace Chimera {
         }
 
         public string Visit(Expression node){
-            VisitChildren(node);
-            return Type.VOID;
+            return VisitChildren(node);
         }
 
         public string Visit(DeclarationList node) {
-            VisitChildren(node);
-            return Type.VOID;
+            return VisitChildren(node);
         }
 
         public string Visit(StatementList node) {
-            VisitChildren(node);
-            return Type.VOID;
+            return VisitChildren(node);
         }
 
         public string Visit(ProcDeclaration node) {
@@ -119,8 +117,7 @@ namespace Chimera {
             return Type.VOID;
         }
         public string Visit(ProcParam node) {
-            VisitChildren(node);
-            return Type.VOID;
+            return VisitChildren(node);
         }
         public string Visit(ProcType node) {
             foreach(var n in node) {
@@ -210,13 +207,11 @@ namespace Chimera {
         }
 
         public string Visit(Else node){
-            VisitChildren(node);
-            return Type.VOID;
+            return VisitChildren(node);
         }
 
         public string Visit(Then node){
-            VisitChildren(node);
-            return Type.VOID;
+            return VisitChildren(node);
         }
 
         public string Visit(Assignment node){
@@ -237,13 +232,11 @@ namespace Chimera {
         }
 
         public string Visit(For node){
-            VisitChildren(node);
-            return Type.VOID;
+            return VisitChildren(node);
         }
 
         public string Visit(Do node){
-            VisitChildren(node);
-            return Type.VOID;
+            return VisitChildren(node);
         }
 
         public string Visit(List node) {
