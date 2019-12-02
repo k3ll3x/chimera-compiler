@@ -80,6 +80,7 @@ namespace Chimera {
             currentLocalSymbolTable = (SymbolTable) tables[6];
             currentLocalConstTable = (SymbolTable) tables[7];
             currentFunctionParamTable = (SymbolTable) tables[8];
+            globalFunctionTableTypes = (SymbolTable) tables[9];
             globalFunctionTable["WrInt"] = 1;
             globalFunctionTable["WrStr"] = 1;
             globalFunctionTable["WrBool"] = 1;

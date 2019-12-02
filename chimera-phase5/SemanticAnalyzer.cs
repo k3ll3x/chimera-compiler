@@ -135,7 +135,8 @@ namespace Chimera {
                 functionParamTables,
                 currentLocalSymbolTable,
                 currentLocalConstTable,
-                currentFunctionParamTable
+                currentFunctionParamTable,
+                globalFunctionTableTypes
             };
             return tables;
         }
