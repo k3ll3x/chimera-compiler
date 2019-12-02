@@ -227,20 +227,27 @@ namespace Chimera {
         }
 
         public string Visit(CallStatement node){
-            //check if function exists in tables
             var result = VisitChildren(node);
             foreach(KeyValuePair<string, string> kvp in ilasmApiFunction){
                 if(node.AnchorToken.Lexeme == kvp.Key){
                     result += kvp.Value;
                     return result;
-                    //return VisitChildren(node)
-                    //+ ilasmApiFunction[apiFunction];
                 }
             }
             var cliType = CILTypes[globalSymbolTable[node.AnchorToken.Lexeme]];
             result += "call " + cliType
             + " class 'ChimeraProgram'::'" + node.AnchorToken.Lexeme
             + "'(";
+
+            var counter = 0;
+            foreach(KeyValuePair<string, Type> kvp in functionParamTables[node.AnchorToken.Lexeme]){
+                if(counter != 0){
+                    result += ", " + CILTypes[kvp.Value];
+                }else{
+                    result += CILTypes[kvp.Value];
+                }
+                counter++;
+            }
 
             result += ")\n";
             if(cliType != "void"){
