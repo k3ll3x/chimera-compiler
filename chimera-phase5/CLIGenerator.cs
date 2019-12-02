@@ -59,6 +59,7 @@ namespace Chimera {
                 { Type.BOOL, "int32" },
                 { Type.INT, "int32" },
                 { Type.STR, "string" },
+                { Type.VOID, "void" },
                 { Type.LIST_INT, "int32[]" },
                 { Type.LIST_BOOL, "int32[]" },
                 { Type.LIST_STR, "string[]" }
@@ -147,6 +148,14 @@ namespace Chimera {
         }
 
         public string Visit(ProcDeclaration node) {
+            insideFunction = true;
+            var result = ".method public static '"
+            + CILTypes[globalSymbolTable[node[0].AnchorToken.Lexeme]]
+            + " '" + node[0].AnchorToken.Lexeme + "' "
+            + "(" + VisitChildren(node[1]) + ") {\n";
+            //result += VisitChildren(node);
+            insideFunction = false;
+            return result;
             /*localscope = node[0].AnchorToken.Lexeme;
             currentLocalConstTable = new SymbolTable();
             currentLocalSymbolTable = new SymbolTable();
@@ -161,7 +170,6 @@ namespace Chimera {
             localConstTables.Add(localscope, currentLocalConstTable);
             localscope = null;
             return Type.VOID;*/
-            return "procdecl il code\n";
         }
         public string Visit(ProcParam node) {
             return VisitChildren(node);
@@ -211,20 +219,19 @@ namespace Chimera {
         }
 
         public string Visit(ParamDeclaration node) {
-            /*var idList = node[0];
+            var result = "";
+            var idList = node[0];
             var type = Visit((dynamic)node[1]);
+            var counter = 0;
             foreach( var n in idList) {
+                counter++;
                 var name = n.AnchorToken.Lexeme;
-                if (currentFunctionParamTable.Contains(name)) {
-                    throw new SemanticError(
-                    "Parameter " + name 
-                    + " already exists in function "+localscope,                   
-                    n.AnchorToken);
+                result += CILTypes[type] + " " + name;
+                if(counter >= globalFunctionTable[localscope]){
+                    result += "";
                 }
-                currentFunctionParamTable[name] = type;
             }
-            return Type.VOID;*/
-            return "paramdec node code\n";
+            return result;
         }
 
         //types

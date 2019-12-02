@@ -81,7 +81,9 @@ namespace Chimera {
                 var input = File.ReadAllText(inputPath);
                 var parser = new Parser(new Scanner(input).Start().GetEnumerator());
                 var program = parser.Program();
-                //Console.WriteLine(program.ToStringTree());
+
+                Console.WriteLine(program.ToStringTree());
+
                 Console.WriteLine("Syntax OK.");
                 //semantic
                 var semantic = new SemanticAnalyzer();
@@ -89,6 +91,7 @@ namespace Chimera {
                 Console.WriteLine("Semantics OK.");
                 
                 var tables = semantic.getTables();
+                semantic.printTables();
                 /*foreach(var i in tables){
                     Console.WriteLine(i);
                 }*/

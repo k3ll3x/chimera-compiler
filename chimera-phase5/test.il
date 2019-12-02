@@ -2,24 +2,20 @@
 .assembly 'chimera' {}
 .assembly extern 'chimeralib' {}
 .class public 'ChimeraProgram' extends ['mscorlib']'System'.'Object' {
-		.locals init (int32 'lst')
+		.locals init (int32[] 'lst')
 		.locals init (int32 'one')
 		.locals init (string 's')
 		.locals init (int32 'two')
-procdecl il code
-procdecl il code
-procdecl il code
-procdecl il code
-Assignment node code
+.method public static 'VOID'(.method public static 'INT'(.method public static 'INT'(.method public static 'VOID'(Assignment node code
 other declared functions into ilasm
-other declared functions into ilasm
+call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 Assignment node code
 Assignment node code
 call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
-other declared functions into ilasm
+call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
+call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 other declared functions into ilasm
 other declared functions into ilasm
-other declared functions into ilasm
-other declared functions into ilasm
+call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 }
