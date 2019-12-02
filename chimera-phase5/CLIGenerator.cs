@@ -41,6 +41,10 @@ namespace Chimera {
         public SymbolTable currentFunctionParamTable = new SymbolTable();
         public Dictionary<string, string> ilasmApiFunction = new Dictionary<string, string>();
 
+        public Dictionary<string, string> constTable = new Dictionary<string, string>();
+
+         public IDictionary<string, int> currentLocalVar = new Dictionary<string, int>();
+
         int labelCounter = 0;
         bool insideFunction = false;
         string endLoop = "";
@@ -146,22 +150,57 @@ namespace Chimera {
             return VisitChildren(node);
         }
 
+
+//Constant declaration missing
         public string Visit(ProcDeclaration node) {
-            /*localscope = node[0].AnchorToken.Lexeme;
-            currentLocalConstTable = new SymbolTable();
-            currentLocalSymbolTable = new SymbolTable();
-            currentFunctionParamTable = new SymbolTable();
-            Visit((dynamic) node[1]);
-            globalSymbolTable[localscope] = Visit((dynamic) node[2]);
-            Visit((dynamic) node[3]);
-            Visit((dynamic) node[4]);
-            Visit((dynamic) node[5]);//ProcStatement
-            globalFunctionTable[localscope] = currentFunctionParamTable.Size();
-            localSymbolTables.Add(localscope, currentLocalSymbolTable);
-            localConstTables.Add(localscope, currentLocalConstTable);
+            localscope = node[0].AnchorToken.Lexeme;
+            currentLocalConstTable = localConstTables[localscope];
+            currentLocalSymbolTable = localSymbolTables[localscope];
+            currentFunctionParamTable = functionParamTables[localscope];
+            
+            var sb = new StringBuilder();
+            sb.Append("instance default ");
+            sb.Append(CILTypes[globalFunctionTableTypes[localscope]]);
+            sb.Append(" ");
+            sb.Append(localscope);
+            sb.Append(" (");
+            var flag = false;
+            int count = 1;
+            foreach (KeyValuePair<string, Type> kvp in currentFunctionParamTable) {
+                if (flag) {
+                    sb.Append(", ");
+                } else {
+                    flag = true;
+                }
+                sb.Append(CILTypes[kvp.Value]);
+                sb.Append(" ");
+                sb.Append(kvp.Key);
+                currentLocalVar.Add(kvp.Key, count);
+                count ++;
+            }
+            sb.Append(") cil managed \n{");
+            sb.Append(".locals init (");
+            count = 0;
+            foreach (KeyValuePair<string, Type> kvp in currentLocalSymbolTable) {
+                if (flag) {
+                    sb.Append(", ");
+                } else {
+                    flag = true;
+                }
+                sb.Append(CILTypes[kvp.Value]);
+                sb.Append(" ");
+                sb.Append("V_");
+                sb.Append(count);
+                currentLocalVar.Add(kvp.Key, count);
+                count ++;
+            }
+            sb.Append(")\n");           
+            sb.Append(Visit((dynamic) node[5]));
+            sb.Append("} // end of method Const::");
+            sb.Append(localscope);
             localscope = null;
-            return Type.VOID;*/
-            return "procdecl il code\n";
+      
+            return sb.ToString();
         }
         public string Visit(ProcParam node) {
             return VisitChildren(node);
