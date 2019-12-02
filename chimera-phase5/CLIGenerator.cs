@@ -58,7 +58,10 @@ namespace Chimera {
             new Dictionary<Type, string>() {
                 { Type.BOOL, "bool" },
                 { Type.INT, "int32" },
-                { Type.STR, "ldstr" }
+                { Type.STR, "ldstr" },
+                { Type.LIST_INT, "int32" },
+                { Type.LIST_BOOL, "bool" },
+                { Type.LIST_STR, "ldstr" }
             };
 
         public CILGenerator(Object[] tables) {
@@ -370,10 +373,14 @@ namespace Chimera {
         }
 
         public string Visit(VarDeclaration node){
+            Console.WriteLine("Debug");
            var sb = new StringBuilder();
             foreach (var entry in globalSymbolTable) {
                 //If not a function
                 if (!globalFunctionTable.Contains(entry.Key)) {
+                    if(entry.Key == "LIST_INT"){
+                        Console.WriteLine("fgr");
+                    }
                     sb.Append(
                         String.Format(
                             "\t\t.locals init ({0} '{1}')\n",                              
@@ -384,6 +391,7 @@ namespace Chimera {
                 }
                 
             }
+            Console.WriteLine("Debug2");
             return sb.ToString();
         }
 
@@ -428,13 +436,14 @@ namespace Chimera {
         }
 
         public string Visit(Identifier node){
-            if(functionParamTables[node.AnchorToken.Lexeme].Contains(node.AnchorToken.Lexeme)){
+            return "Identifier node code";
+            /*if(functionParamTables.Contains(node.AnchorToken.Lexeme)){
                 return "\tldarg." + functionParamTables[node.AnchorToken.Lexeme] + "\n";
-            } else if(localSymbolTables[node.AnchorToken.Lexeme].Contains(node.AnchorToken.Lexeme)){
+            } else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
                 return "\tldloc '" + node.AnchorToken.Lexeme + "'\n";
             }else{
                 return "\tldsfld int32 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
-            }
+            }*/
         }
 
         //operators

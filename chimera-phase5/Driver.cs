@@ -89,9 +89,9 @@ namespace Chimera {
                 Console.WriteLine("Semantics OK.");
                 
                 var tables = semantic.getTables();
-                foreach(var i in tables){
+                /*foreach(var i in tables){
                     Console.WriteLine(i);
-                }
+                }*/
                 var codeGenerator = new CILGenerator(tables);
                 File.WriteAllText(outputPath, codeGenerator.Visit((dynamic) program));
                 Console.WriteLine("Generated CIL code to '" + outputPath + "'.");
