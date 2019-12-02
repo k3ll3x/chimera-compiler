@@ -228,27 +228,25 @@ namespace Chimera {
 
         public string Visit(CallStatement node){
             //check if function exists in tables
+            var result = VisitChildren(node);
             foreach(KeyValuePair<string, string> kvp in ilasmApiFunction){
                 if(node.AnchorToken.Lexeme == kvp.Key){
-                    return kvp.Value;
+                    result += kvp.Value;
+                    return result;
                     //return VisitChildren(node)
                     //+ ilasmApiFunction[apiFunction];
                 }
             }
-            return "other declared functions into ilasm\n";
-            /*var name = node.AnchorToken.Lexeme;
-            if(globalFunctionTable.Contains(name)){
-                //call function
-                if(globalFunctionTableTypes.Contains(name)){
-                    return globalFunctionTableTypes[name];
-                }
-                if(globalSymbolTable.Contains(name)){
-                    return globalSymbolTable[name];
-                }
-                return Type.VOID;
-            }else{
-                throw new SemanticError("Function/Procedure " + name + "not declared!", node.AnchorToken);
-            }*/
+            var cliType = CILTypes[functionParamTables[node.AnchorToken.Lexeme]];
+            result += "call " + cliType
+            + " class 'ChimeraProgram'::'" + node.AnchorToken.Lexeme
+            + "'(";
+
+            result += ")\n";
+            if(cliType != "void"){
+                result += "pop\n";
+            }
+            return result;
         }
 
         public string Visit(ParamDeclaration node) {
