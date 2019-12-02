@@ -209,10 +209,6 @@ namespace Chimera {
         }
         public string Visit(ProcType node) {
             return VisitChildren(node);
-            /*foreach(var n in node) {
-                return Visit((dynamic) n);
-            }
-            return Type.VOID;*/
         }
         public string Visit(ProcConst node) {
             return VisitChildren(node);
@@ -486,28 +482,39 @@ namespace Chimera {
 
         //operators
         //-----------------------------------------------------------
-        void VisitBinaryOperator(string op, Node node, Type type) {
-            if (Visit((dynamic) node[0]) != type || 
-                Visit((dynamic) node[1]) != type) {
-                throw new SemanticError(
-                    String.Format(
-                        "Operator {0} requires two operands of type {1}",
-                        op, 
-                        type),
-                    node.AnchorToken);
-            }
-        }
-
+        
         public string Visit(And node){
-            /*VisitBinaryOperator("and",node, Type.BOOL);
-            return Type.BOOL;*/
-            return "And node code\n";
+            var result = "";
+            var label1 = GenerateLabel();
+            var label2 = GenerateLabel();
+            foreach(var n in node){
+                result += Visit((dynamic) n)
+                + "ldc.i4.1\n"
+                + "bne.un '" + label1 + "'\n";
+            }
+            return result
+            + "ldc.i4.1\n"
+            + "br " + label2 + "\n"
+            + label1 + ":\n"
+            + "ldc.i4.0\n"
+            + label2 + ":\n";
         }
 
         public string Visit(Or node){
-            /*VisitBinaryOperator("or",node, Type.BOOL);
-            return Type.BOOL;*/
-            return "Or node code\n";
+            var result = "";
+            var trueCond = GenerateLabel();
+            var falseCond = GenerateLabel();
+            foreach(var n in node){
+                result += Visit((dynamic) n)
+                + "ldc.i4.0\n"
+                + "bne.un '" + trueCond + "'\n";
+            }
+            return result
+            + "ldc.i4.0\n"
+            + "br " + falseCond + "\n"
+            + trueCond + ":\n"
+            + "ldc.i4.0\n"
+            + falseCond + ":\n"
         }
 
         public string Visit(Xor node){
