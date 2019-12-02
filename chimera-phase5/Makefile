@@ -16,8 +16,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+all: chimera.exe chimeralib.dll
+
 chimera.exe: Driver.cs Scanner.cs Token.cs TokenCategory.cs               
 	mcs -out:chimera.exe Driver.cs Scanner.cs Token.cs TokenCategory.cs Parser.cs SyntaxError.cs Node.cs SpecificNodes.cs SemanticAnalyzer.cs Type.cs SemanticError.cs SymbolTable.cs FunctionTable.cs CLIGenerator.cs
-			
+
+chimeralib.dll: chimeralib.cs
+	mcs /t:library chimeralib.cs
+
 clean:
 	rm chimera.exe

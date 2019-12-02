@@ -59,14 +59,7 @@ namespace Chimera {
         }
 
         public static int CmpStr(string s1, string s2){
-            if(s1 == s2){
-                return 0;
-            }else if(s1 > s2){
-                return 1;
-            }else{
-                return -1;
-            }
-            return null;
+            return string.Compare(s1,s2);
         }
 
         public static string CatStr(string s1, string s2){
