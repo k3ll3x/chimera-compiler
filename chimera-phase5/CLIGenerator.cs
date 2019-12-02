@@ -514,7 +514,7 @@ namespace Chimera {
             + "br " + falseCond + "\n"
             + trueCond + ":\n"
             + "ldc.i4.0\n"
-            + falseCond + ":\n"
+            + falseCond + ":\n";
         }
 
         public string Visit(Xor node){
