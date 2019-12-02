@@ -74,5 +74,53 @@ namespace Chimera {
         }
 
         //list operations
+        public static int LenLstInt(int[] loi){
+            return loi.Length;
+        }
+
+        public static int LenLstInt(string[] los){
+            return los.Length;
+        }
+
+        public static int LenLstBool(int[] lob){
+            return lob.Length;
+        }
+
+        public static int[] NewLstInt(int size){
+            int[] array = new int[size];
+            for(int i = 0; i < array.Length; i++){
+                array[i] = 0;
+            }
+            return array;
+        }
+
+        public static string[] NewLstStr(int size){
+            string[] array = new string[size];
+            for(int i = 0; i < array.Length; i++){
+                array[i] = "";
+            }
+            return array;
+        }
+
+        public static int[] NewLstBool(int size){
+            int[] array = new int[size];
+            for(int i = 0; i < array.Length; i++){
+                array[i] = 0;
+            }
+            return array;
+        }
+
+        //Conversion operations
+        public static string IntToStr(int i){
+            return i.ToString();
+        }
+
+        public static int StrToInt(string s){
+            int i=0;
+            if(!Int32.TryParse(s, out i)){
+                throw new Exception("Convertsion cannot be carried out!\n");
+            }
+            return i;
+        }
      }
  }
