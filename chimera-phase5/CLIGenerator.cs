@@ -45,6 +45,13 @@ namespace Chimera {
 
          public IDictionary<string, int> currentLocalVar = new Dictionary<string, int>();
 
+         public IDictionary<string, string> globalSymbolAssLoad = new Dictionary<string, string>();
+         public IDictionary<string,string> localSymbolAssLoad = new Dictionary<string,string>();
+
+         public IDictionary<string,string> globalSymbolAssAssign = new Dictionary<string, string>();
+          public IDictionary<string,string> localSymbolAssAssign = new Dictionary<string, string>();
+
+
         int labelCounter = 0;
         bool insideFunction = false;
         string endLoop = "";
@@ -168,7 +175,8 @@ namespace Chimera {
             sb.Append(localscope);
             sb.Append(" (");
             var flag = false;
-            int count = 1;
+            int count = 0;
+            Visit((dynamic) node[3]);
             foreach (KeyValuePair<string, Type> kvp in currentFunctionParamTable) {
                 if (flag) {
                     sb.Append(", ");
@@ -179,11 +187,13 @@ namespace Chimera {
                 sb.Append(" ");
                 sb.Append(kvp.Key);
                 currentLocalVar.Add(kvp.Key, count);
+                localSymbolAssLoad.Add(kvp.Key, "ldarg."+count);
                 count ++;
             }
             sb.Append(") cil managed \n{");
             sb.Append(".locals init (");
             count = 0;
+            flag = false;
             foreach (KeyValuePair<string, Type> kvp in currentLocalSymbolTable) {
                 if (flag) {
                     sb.Append(", ");
@@ -195,7 +205,9 @@ namespace Chimera {
                 sb.Append("V_");
                 sb.Append(count);
                 currentLocalVar.Add(kvp.Key, count);
-                count ++;
+                localSymbolAssAssign.Add(kvp.Key, "stloc."+count);
+                localSymbolAssLoad.Add(kvp.Key, "ldloc."+count);
+                count ++; 
             }
             sb.Append(")\n");           
             sb.Append(Visit((dynamic) node[5]));
@@ -280,18 +292,19 @@ namespace Chimera {
             return "\tldc.i4 0\n";
         }
 
+        //Aqui hay que revisar si hay else
         public string Visit(If node){
             var elseBody = GenerateLabel();
             var prevEndIf = ifLabel;
             ifLabel = GenerateLabel();
             var result = Visit(((dynamic) node[0]))
             + "ldc.i4.1\n"
-            + "bne.un '" + elseBody + "'\n"
-            + Visit(((dynamic) node[1]))
+            + "bne.un '" + elseBody + "'\n";
+           /* + Visit(((dynamic) node[1]))
             + "br " + ifLabel + "\n"
             + "'" + elseBody + "':\n"
             + Visit(((dynamic) node[2]))
-            + "'" + ifLabel + "':\n";
+            + "'" + ifLabel + "':\n";*/
 
             ifLabel = prevEndIf;
             return result;
@@ -419,31 +432,28 @@ namespace Chimera {
                 if (!globalFunctionTable.Contains(entry.Key)) {
                     sb.Append(
                         String.Format(
-                            "\t\t.locals init ({0} '{1}')\n",                              
+                            "\t\t.field  public static {0} {1}\n",                              
                             CILTypes[entry.Value],
                                 entry.Key
                         )
                     );
-                }
-                
+                    globalSymbolAssLoad.Add(entry.Key, String.Format(
+                            "ldsfld {0} Const::{1}\n",                              
+                            CILTypes[entry.Value],
+                                entry.Key
+                        ));
+                    globalSymbolAssAssign.Add(entry.Key, String.Format(
+                            "stsfld {0} Const::{1}\n",                              
+                            CILTypes[entry.Value],
+                                entry.Key
+                        ));
+                } 
             }
             return sb.ToString();
         }
 
         public string Visit(Var node) {
-            var result = "";
-            if(insideFunction){
-                foreach(var n in node[0]){
-                    result = result + "\t.locals init (int32 '" + n.AnchorToken.Lexeme + "')\n";
-                    //localSymbolTables[n.AnchorToken.Lexeme];
-                }
-            }else{
-                foreach(var n in node[0]){
-                    result = result + "\t.field public static int32 '" + n.AnchorToken.Lexeme + "'\n";
-                    //globalSymbolTable[n.AnchorToken.Lexeme];
-                }
-            }
-            return result;
+            return "ESTO NO DEBERIA SALIR";
         }
 
         public string Visit(ConstDeclaration node) {
@@ -567,7 +577,7 @@ namespace Chimera {
         public string Visit(Plus node){
             /*VisitBinaryOperator("+",node,Type.INT);
             return Type.INT;*/
-            return "Plus node code\n";
+            return Visit((dynamic) node[0])+"\n"+Visit((dynamic) node[1])+"\nadd";
         }
 
         public string Visit(Neg node){//also for substraction?
