@@ -92,10 +92,10 @@ namespace Chimera {
                 foreach(var i in tables){
                     Console.WriteLine(i);
                 }
-                //var codeGenerator = new CLIGenerator(tables);
-                /*File.WriteAllText(outputPath, codeGenerator.Visit((dynamic) program));
+                var codeGenerator = new CILGenerator(tables);
+                File.WriteAllText(outputPath, codeGenerator.Visit((dynamic) program));
                 Console.WriteLine("Generated CIL code to '" + outputPath + "'.");
-                Console.WriteLine();*/
+                Console.WriteLine();
                 //semantic.printTables();
             } catch (Exception e) {
 

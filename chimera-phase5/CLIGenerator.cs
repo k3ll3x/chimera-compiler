@@ -39,6 +39,7 @@ namespace Chimera {
         public SymbolTable currentLocalSymbolTable = new SymbolTable();
         public SymbolTable currentLocalConstTable = new SymbolTable();
         public SymbolTable currentFunctionParamTable = new SymbolTable();
+        public Dictionary<string, string> ilasmApiFunction = new Dictionary<string, string>();
 
         int labelCounter = 0;
         bool insideFunction = false;
@@ -71,6 +72,42 @@ namespace Chimera {
             currentLocalSymbolTable = (SymbolTable) tables[6];
             currentLocalConstTable = (SymbolTable) tables[7];
             currentFunctionParamTable = (SymbolTable) tables[8];
+            globalFunctionTable["WrInt"] = 1;
+            globalFunctionTable["WrStr"] = 1;
+            globalFunctionTable["WrBool"] = 1;
+            globalFunctionTable["WrLn"] = 0;
+            globalFunctionTable["RdInt"] = 0;
+            globalFunctionTable["RdStr"] = 0;
+            globalFunctionTable["AtStr"] = 2;
+            globalFunctionTable["LenStr"] = 1;
+            globalFunctionTable["CmpStr"] = 2;
+            globalFunctionTable["CatStr"] = 2;
+            globalFunctionTable["LenLstInt"] = 1;
+            globalFunctionTable["LenLstStr"] = 1;
+            globalFunctionTable["LenLstBool"] = 1;
+            globalFunctionTable["NewLstInt"] = 1;
+            globalFunctionTable["NewLstStr"] = 1;
+            globalFunctionTable["NewLstBool"] = 1;
+            globalFunctionTable["IntToStr"] = 1;
+            globalFunctionTable["StrToInt"] = 1;
+            ilasmApiFunction.Add("WrInt","");
+            ilasmApiFunction.Add("WrStr","");
+            ilasmApiFunction.Add("WrBool","");
+            ilasmApiFunction.Add("WrLn","");
+            ilasmApiFunction.Add("RdInt","");
+            ilasmApiFunction.Add("RdStr","");
+            ilasmApiFunction.Add("AtStr","");
+            ilasmApiFunction.Add("LenStr","");
+            ilasmApiFunction.Add("CmpStr","");
+            ilasmApiFunction.Add("CatStr","");
+            ilasmApiFunction.Add("LenLstInt","");
+            ilasmApiFunction.Add("LenLstStr","");
+            ilasmApiFunction.Add("LenLstBool","");
+            ilasmApiFunction.Add("NewLstInt","");
+            ilasmApiFunction.Add("NewLstStr","");
+            ilasmApiFunction.Add("NewLstBool","");
+            ilasmApiFunction.Add("IntToStr","");
+            ilasmApiFunction.Add("StrToInt","");
         }
 
         string VisitChildren(Node node) {
@@ -107,7 +144,7 @@ namespace Chimera {
         }
 
         public string Visit(ProcDeclaration node) {
-            localscope = node[0].AnchorToken.Lexeme;
+            /*localscope = node[0].AnchorToken.Lexeme;
             currentLocalConstTable = new SymbolTable();
             currentLocalSymbolTable = new SymbolTable();
             currentFunctionParamTable = new SymbolTable();
@@ -120,16 +157,18 @@ namespace Chimera {
             localSymbolTables.Add(localscope, currentLocalSymbolTable);
             localConstTables.Add(localscope, currentLocalConstTable);
             localscope = null;
-            return Type.VOID;
+            return Type.VOID;*/
+            return "procdecl il code return";
         }
         public string Visit(ProcParam node) {
             return VisitChildren(node);
         }
         public string Visit(ProcType node) {
-            foreach(var n in node) {
+            return VisitChildren(node);
+            /*foreach(var n in node) {
                 return Visit((dynamic) n);
             }
-            return Type.VOID;
+            return Type.VOID;*/
         }
         public string Visit(ProcConst node) {
             return VisitChildren(node);
@@ -145,7 +184,17 @@ namespace Chimera {
 
         public string Visit(CallStatement node){
             //check if function exists in tables
-            var name = node.AnchorToken.Lexeme;
+            foreach(KeyValuePair<string, string> kvp in ilasmApiFunction){
+                if(node.AnchorToken.Lexeme == kvp.Key){
+                    return kvp.Value;
+                    //return VisitChildren(node)
+                    //+ ilasmApiFunction[apiFunction];
+                }else{
+                    return "other declared functions into ilasm\n";
+                }
+            }
+            return null;
+            /*var name = node.AnchorToken.Lexeme;
             if(globalFunctionTable.Contains(name)){
                 //call function
                 if(globalFunctionTableTypes.Contains(name)){
@@ -157,11 +206,11 @@ namespace Chimera {
                 return Type.VOID;
             }else{
                 throw new SemanticError("Function/Procedure " + name + "not declared!", node.AnchorToken);
-            }
+            }*/
         }
 
         public string Visit(ParamDeclaration node) {
-            var idList = node[0];
+            /*var idList = node[0];
             var type = Visit((dynamic)node[1]);
             foreach( var n in idList) {
                 var name = n.AnchorToken.Lexeme;
@@ -173,7 +222,8 @@ namespace Chimera {
                 }
                 currentFunctionParamTable[name] = type;
             }
-            return Type.VOID;
+            return Type.VOID;*/
+            return "paramdec node code";
         }
 
         //types
@@ -253,7 +303,7 @@ namespace Chimera {
         }
 
         public string Visit(List node) {
-            Type expectedType = Visit((dynamic) node[0]);
+            /*Type expectedType = Visit((dynamic) node[0]);
             foreach( var n  in node) {
                 Type type = Visit((dynamic) n);
                 if (type != expectedType) {
@@ -269,7 +319,8 @@ namespace Chimera {
                     return Type.LIST_STR;
                 default:
                     return Type.VOID;
-            };
+            };*/
+            return "List node code";
         }
 
         public string Visit(ChimeraType node){
@@ -277,7 +328,7 @@ namespace Chimera {
         }
 
         public string Visit(ListType node){
-            Type type = Type.VOID;
+            /*Type type = Type.VOID;
             if (node[0] is ChimeraType) {
                 type = Visit((dynamic) node[0]);
             } 
@@ -290,7 +341,8 @@ namespace Chimera {
                     return Type.LIST_STR;
                 default:
                     return Type.VOID;
-            }
+            }*/
+            return "ListType ndoe code";
         }
 
         public string Visit(Return node){
@@ -340,19 +392,19 @@ namespace Chimera {
             if(insideFunction){
                 foreach(var n in node[0]){
                     result = result + "\t.locals init (int32 '" + n.AnchorToken.Lexeme + "')\n";
-                    localSymbolTables.Add(n.AnchorToken.Lexeme);
+                    //localSymbolTables[n.AnchorToken.Lexeme];
                 }
             }else{
                 foreach(var n in node[0]){
                     result = result + "\t.field public static int32 '" + n.AnchorToken.Lexeme + "'\n";
-                    globalSymbolTable.Add(n.AnchorToken.Lexeme);
+                    //globalSymbolTable[n.AnchorToken.Lexeme];
                 }
             }
             return result;
         }
 
         public string Visit(ConstDeclaration node) {
-            if(node.AnchorToken.Category == TokenCategory.ASSIGN){
+            /*if(node.AnchorToken.Category == TokenCategory.ASSIGN){
                 var varName = node[0].AnchorToken.Lexeme;
                 var type = Visit((dynamic) node[1]);
                 if (localscope) {
@@ -371,13 +423,14 @@ namespace Chimera {
                 }
             }
             VisitChildren(node);
-            return Type.VOID;
+            return Type.VOID;*/
+            return "ConstDecl node code";
         }
 
         public string Visit(Identifier node){
-            if(functionParamTables.Contains(node.AnchorToken.Lexeme)){
+            if(functionParamTables[node.AnchorToken.Lexeme].Contains(node.AnchorToken.Lexeme)){
                 return "\tldarg." + functionParamTables[node.AnchorToken.Lexeme] + "\n";
-            } else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
+            } else if(localSymbolTables[node.AnchorToken.Lexeme].Contains(node.AnchorToken.Lexeme)){
                 return "\tldloc '" + node.AnchorToken.Lexeme + "'\n";
             }else{
                 return "\tldsfld int32 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
@@ -399,61 +452,71 @@ namespace Chimera {
         }
 
         public string Visit(And node){
-            VisitBinaryOperator("and",node, Type.BOOL);
-            return Type.BOOL;
+            /*VisitBinaryOperator("and",node, Type.BOOL);
+            return Type.BOOL;*/
+            return "And node code";
         }
 
         public string Visit(Or node){
-            VisitBinaryOperator("or",node, Type.BOOL);
-            return Type.BOOL;
+            /*VisitBinaryOperator("or",node, Type.BOOL);
+            return Type.BOOL;*/
+            return "Or node code";
         }
 
         public string Visit(Xor node){
-            VisitBinaryOperator("xor",node, Type.BOOL);
-            return Type.BOOL;
+            /*VisitBinaryOperator("xor",node, Type.BOOL);
+            return Type.BOOL;*/
+            return "Xor node code";
         }
 
         public string Visit(Equal node){
-            VisitBinaryOperator("=",node, Type.INT);
-            return Type.BOOL;
+            /*VisitBinaryOperator("=",node, Type.INT);
+            return Type.BOOL;*/
+            return "Equal node code";
         }
 
         public string Visit(BoolIneq node){//also for int ineq
-            if(Visit((dynamic) node[0]) == Type.INT){
+            /*if(Visit((dynamic) node[0]) == Type.INT){
                 VisitBinaryOperator("<>",node, Type.INT);
             }else{
                 VisitBinaryOperator("<>",node, Type.BOOL);
             }
-            return Type.BOOL;
+            return Type.BOOL;*/
+            return "BoolIneq node code";
         }
 
         public string Visit(Less node){
-            VisitBinaryOperator("<",node,Type.INT);
-            return Type.BOOL;
+            /*VisitBinaryOperator("<",node,Type.INT);
+            return Type.BOOL;*/
+            return "Less node code";
         }
 
         public string Visit(More node){
-            VisitBinaryOperator(">",node,Type.INT);
-            return Type.BOOL;
+            /*VisitBinaryOperator(">",node,Type.INT);
+            return Type.BOOL;*/
+            return "More node code";
         }
 
         public string Visit(LessEq node){
-            VisitBinaryOperator("<=",node,Type.INT);
-            return Type.BOOL;
+            /*VisitBinaryOperator("<=",node,Type.INT);
+            return Type.BOOL;*/
+            return "LessEq node code";
         }
 
         public string Visit(MoreEq node){
-            VisitBinaryOperator(">=",node,Type.INT);
-            return Type.BOOL;
+            /*VisitBinaryOperator(">=",node,Type.INT);
+            return Type.BOOL;*/
+            return "MoreEq node code";
         }
 
         public string Visit(Plus node){
-            VisitBinaryOperator("+",node,Type.INT);
-            return Type.INT;
+            /*VisitBinaryOperator("+",node,Type.INT);
+            return Type.INT;*/
+            return "Plus node code";
         }
 
         public string Visit(Neg node){//also for substraction?
-            if(node[1] != null){//two operands -> substraction
+            /*if(node[1] != null){//two operands -> substraction
                 VisitBinaryOperator("-",node,Type.INT);
             }else{//one operand -> negation
                 if(Visit((dynamic) node[0]) != Type.INT){
@@ -464,33 +527,38 @@ namespace Chimera {
                         node.AnchorToken);
                 }
             }
-            return Type.INT;
+            return Type.INT;*/
+            return "Neg node code";
         }
 
         public string Visit(Mul node){
-            VisitBinaryOperator("*",node,Type.INT);
-            return Type.INT;
+            /*VisitBinaryOperator("*",node,Type.INT);
+            return Type.INT;*/
+            return "Mul node code";
         }
 
         public string Visit(Div node){
-            VisitBinaryOperator("div",node,Type.INT);
-            return Type.INT;
+            /*VisitBinaryOperator("div",node,Type.INT);
+            return Type.INT;*/
+            return "Div node code";
         }
 
         public string Visit(Rem node){
-            VisitBinaryOperator("rem",node,Type.INT);
-            return Type.INT;
+            /*VisitBinaryOperator("rem",node,Type.INT);
+            return Type.INT;*/
+            return "Rem node code";
         }
 
         public string Visit(Not node){
-            if(Visit((dynamic) node[0]) != Type.BOOL){
+            /*if(Visit((dynamic) node[0]) != Type.BOOL){
                 throw new SemanticError(
                     String.Format(
                         "Operator not requires one operand of type {1}",
                         Type.BOOL),
                     node.AnchorToken);
             }
-            return Type.BOOL;
+            return Type.BOOL;*/
+            return "Not node code";
         }
     }
 }
