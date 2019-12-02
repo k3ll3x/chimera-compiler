@@ -10,34 +10,21 @@ using System.Collections.Generic;
 
 namespace Chimera {
     public class Utils {
-        private static int currentId = 0;
-        private static Dictionary<int, List<int>> handles = new Dictionary<int, List<int>>();
-
-        public static int WrInt(int n){
+        //I/O
+        public static void WrInt(int n){
             Console.Write(n);
-            return 0;
         }
 
-        public static int WrStr(string s){
-            /*chHandle(s);
-            StringBuilder builder = new StringBuilder();
-            for(int i = 0, n = LenStr(s); i < n; i++){
-                builder.Append(char.ConvertFromUtf32(Get(s,i)));
-            }
-            Console.Write(builder.ToString());
-            return 0;*/
-            Console.WriteLine(s);
-            return 0;
+        public static void WrStr(string s){
+            Console.Write(s);
         }
 
-        public static int WrBool(bool n){
+        public static void WrBool(bool n){
             Console.Write(n ? "true" : "false");
-            return 0;
         }
 
-        public static int WrLn(){
+        public static void WrLn(){
             Console.WriteLine();
-            return 0;
         }
 
         public static int RdInt(){
@@ -49,13 +36,43 @@ namespace Chimera {
             return n;
         }
 
-        public static int RdStr(){
+        public static string RdStr(){
             string userInput = Console.ReadLine();
             return userInput;
+        }
+
+        //String operations
+        public static string AtStr(string s, int i){
+            string ns = "";
+            if(i>=s.Length){
+                throw new IndexOutOfRangeException();
+            }else{
+                for(int j=i; j<s.Length; j++){
+                    ns += s[j];
+                }
+            }
+            return ns;
         }
 
         public static int LenStr(string s){
             return s.Length;
         }
+
+        public static int CmpStr(string s1, string s2){
+            if(s1 == s2){
+                return 0;
+            }else if(s1 > s2){
+                return 1;
+            }else{
+                return -1;
+            }
+            return null;
+        }
+
+        public static string CatStr(string s1, string s2){
+            return s1+s2;
+        }
+
+        //list operations
      }
  }
