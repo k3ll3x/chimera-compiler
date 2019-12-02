@@ -16,10 +16,8 @@ other declared functions into ilasm
 Assignment node code
 Assignment node code
 call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
-pop
 other declared functions into ilasm
 call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
-pop
 other declared functions into ilasm
 other declared functions into ilasm
 other declared functions into ilasm

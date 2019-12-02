@@ -93,24 +93,24 @@ namespace Chimera {
             globalFunctionTable["NewLstBool"] = 1;
             globalFunctionTable["IntToStr"] = 1;
             globalFunctionTable["StrToInt"] = 1;
-            ilasmApiFunction.Add("WrInt","call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)\npop\n");
-            ilasmApiFunction.Add("WrStr","call void class ['chimeralib']'Chimera'.'Utils'::'WrStr'(ldstr)\npop\n");
-            ilasmApiFunction.Add("WrBool","call void class ['chimeralib']'Chimera'.'Utils'::'WrBool'(bool)\npop\n");
-            ilasmApiFunction.Add("WrLn","call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()\npop\n");
-            ilasmApiFunction.Add("RdInt","call int32 class ['chimeralib']'Chimera'.'Utils'::'RdInt'()\n");
-            ilasmApiFunction.Add("RdStr","call string class ['chimeralib']'Chimera'.'Utils'::'RdStr'()\n");
-            ilasmApiFunction.Add("AtStr","call string class ['chimeralib']'Chimera'.'Utils'::'AtStr'(string, int32)\n");
-            ilasmApiFunction.Add("LenStr","call int32 class ['chimeralib']'Chimera'.'Utils'::'LenStr'(string)\n");
-            ilasmApiFunction.Add("CmpStr","call int32 class ['chimeralib']'Chimera'.'Utils'::'CmpStr'(string, string)\n");
-            ilasmApiFunction.Add("CatStr","call string class ['chimeralib']'Chimera'.'Utils'::'CatStr'(string, string)\n");
-            ilasmApiFunction.Add("LenLstInt","call int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstInt'(int32[])\n");
-            ilasmApiFunction.Add("LenLstStr","call int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstStr'(string[])\n");
-            ilasmApiFunction.Add("LenLstBool","call int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstBool'(int32[])\n");
-            ilasmApiFunction.Add("NewLstInt","call int32[] class ['chimeralib']'Chimera'.'Utils'::'NewLstInt'(int32)\n");
-            ilasmApiFunction.Add("NewLstStr","call string[] class ['chimeralib']'Chimera'.'Utils'::'NewLstStr'(int32)\n");
-            ilasmApiFunction.Add("NewLstBool","call int32[] class ['chimeralib']'Chimera'.'Utils'::'NewLstBool'(int32)\n");
-            ilasmApiFunction.Add("IntToStr","call string class ['chimeralib']'Chimera'.'Utils'::'IntToStr'(int32)\n");
-            ilasmApiFunction.Add("StrToInt","call int32 class ['chimeralib']'Chimera'.'Utils'::'StrToInt'(string)\n");
+            ilasmApiFunction.Add("WrInt","call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)\n");
+            ilasmApiFunction.Add("WrStr","call void class ['chimeralib']'Chimera'.'Utils'::'WrStr'(string)\n");
+            ilasmApiFunction.Add("WrBool","call void class ['chimeralib']'Chimera'.'Utils'::'WrBool'(int32)\n");
+            ilasmApiFunction.Add("WrLn","call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()\n");
+            ilasmApiFunction.Add("RdInt","call int32 class ['chimeralib']'Chimera'.'Utils'::'RdInt'()\npop\n");
+            ilasmApiFunction.Add("RdStr","call string class ['chimeralib']'Chimera'.'Utils'::'RdStr'()\npop\n");
+            ilasmApiFunction.Add("AtStr","call string class ['chimeralib']'Chimera'.'Utils'::'AtStr'(string, int32)\npop\n");
+            ilasmApiFunction.Add("LenStr","call int32 class ['chimeralib']'Chimera'.'Utils'::'LenStr'(string)\npop\n");
+            ilasmApiFunction.Add("CmpStr","call int32 class ['chimeralib']'Chimera'.'Utils'::'CmpStr'(string, string)\npop\n");
+            ilasmApiFunction.Add("CatStr","call string class ['chimeralib']'Chimera'.'Utils'::'CatStr'(string, string)\npop\n");
+            ilasmApiFunction.Add("LenLstInt","call int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstInt'(int32[])\npop\n");
+            ilasmApiFunction.Add("LenLstStr","call int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstStr'(string[])\npop\n");
+            ilasmApiFunction.Add("LenLstBool","call int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstBool'(int32[])\npop\n");
+            ilasmApiFunction.Add("NewLstInt","call int32[] class ['chimeralib']'Chimera'.'Utils'::'NewLstInt'(int32)\npop\n");
+            ilasmApiFunction.Add("NewLstStr","call string[] class ['chimeralib']'Chimera'.'Utils'::'NewLstStr'(int32)\npop\n");
+            ilasmApiFunction.Add("NewLstBool","call int32[] class ['chimeralib']'Chimera'.'Utils'::'NewLstBool'(int32)\npop\n");
+            ilasmApiFunction.Add("IntToStr","call string class ['chimeralib']'Chimera'.'Utils'::'IntToStr'(int32)\npop\n");
+            ilasmApiFunction.Add("StrToInt","call int32 class ['chimeralib']'Chimera'.'Utils'::'StrToInt'(string)\npop\n");
         }
 
         string VisitChildren(Node node) {
@@ -192,11 +192,9 @@ namespace Chimera {
                     return kvp.Value;
                     //return VisitChildren(node)
                     //+ ilasmApiFunction[apiFunction];
-                }else{
-                    return "other declared functions into ilasm\n";
                 }
             }
-            return null;
+            return "other declared functions into ilasm\n";
             /*var name = node.AnchorToken.Lexeme;
             if(globalFunctionTable.Contains(name)){
                 //call function
@@ -275,6 +273,7 @@ namespace Chimera {
         }
 
         public string Visit(Assignment node) {
+            Console.WriteLine(node.ToStringTree());
             /*if(functionParamTables.Contains(node.AnchorToken.Lexeme)){
                 return VisitChildren(node) + "\tstarg.s" + params[node.AnchorToken.Lexeme] + "\n";
             } else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
