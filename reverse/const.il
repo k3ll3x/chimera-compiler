@@ -12,7 +12,7 @@
   .hash algorithm 0x00008004
   .ver  0:0:0:0
 }
-.module const.exe // GUID = {FAAA79EF-F51A-4EA1-85CC-87F1B870B57A}
+.module const.exe // GUID = {18E0DE9D-9C0A-410B-834B-3DD3BF177AE4}
 
 
   .class public auto ansi beforefieldinit Const
@@ -40,7 +40,7 @@
     {
         // Method begins at RVA 0x2058
 	.entrypoint
-	// Code size 68 (0x44)
+	// Code size 60 (0x3c)
 	.maxstack 2
 	.locals init (
 		int32	V_0)
@@ -54,21 +54,21 @@
 	IL_0016:  ldstr "hola"
 	IL_001b:  call int32 class Const::constMethodInt(int32, string)
 	IL_0020:  call void class [mscorlib]System.Console::Write(int32)
-	IL_0025:  ldsfld string Const::hi
-	IL_002a:  call string class Const::constMethodStr(string)
-	IL_002f:  call void class [mscorlib]System.Console::Write(string)
-	IL_0034:  ldstr "hola"
-	IL_0039:  call string class Const::constMethodStr(string)
-	IL_003e:  call void class [mscorlib]System.Console::Write(string)
-	IL_0043:  ret 
+	IL_0025:  ldc.i4.1 
+	IL_0026:  call bool class Const::constMethodStr(bool)
+	IL_002b:  call void class [mscorlib]System.Console::Write(bool)
+	IL_0030:  ldc.i4.1 
+	IL_0031:  call bool class Const::constMethodStr(bool)
+	IL_0036:  call void class [mscorlib]System.Console::Write(bool)
+	IL_003b:  ret 
     } // end of method Const::Main
 
     // method line 3
     .method public static hidebysig 
            default int32 constMethodInt (int32 a, string b)  cil managed 
     {
-        // Method begins at RVA 0x20a8
-	// Code size 41 (0x29)
+        // Method begins at RVA 0x20a0
+	// Code size 39 (0x27)
 	.maxstack 2
 	.locals init (
 		int32	V_0,
@@ -80,29 +80,30 @@
 	IL_0005:  stloc.1 
 	IL_0006:  ldstr "ho"
 	IL_000b:  stloc.2 
-	IL_000c:  ldc.i4.s 0x0a
-	IL_000e:  ldloc.0 
-	IL_000f:  add 
-	IL_0010:  call void class [mscorlib]System.Console::Write(int32)
-	IL_0015:  ldarg.1 
-	IL_0016:  call void class [mscorlib]System.Console::Write(string)
-	IL_001b:  ldloc.1 
-	IL_001c:  ldsfld int32 Const::i3
-	IL_0021:  add 
-	IL_0022:  call void class [mscorlib]System.Console::Write(int32)
-	IL_0027:  ldc.i4.0 
-	IL_0028:  ret 
+	IL_000c:  ldloc.0 
+	IL_000d:  neg 
+	IL_000e:  call void class [mscorlib]System.Console::Write(int32)
+	IL_0013:  ldarg.1 
+	IL_0014:  call void class [mscorlib]System.Console::Write(string)
+	IL_0019:  ldloc.1 
+	IL_001a:  ldsfld int32 Const::i3
+	IL_001f:  add 
+	IL_0020:  call void class [mscorlib]System.Console::Write(int32)
+	IL_0025:  ldc.i4.0 
+	IL_0026:  ret 
     } // end of method Const::constMethodInt
 
     // method line 4
     .method public static hidebysig 
-           default string constMethodStr (string c)  cil managed 
+           default bool constMethodStr (bool c)  cil managed 
     {
-        // Method begins at RVA 0x20dd
-	// Code size 2 (0x2)
+        // Method begins at RVA 0x20d3
+	// Code size 5 (0x5)
 	.maxstack 8
 	IL_0000:  ldarg.0 
-	IL_0001:  ret 
+	IL_0001:  ldc.i4.0 
+	IL_0002:  ceq 
+	IL_0004:  ret 
     } // end of method Const::constMethodStr
 
   } // end of class Const

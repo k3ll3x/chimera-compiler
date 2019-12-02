@@ -577,55 +577,30 @@ namespace Chimera {
         }
 
         public string Visit(Plus node){
-            /*VisitBinaryOperator("+",node,Type.INT);
-            return Type.INT;*/
-            return Visit((dynamic) node[0])+"\n"+Visit((dynamic) node[1])+"\nadd";
+            return Visit((dynamic) node[0])+"\n"+Visit((dynamic) node[1])+"\nadd\n";
         }
 
         public string Visit(Neg node){//also for substraction?
-            /*if(node[1] != null){//two operands -> substraction
-                VisitBinaryOperator("-",node,Type.INT);
-            }else{//one operand -> negation
-                if(Visit((dynamic) node[0]) != Type.INT){
-                    throw new SemanticError(
-                        String.Format(
-                            "Operator - requires one operand of type {1}",
-                            Type.INT),
-                        node.AnchorToken);
-                }
+            if (node[1] != null ) {
+                return Visit((dynamic) node[0])+"\n"+Visit((dynamic) node[1])+"\nsub\n";
             }
-            return Type.INT;*/
-            return "Neg node code\n";
+           return Visit((dynamic) node[0])+"\nneg\n";
         }
 
         public string Visit(Mul node){
-            /*VisitBinaryOperator("*",node,Type.INT);
-            return Type.INT;*/
-            return "Mul node code\n";
+            return Visit((dynamic) node[0])+"\n"+Visit((dynamic) node[1])+"\nmul\n";
         }
 
         public string Visit(Div node){
-            /*VisitBinaryOperator("div",node,Type.INT);
-            return Type.INT;*/
-            return "Div node code\n";
+            return Visit((dynamic) node[0])+"\n"+Visit((dynamic) node[1])+"\ndiv\n";
         }
 
         public string Visit(Rem node){
-            /*VisitBinaryOperator("rem",node,Type.INT);
-            return Type.INT;*/
-            return "Rem node code\n";
+            return Visit((dynamic) node[0])+"\n"+Visit((dynamic) node[1])+"\nrem\n";
         }
 
         public string Visit(Not node){
-            /*if(Visit((dynamic) node[0]) != Type.BOOL){
-                throw new SemanticError(
-                    String.Format(
-                        "Operator not requires one operand of type {1}",
-                        Type.BOOL),
-                    node.AnchorToken);
-            }
-            return Type.BOOL;*/
-            return "Not node code\n";
+            return Visit((dynamic) node[0])+"\nldc.i4.0\nceq\n";
         }
     }
 }
