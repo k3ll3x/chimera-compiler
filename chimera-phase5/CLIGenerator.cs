@@ -237,7 +237,7 @@ namespace Chimera {
                     //+ ilasmApiFunction[apiFunction];
                 }
             }
-            var cliType = CILTypes[functionParamTables[node.AnchorToken.Lexeme]];
+            var cliType = CILTypes[globalSymbolTable[node.AnchorToken.Lexeme]];
             result += "call " + cliType
             + " class 'ChimeraProgram'::'" + node.AnchorToken.Lexeme
             + "'(";
