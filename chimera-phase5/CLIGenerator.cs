@@ -167,7 +167,16 @@ namespace Chimera {
             currentLocalConstTable = localConstTables[localscope];
             currentLocalSymbolTable = localSymbolTables[localscope];
             currentFunctionParamTable = functionParamTables[localscope];
-            
+            localSymbolAssAssign = new Dictionary<string, string>();
+            localSymbolAssLoad = new Dictionary<string, string>();
+            Visit((dynamic) node[3]); //Constants
+            var functionLoad = new StringBuilder();
+            functionLoad.Append("call ");
+            functionLoad.Append(CILTypes[globalSymbolTable[localscope]]);
+            functionLoad.Append(" class ChimeraProgram::");
+            functionLoad.Append(localscope);
+            functionLoad.Append("(");
+
             var sb = new StringBuilder();
             sb.Append("instance default ");
             sb.Append(CILTypes[globalSymbolTable[localscope]]);
@@ -176,14 +185,15 @@ namespace Chimera {
             sb.Append(" (");
             var flag = false;
             int count = 0;
-            Visit((dynamic) node[3]);
             foreach (KeyValuePair<string, Type> kvp in currentFunctionParamTable) {
                 if (flag) {
                     sb.Append(", ");
+                    functionLoad.Append(", ");
                 } else {
                     flag = true;
                 }
                 sb.Append(CILTypes[kvp.Value]);
+                functionLoad.Append(CILTypes[kvp.Value]);
                 sb.Append(" ");
                 sb.Append(kvp.Key);
                 currentLocalVar.Add(kvp.Key, count);
@@ -191,12 +201,12 @@ namespace Chimera {
                 count ++;
             }
             sb.Append(") cil managed \n{");
-            sb.Append(".locals init (");
+            sb.Append("\n.locals init (");
             count = 0;
             flag = false;
             foreach (KeyValuePair<string, Type> kvp in currentLocalSymbolTable) {
                 if (flag) {
-                    sb.Append(", ");
+                    sb.Append(",\n");
                 } else {
                     flag = true;
                 }
@@ -211,8 +221,9 @@ namespace Chimera {
             }
             sb.Append(")\n");           
             sb.Append(Visit((dynamic) node[5]));
-            sb.Append("} // end of method Const::");
+            sb.Append("\n} // end of method ChimeraProgram::");
             sb.Append(localscope);
+            globalSymbolAssLoad.Add(localscope,functionLoad.ToString());
             localscope = null;
             insideFunction = false;
             return sb.ToString();
@@ -224,6 +235,10 @@ namespace Chimera {
             return VisitChildren(node);
         }
         public string Visit(ProcConst node) {
+            return VisitChildren(node);
+        }
+
+        public string Visit(ConstList node) {
             return VisitChildren(node);
         }
 
@@ -438,12 +453,12 @@ namespace Chimera {
                         )
                     );
                     globalSymbolAssLoad.Add(entry.Key, String.Format(
-                            "ldsfld {0} Const::{1}\n",                              
+                            "ldsfld {0} ChimeraProgram::{1}\n",                              
                             CILTypes[entry.Value],
                                 entry.Key
                         ));
                     globalSymbolAssAssign.Add(entry.Key, String.Format(
-                            "stsfld {0} Const::{1}\n",                              
+                            "stsfld {0} ChimeraProgram::{1}\n",                              
                             CILTypes[entry.Value],
                                 entry.Key
                         ));
@@ -457,27 +472,14 @@ namespace Chimera {
         }
 
         public string Visit(ConstDeclaration node) {
-            /*if(node.AnchorToken.Category == TokenCategory.ASSIGN){
-                var varName = node[0].AnchorToken.Lexeme;
-                var type = Visit((dynamic) node[1]);
-                if (localscope) {
-                    if (currentLocalConstTable.Contains(varName)) {
-                        throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
-                    }
-                    currentLocalConstTable[varName] = type;
-                } else {
-                    if (globalConstTable.Contains(varName)) {
-                        throw new SemanticError("Duplicated constant: " + varName, node[0].AnchorToken);
-                    } else if (globalSymbolTable.Contains(varName)) {
-                        throw new SemanticError("Constant and variable cannot have the same name: " + varName, node[0].AnchorToken);
-                    } else  {
-                        globalSymbolTable[varName] = type;
-                    }
-                }
+            var varName = node[0].AnchorToken.Lexeme;
+            var type = Visit((dynamic) node[1]);
+            if (localscope !=  null ) {
+                localSymbolAssLoad.Add(varName, type);
+            } else {
+                globalSymbolAssLoad.Add(varName, type);
             }
-            VisitChildren(node);
-            return Type.VOID;*/
-            return "ConstDecl node code\n";
+            return "";
         }
 
         public string Visit(Identifier node){

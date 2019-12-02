@@ -2,54 +2,40 @@
 .assembly 'chimera' {}
 .assembly extern 'chimeralib' {}
 .class public 'ChimeraProgram' extends ['mscorlib']'System'.'Object' {
-		.field  public static string option
-		.field  public static string str
-instance default int32 IsPalindrome (string str) cil managed 
-{.locals init (int32 V_0, int32 V_1)
+		.field  public static int32 x
+		.field  public static int32 y
+instance default void F (int32 b, int32 z) cil managed 
+{
+.locals init (int32 V_0)
+Identifier node code
+call void class ['chimeralib']'Chimera'.'Utils'::'WrBool'(int32)
+call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
+Identifier node code
+call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
+call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 Assignment node code
-Assignment node code
-	$000000:
-More node code
-ldc.i4.1
-bne.un '$000002'
-BoolIneq node code
-ldc.i4.1
-bne.un '$000004'
-Assignment node code
-Assignment node code
-
-br $000000$000001
-	ldc.i4 1
-	ret
-} // end of method Const::IsPalindrome	$000006:
-ldstr "Input a string: "
-call void class ['chimeralib']'Chimera'.'Utils'::'WrStr'(string)
 Assignment node code
 Identifier node code
-call int32 class 'ChimeraProgram'::'IsPalindrome'(string)
-pop
-ldc.i4.1
-bne.un '$000008'
+call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
 call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
-ldstr "Check another string? "
-call void class ['chimeralib']'Chimera'.'Utils'::'WrStr'(string)
-Assignment node code
-Equal node code
-ldc.i4.1
-bne.un '$000010'
-BoolIneq node code
-ldc.i4.1
-bne.un '$000014'
-BoolIneq node code
-ldc.i4.1
-bne.un '$000014'
-ldc.i4.1
-br $000015
-$000014:
-ldc.i4.0
-$000015:
-ldc.i4.1
-bne.un '$000012'
+Identifier node code
+call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
+call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 
-br $000006$000007
+} // end of method Const::Finstance default void G () cil managed 
+{
+.locals init (int32 V_0)
+Assignment node code
+Assignment node code
+Identifier node code
+call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
+call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
+Identifier node code
+call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
+call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
+	ldc.i4 0
+	ldc.i4.5
+call void class 'ChimeraProgram'::'F'(int32, int32)
+
+} // end of method Const::Gcall void class 'ChimeraProgram'::'G'()
 }
