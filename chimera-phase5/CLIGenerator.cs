@@ -163,7 +163,7 @@ namespace Chimera {
             
             var sb = new StringBuilder();
             sb.Append("instance default ");
-            sb.Append(CILTypes[globalFunctionTableTypes[localscope]]);
+            sb.Append(CILTypes[globalSymbolTable[localscope]]);
             sb.Append(" ");
             sb.Append(localscope);
             sb.Append(" (");
