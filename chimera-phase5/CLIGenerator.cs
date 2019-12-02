@@ -56,12 +56,12 @@ namespace Chimera {
         //-----------------------------------------------------------
         static readonly IDictionary<Type, string> CILTypes =
             new Dictionary<Type, string>() {
-                { Type.BOOL, "bool" },
+                { Type.BOOL, "int32" },
                 { Type.INT, "int32" },
-                { Type.STR, "ldstr" },
+                { Type.STR, "string" },
                 { Type.LIST_INT, "int32" },
-                { Type.LIST_BOOL, "bool" },
-                { Type.LIST_STR, "ldstr" }
+                { Type.LIST_BOOL, "int32" },
+                { Type.LIST_STR, "string" }
             };
 
         public CILGenerator(Object[] tables) {
@@ -93,14 +93,14 @@ namespace Chimera {
             globalFunctionTable["NewLstBool"] = 1;
             globalFunctionTable["IntToStr"] = 1;
             globalFunctionTable["StrToInt"] = 1;
-            ilasmApiFunction.Add("WrInt","");
-            ilasmApiFunction.Add("WrStr","");
-            ilasmApiFunction.Add("WrBool","");
-            ilasmApiFunction.Add("WrLn","");
-            ilasmApiFunction.Add("RdInt","");
-            ilasmApiFunction.Add("RdStr","");
+            ilasmApiFunction.Add("WrInt","call int32 class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)\npop\n");
+            ilasmApiFunction.Add("WrStr","call int32 class ['chimeralib']'Chimera'.'Utils'::'WrStr'(ldstr)\npop\n");
+            ilasmApiFunction.Add("WrBool","call int32 class ['chimeralib']'Chimera'.'Utils'::'WrBool'(bool)\npop\n");
+            ilasmApiFunction.Add("WrLn","call int32 class ['chimeralib']'Chimera'.'Utils'::'WrLn'()\npop\n");
+            ilasmApiFunction.Add("RdInt","call int32 class ['chimeralib']'Chimera'.'Utils'::'RdInt'()\npop\n");
+            ilasmApiFunction.Add("RdStr","call ldstr class ['chimeralib']'Chimera'.'Utils'::'WrBool'()\npop\n");
             ilasmApiFunction.Add("AtStr","");
-            ilasmApiFunction.Add("LenStr","");
+            ilasmApiFunction.Add("LenStr","call int32 class ['chimeralib']'Chimera'.'Utils'::'LenStr'(int32)\npop\n");
             ilasmApiFunction.Add("CmpStr","");
             ilasmApiFunction.Add("CatStr","");
             ilasmApiFunction.Add("LenLstInt","");

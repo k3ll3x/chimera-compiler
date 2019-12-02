@@ -6,9 +6,16 @@
 		.locals init (int32 'one')
 		.locals init (ldstr 's')
 		.locals init (int32 'two')
-procdecl il code returnprocdecl il code returnprocdecl il code returnprocdecl il code return other declared functions into ilasm
+procdecl il code
+procdecl il code
+procdecl il code
+procdecl il code
+Assignment node code
 other declared functions into ilasm
-  other declared functions into ilasm
+other declared functions into ilasm
+Assignment node code
+Assignment node code
+other declared functions into ilasm
 other declared functions into ilasm
 other declared functions into ilasm
 other declared functions into ilasm
