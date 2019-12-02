@@ -59,9 +59,9 @@ namespace Chimera {
                 { Type.BOOL, "int32" },
                 { Type.INT, "int32" },
                 { Type.STR, "string" },
-                { Type.LIST_INT, "int32" },
-                { Type.LIST_BOOL, "int32" },
-                { Type.LIST_STR, "string" }
+                { Type.LIST_INT, "int32[]" },
+                { Type.LIST_BOOL, "int32[]" },
+                { Type.LIST_STR, "string[]" }
             };
 
         public CILGenerator(Object[] tables) {
@@ -273,7 +273,6 @@ namespace Chimera {
         }
 
         public string Visit(Assignment node) {
-            Console.WriteLine(node.ToStringTree());
             /*if(functionParamTables.Contains(node.AnchorToken.Lexeme)){
                 return VisitChildren(node) + "\tstarg.s" + params[node.AnchorToken.Lexeme] + "\n";
             } else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
