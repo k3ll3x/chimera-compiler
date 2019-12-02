@@ -63,6 +63,7 @@ namespace Chimera {
                 { Type.BOOL, "int32" },
                 { Type.INT, "int32" },
                 { Type.STR, "string" },
+                { Type.VOID, "void" },
                 { Type.LIST_INT, "int32[]" },
                 { Type.LIST_BOOL, "int32[]" },
                 { Type.LIST_STR, "string[]" }
@@ -153,6 +154,7 @@ namespace Chimera {
 
 //Constant declaration missing
         public string Visit(ProcDeclaration node) {
+            insideFunction = true;
             localscope = node[0].AnchorToken.Lexeme;
             currentLocalConstTable = localConstTables[localscope];
             currentLocalSymbolTable = localSymbolTables[localscope];
@@ -199,7 +201,7 @@ namespace Chimera {
             sb.Append("} // end of method Const::");
             sb.Append(localscope);
             localscope = null;
-      
+            insideFunction = false;
             return sb.ToString();
         }
         public string Visit(ProcParam node) {
@@ -250,20 +252,19 @@ namespace Chimera {
         }
 
         public string Visit(ParamDeclaration node) {
-            /*var idList = node[0];
+            var result = "";
+            var idList = node[0];
             var type = Visit((dynamic)node[1]);
+            var counter = 0;
             foreach( var n in idList) {
+                counter++;
                 var name = n.AnchorToken.Lexeme;
-                if (currentFunctionParamTable.Contains(name)) {
-                    throw new SemanticError(
-                    "Parameter " + name 
-                    + " already exists in function "+localscope,                   
-                    n.AnchorToken);
+                result += CILTypes[type] + " " + name;
+                if(counter >= globalFunctionTable[localscope]){
+                    result += "";
                 }
-                currentFunctionParamTable[name] = type;
             }
-            return Type.VOID;*/
-            return "paramdec node code\n";
+            return result;
         }
 
         //types

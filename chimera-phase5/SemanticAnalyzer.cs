@@ -42,6 +42,7 @@ namespace Chimera {
             get;
             private set;
         }
+
         public SymbolTable globalConstTable {
             get;
             private set;
@@ -103,7 +104,7 @@ namespace Chimera {
                 printDictionary(functionParamTables),
                 currentLocalSymbolTable.ToString(),
                 currentLocalConstTable.ToString(),
-                currentFunctionParamTable.ToString()                
+                currentFunctionParamTable.ToString()
             };
             string[] tableNames = {
                 "globalSymbolTable",
@@ -224,6 +225,7 @@ namespace Chimera {
             Visit((dynamic) node[4]);
             Visit((dynamic) node[5]);//ProcStatement
             globalFunctionTable[localscope] = currentFunctionParamTable.Size();
+            functionParamTables[localscope] = currentFunctionParamTable;
             localSymbolTables.Add(localscope, currentLocalSymbolTable);
             localConstTables.Add(localscope, currentLocalConstTable);
             localscope = null;
