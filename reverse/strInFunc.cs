@@ -3,8 +3,12 @@ using System.Text;
 using System.Collections.Generic;
 
 public class Str {
+	public void writeStr(string s){
+		Console.WriteLine(s);
+	}
+
 	public static void Main(){
 		string s = "Siegfried";
-		Console.WriteLine(s[1]);
+		Str.writeStr(s);
 	}
 }
