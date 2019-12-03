@@ -2,8 +2,10 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 
-public class Lists {
+public class Operators {
 	public static void Main(){
-		int[] lst = {2,4,6,7,34};
+		int n = 5;
+		int nn = 8;
+		bool y = n >= nn;
 	}
 }

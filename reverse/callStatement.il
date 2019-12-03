@@ -12,7 +12,7 @@
   .hash algorithm 0x00008004
   .ver  0:0:0:0
 }
-.module callStatement.exe // GUID = {717493C5-D137-4BE7-A320-EBC527686AE0}
+.module callStatement.exe // GUID = {410E3D23-865B-4AEE-AC75-DB9721EDEB13}
 
 
   .class public auto ansi beforefieldinit CallStatement
@@ -53,20 +53,22 @@
 
     // method line 4
     .method public static hidebysig 
-           default int32 yyy (int32 i)  cil managed 
+           default int32 yyy (int32 i, int32 ii)  cil managed 
     {
         // Method begins at RVA 0x205c
-	// Code size 2 (0x2)
+	// Code size 4 (0x4)
 	.maxstack 8
 	IL_0000:  ldarg.0 
-	IL_0001:  ret 
+	IL_0001:  ldarg.1 
+	IL_0002:  add 
+	IL_0003:  ret 
     } // end of method CallStatement::yyy
 
     // method line 5
     .method public static hidebysig 
            default string yyyy (string s)  cil managed 
     {
-        // Method begins at RVA 0x205f
+        // Method begins at RVA 0x2061
 	// Code size 2 (0x2)
 	.maxstack 8
 	IL_0000:  ldarg.0 
@@ -77,20 +79,21 @@
     .method public static hidebysig 
            default void Main ()  cil managed 
     {
-        // Method begins at RVA 0x2062
+        // Method begins at RVA 0x2064
 	.entrypoint
-	// Code size 30 (0x1e)
+	// Code size 31 (0x1f)
 	.maxstack 8
 	IL_0000:  call void class CallStatement::y()
 	IL_0005:  ldc.i4.5 
 	IL_0006:  call void class CallStatement::yy(int32)
 	IL_000b:  ldc.i4.4 
-	IL_000c:  call int32 class CallStatement::yyy(int32)
-	IL_0011:  pop 
-	IL_0012:  ldstr "hello"
-	IL_0017:  call string class CallStatement::yyyy(string)
-	IL_001c:  pop 
-	IL_001d:  ret 
+	IL_000c:  ldc.i4.5 
+	IL_000d:  call int32 class CallStatement::yyy(int32, int32)
+	IL_0012:  pop 
+	IL_0013:  ldstr "hello"
+	IL_0018:  call string class CallStatement::yyyy(string)
+	IL_001d:  pop 
+	IL_001e:  ret 
     } // end of method CallStatement::Main
 
   } // end of class CallStatement

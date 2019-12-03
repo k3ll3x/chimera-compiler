@@ -12,7 +12,7 @@
   .hash algorithm 0x00008004
   .ver  0:0:0:0
 }
-.module str.exe // GUID = {7D7EE36B-6656-457F-A2FF-1138EACA1D40}
+.module str.exe // GUID = {68A9ECE2-FEA4-47AD-AF8C-83807BA9CDCC}
 
 
   .class public auto ansi beforefieldinit Str
@@ -33,17 +33,64 @@
 
     // method line 2
     .method public static hidebysig 
-           default void Main ()  cil managed 
+           default void localVars ()  cil managed 
     {
         // Method begins at RVA 0x2058
-	.entrypoint
+	// Code size 5 (0x5)
+	.maxstack 1
+	.locals init (
+		int32	V_0,
+		int32	V_1)
+	IL_0000:  ldc.i4.0 
+	IL_0001:  stloc.0 
+	IL_0002:  ldc.i4.0 
+	IL_0003:  stloc.1 
+	IL_0004:  ret 
+    } // end of method Str::localVars
+
+    // method line 3
+    .method public static hidebysig 
+           default void localVars2 ()  cil managed 
+    {
+        // Method begins at RVA 0x206c
+	// Code size 4 (0x4)
+	.maxstack 1
+	.locals init (
+		int32	V_0)
+	IL_0000:  ldc.i4.s 0x20
+	IL_0002:  stloc.0 
+	IL_0003:  ret 
+    } // end of method Str::localVars2
+
+    // method line 4
+    .method public static hidebysig 
+           default void localVars3 ()  cil managed 
+    {
+        // Method begins at RVA 0x207c
 	// Code size 7 (0x7)
+	.maxstack 1
+	.locals init (
+		string	V_0)
+	IL_0000:  ldstr "yeah"
+	IL_0005:  stloc.0 
+	IL_0006:  ret 
+    } // end of method Str::localVars3
+
+    // method line 5
+    .method public static hidebysig 
+           default void Main ()  cil managed 
+    {
+        // Method begins at RVA 0x2090
+	.entrypoint
+	// Code size 13 (0xd)
 	.maxstack 1
 	.locals init (
 		string	V_0)
 	IL_0000:  ldstr "Siegfried"
 	IL_0005:  stloc.0 
-	IL_0006:  ret 
+	IL_0006:  ldloc.0 
+	IL_0007:  call void class [mscorlib]System.Console::WriteLine(string)
+	IL_000c:  ret 
     } // end of method Str::Main
 
   } // end of class Str
