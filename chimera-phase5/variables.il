@@ -2,8 +2,9 @@
 .assembly 'chimera' {}
 .assembly extern 'chimeralib' {}
 .class public 'ChimeraProgram' extends ['mscorlib']'System'.'Object' {
-		.field  public static int32 x
-		.field  public static int32 y
+		.field public static int32 'x'
+		.field public static int32 'y'
+		.field public static int32 'konstant'
 .method public static hidebysig default void F (int32 b, int32 z) cil managed
 {
 .locals init (
@@ -59,5 +60,6 @@ int32 'y')
 {
 	.entrypoint
 	call void class 'ChimeraProgram'::'G'()
+	ret
 }
 }

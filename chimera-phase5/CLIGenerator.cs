@@ -159,6 +159,7 @@ namespace Chimera {
             result += ".method public static hidebysig default void Main () cil managed\n{\n"
             + "\t.entrypoint\n"
             + VisitChildren(node)
+            + "\tret\n"
             + "}\n";
             return result;
         }
@@ -435,26 +436,35 @@ namespace Chimera {
                 if (!globalFunctionTable.Contains(entry.Key)) {
                     sb.Append(
                         String.Format(
-                            "\t\t.field  public static {0} {1}\n",                              
+                            "\t\t.field public static {0} '{1}'\n",                              
                             CILTypes[entry.Value],
                                 entry.Key
                         )
                     );
                     try{
                     globalSymbolAssLoad.Add(entry.Key, String.Format(
-                            "ldsfld {0} ChimeraProgram::{1}\n",                              
+                            "ldsfld {0} 'ChimeraProgram'::'{1}'\n",                              
                             CILTypes[entry.Value],
                                 entry.Key
                         ));
                     globalSymbolAssAssign.Add(entry.Key, String.Format(
-                            "stsfld {0} ChimeraProgram::{1}\n",                              
+                            "stsfld {0} 'ChimeraProgram'::'{1}'\n",                              
                             CILTypes[entry.Value],
                                 entry.Key
                         ));
                     }catch{
 
                     }
-                } 
+                }
+            }
+            foreach (var entry in globalConstTable) {
+                sb.Append(
+                    String.Format(
+                        "\t\t.field public static {0} '{1}'\n",                              
+                        CILTypes[entry.Value],
+                            entry.Key
+                    )
+                );
             }
             return sb.ToString();
         }
