@@ -544,13 +544,14 @@ namespace Chimera {
         }
 
         public string Visit(BoolIneq node){//also for int ineq
-            /*if(Visit((dynamic) node[0]) == Type.INT){
-                VisitBinaryOperator("<>",node, Type.INT);
-            }else{
-                VisitBinaryOperator("<>",node, Type.BOOL);
-            }
-            return Type.BOOL;*/
-            return "BoolIneq node code\n";
+            var result = "";
+            result +=
+              Visit((dynamic) node[0]) + "\n"
+            + Visit((dynamic) node[1]) + "\n"
+            + "ceq\n"
+            + "ldc.i4.0\n"
+            + "ceq\n";
+            return result;
         }
 
         public string Visit(Less node){
