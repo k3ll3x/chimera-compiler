@@ -348,15 +348,16 @@ namespace Chimera {
         }
 
         public string Visit(Assignment node) {
-            var result = "";
-            if(localSymbolTables.ContainsKey(localscope) || functionParamTables.ContainsKey(node[0].AnchorToken.Lexeme)){
-                result += VisitChildren(node[1])
+            var result = "#Ass:\n";
+            //if(localSymbolTables.ContainsKey(localscope) || functionParamTables.ContainsKey(node[0].AnchorToken.Lexeme)){
+                result += Visit((dynamic) node[1])
                 + "stdloc '" + node[0].AnchorToken.Lexeme + "'\n";
                 return result;
-            }else{//global
-
-            }
-            return "";
+            /*}else{//global
+                result += VisitChildren(node)
+                + "stdloc '" + node[0].AnchorToken.Lexeme + "'\n";
+                return result;
+            }*/
             /*if(functionParamTables.ContainsKey(node.AnchorToken.Lexeme)){
                 return VisitChildren(node) + "\tstarg.s" + functionParamTables[node.AnchorToken.Lexeme] + "\n";
             } else if(localSymbolTables.ContainsKey(node.AnchorToken.Lexeme)){

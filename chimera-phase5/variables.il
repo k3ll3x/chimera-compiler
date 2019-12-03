@@ -14,11 +14,19 @@ call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 	ldarg z
 call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
 call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
+#Ass:
 	ldsfld int32 'ChimeraProgram'::'x'
+
 	ldsfld int32 'ChimeraProgram'::'konstant'
+
+add
 stdloc 'x'
+#Ass:
 	ldsfld int32 'ChimeraProgram'::'y'
+
 	ldsfld int32 'ChimeraProgram'::'konstant'
+
+add
 stdloc 'y'
 	ldsfld int32 'ChimeraProgram'::'x'
 call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
@@ -31,11 +39,19 @@ call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 {
 .locals init (
 int32 V_0)
+#Ass:
 	ldsfld int32 'ChimeraProgram'::'x'
+
 	ldsfld int32 'ChimeraProgram'::'konstant'
+
+add
 stdloc 'x'
+#Ass:
 	ldsfld int32 'ChimeraProgram'::'y'
+
 	ldsfld int32 'ChimeraProgram'::'konstant'
+
+add
 stdloc 'y'
 	ldsfld int32 'ChimeraProgram'::'x'
 call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
