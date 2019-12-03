@@ -237,7 +237,7 @@ namespace Chimera {
                 sb.Append(kvp.Key);
                 try {
                     currentLocalVar.Add(kvp.Key, count);
-                    localSymbolAssLoad.Add(kvp.Key, "ldarg."+count);
+                    localSymbolAssLoad.Add(kvp.Key, "ldarg."+count+"\n");
                 }catch{
 
                 }
@@ -260,8 +260,8 @@ namespace Chimera {
                 sb.Append("'" + kvp.Key + "'");
                 try{
                     currentLocalVar.Add(kvp.Key, count);
-                    localSymbolAssAssign.Add(kvp.Key, "stloc."+count);
-                    localSymbolAssLoad.Add(kvp.Key, "ldloc."+count);
+                    localSymbolAssAssign.Add(kvp.Key, "stloc."+count+"\n");
+                    localSymbolAssLoad.Add(kvp.Key, "ldloc."+count+"\n");
                 }catch{
 
                 }
@@ -399,7 +399,7 @@ namespace Chimera {
 
         public string Visit(Assignment node) {
             var result = "";
-            if(localSymbolTables.ContainsKey(localscope) && localSymbolTables[localscope].Contains(node[0].AnchorToken.Lexeme)){
+            if(localscope != null && localSymbolTables.ContainsKey(localscope) && localSymbolTables[localscope].Contains(node[0].AnchorToken.Lexeme)){
                 result += Visit((dynamic) node[1])
                 + "\tstloc '" + node[0].AnchorToken.Lexeme + "'\n";
                 return result;
