@@ -176,7 +176,8 @@ namespace Chimera {
             functionLoad.Append("(");
 
             var sb = new StringBuilder();
-            sb.Append("instance default ");
+            //sb.Append("instance default ");
+            sb.Append(".method public static hidebysig default ");
             sb.Append(CILTypes[globalSymbolTable[localscope]]);
             sb.Append(" ");
             sb.Append(localscope);
@@ -202,7 +203,7 @@ namespace Chimera {
                 }
                 count ++;
             }
-            sb.Append(") cil managed \n{");
+            sb.Append(") cil managed\n{");
             sb.Append("\n.locals init (\n");
             count = 0;
             flag = false;
@@ -214,8 +215,9 @@ namespace Chimera {
                 }
                 sb.Append(CILTypes[kvp.Value]);
                 sb.Append(" ");
-                sb.Append("V_");
-                sb.Append(count);
+                /*sb.Append("V_");
+                sb.Append(count);*/
+                sb.Append("'" + kvp.Key + "'");
                 try{
                     currentLocalVar.Add(kvp.Key, count);
                     localSymbolAssAssign.Add(kvp.Key, "stloc."+count);

@@ -4,10 +4,10 @@
 .class public 'ChimeraProgram' extends ['mscorlib']'System'.'Object' {
 		.field  public static int32 x
 		.field  public static int32 y
-instance default void F (int32 b, int32 z) cil managed 
+.method public static hidebysig default void F (int32 b, int32 z) cil managed
 {
 .locals init (
-int32 V_0)
+int32 'x')
 	ldarg 'b'
 	call void class ['chimeralib']'Chimera'.'Utils'::'WrBool'(int32)
 	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
@@ -29,10 +29,10 @@ int32 V_0)
 	call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
 	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 
-} // end of method ChimeraProgram::Finstance default void G () cil managed 
+} // end of method ChimeraProgram::F.method public static hidebysig default void G () cil managed
 {
 .locals init (
-int32 V_0)
+int32 'y')
 	ldsfld int32 'ChimeraProgram'::'x'
 	ldsfld int32 'ChimeraProgram'::'konstant'
 	add
