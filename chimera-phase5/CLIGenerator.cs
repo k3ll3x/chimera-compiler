@@ -483,14 +483,13 @@ namespace Chimera {
         }
 
         public string Visit(Identifier node){
-            return "Identifier node code\n";
-            /*if(functionParamTables.Contains(node.AnchorToken.Lexeme)){
+            if(functionParamTables.ContainsKey(node.AnchorToken.Lexeme)){
                 return "\tldarg." + functionParamTables[node.AnchorToken.Lexeme] + "\n";
-            } else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
+            } else if(localSymbolTables.ContainsKey(node.AnchorToken.Lexeme)){
                 return "\tldloc '" + node.AnchorToken.Lexeme + "'\n";
             }else{
                 return "\tldsfld int32 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
-            }*/
+            }
         }
 
         //operators
