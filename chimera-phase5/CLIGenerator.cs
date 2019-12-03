@@ -155,7 +155,12 @@ namespace Chimera {
         }
 
         public string Visit(StatementList node) {
-            return VisitChildren(node);
+            var result = "";
+            result += ".method public static hidebysig default void Main () cil managed\n{\n"
+            + "\t.entrypoint\n"
+            + VisitChildren(node)
+            + "}\n";
+            return result;
         }
 
 
@@ -233,6 +238,7 @@ namespace Chimera {
             sb.Append(localscope);
             globalSymbolAssLoad.Add(localscope,functionLoad.ToString());
             localscope = null;
+            sb.Append("\n");
             return sb.ToString();
         }
         public string Visit(ProcParam node) {
@@ -266,7 +272,7 @@ namespace Chimera {
                 }
             }
             var cliType = CILTypes[globalSymbolTable[node.AnchorToken.Lexeme]];
-            result += "call " + cliType
+            result += "\tcall " + cliType
             + " class 'ChimeraProgram'::'" + node.AnchorToken.Lexeme
             + "'(";
 

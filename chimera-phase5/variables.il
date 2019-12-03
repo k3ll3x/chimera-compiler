@@ -30,7 +30,8 @@ int32 'x')
 	call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
 	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 
-} // end of method ChimeraProgram::F.method public static hidebysig default void G () cil managed
+} // end of method ChimeraProgram::F
+.method public static hidebysig default void G () cil managed
 {
 .locals init (
 int32 'y')
@@ -51,7 +52,12 @@ int32 'y')
 	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 	ldc.i4 0
 	ldc.i4.5
-call void class 'ChimeraProgram'::'F'(int32, int32)
+	call void class 'ChimeraProgram'::'F'(int32, int32)
 
-} // end of method ChimeraProgram::Gcall void class 'ChimeraProgram'::'G'()
+} // end of method ChimeraProgram::G
+.method public static hidebysig default void Main () cil managed
+{
+	.entrypoint
+	call void class 'ChimeraProgram'::'G'()
+}
 }
