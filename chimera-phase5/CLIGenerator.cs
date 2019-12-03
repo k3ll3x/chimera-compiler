@@ -348,7 +348,7 @@ namespace Chimera {
         }
 
         public string Visit(Assignment node) {
-            var result = "#Ass:\n";
+            var result = "";
             //if(localSymbolTables.ContainsKey(localscope) || functionParamTables.ContainsKey(node[0].AnchorToken.Lexeme)){
                 result += Visit((dynamic) node[1])
                 + "stdloc '" + node[0].AnchorToken.Lexeme + "'\n";
