@@ -353,7 +353,11 @@ namespace Chimera {
             } else if(localSymbolTables.ContainsKey(node.AnchorToken.Lexeme)){
                 return VisitChildren(node) + "\tstloc '" + node.AnchorToken.Lexeme + "'\n";
             } else{
-                return VisitChildren(node) + "\tstsfld int32 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
+                if(node.AnchorToken.Lexeme != ":="){
+                    return VisitChildren(node) + "\tstsfld " + node.GetType() + " 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
+                }else{
+                    return "";
+                }
             }
         }
 
