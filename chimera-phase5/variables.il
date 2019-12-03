@@ -8,57 +8,45 @@ instance default void F (int32 b, int32 z) cil managed
 {
 .locals init (
 int32 V_0)
-	ldarg b
-call void class ['chimeralib']'Chimera'.'Utils'::'WrBool'(int32)
-call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
-	ldarg z
-call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
-call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
-#Ass:
+	ldarg 'b'
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrBool'(int32)
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
+	ldarg 'z'
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 	ldsfld int32 'ChimeraProgram'::'x'
-
 	ldsfld int32 'ChimeraProgram'::'konstant'
-
-add
-stdloc 'x'
-#Ass:
+	add
+	stdloc 'x'
 	ldsfld int32 'ChimeraProgram'::'y'
-
 	ldsfld int32 'ChimeraProgram'::'konstant'
-
-add
-stdloc 'y'
+	add
+	stdloc 'y'
 	ldsfld int32 'ChimeraProgram'::'x'
-call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
-call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 	ldsfld int32 'ChimeraProgram'::'y'
-call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
-call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 
 } // end of method ChimeraProgram::Finstance default void G () cil managed 
 {
 .locals init (
 int32 V_0)
-#Ass:
 	ldsfld int32 'ChimeraProgram'::'x'
-
 	ldsfld int32 'ChimeraProgram'::'konstant'
-
-add
-stdloc 'x'
-#Ass:
+	add
+	stdloc 'x'
 	ldsfld int32 'ChimeraProgram'::'y'
-
 	ldsfld int32 'ChimeraProgram'::'konstant'
-
-add
-stdloc 'y'
+	add
+	stdloc 'y'
 	ldsfld int32 'ChimeraProgram'::'x'
-call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
-call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 	ldsfld int32 'ChimeraProgram'::'y'
-call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
-call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 	ldc.i4 0
 	ldc.i4.5
 call void class 'ChimeraProgram'::'F'(int32, int32)

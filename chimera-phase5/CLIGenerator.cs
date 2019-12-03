@@ -105,24 +105,24 @@ namespace Chimera {
             globalFunctionTable["NewLstBool"] = 1;
             globalFunctionTable["IntToStr"] = 1;
             globalFunctionTable["StrToInt"] = 1;
-            ilasmApiFunction.Add("WrInt","call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)\n");
-            ilasmApiFunction.Add("WrStr","call void class ['chimeralib']'Chimera'.'Utils'::'WrStr'(string)\n");
-            ilasmApiFunction.Add("WrBool","call void class ['chimeralib']'Chimera'.'Utils'::'WrBool'(int32)\n");
-            ilasmApiFunction.Add("WrLn","call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()\n");
-            ilasmApiFunction.Add("RdInt","call int32 class ['chimeralib']'Chimera'.'Utils'::'RdInt'()\npop\n");
-            ilasmApiFunction.Add("RdStr","call string class ['chimeralib']'Chimera'.'Utils'::'RdStr'()\npop\n");
-            ilasmApiFunction.Add("AtStr","call string class ['chimeralib']'Chimera'.'Utils'::'AtStr'(string, int32)\npop\n");
-            ilasmApiFunction.Add("LenStr","call int32 class ['chimeralib']'Chimera'.'Utils'::'LenStr'(string)\npop\n");
-            ilasmApiFunction.Add("CmpStr","call int32 class ['chimeralib']'Chimera'.'Utils'::'CmpStr'(string, string)\npop\n");
-            ilasmApiFunction.Add("CatStr","call string class ['chimeralib']'Chimera'.'Utils'::'CatStr'(string, string)\npop\n");
-            ilasmApiFunction.Add("LenLstInt","call int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstInt'(int32[])\npop\n");
-            ilasmApiFunction.Add("LenLstStr","call int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstStr'(string[])\npop\n");
-            ilasmApiFunction.Add("LenLstBool","call int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstBool'(int32[])\npop\n");
-            ilasmApiFunction.Add("NewLstInt","call int32[] class ['chimeralib']'Chimera'.'Utils'::'NewLstInt'(int32)\npop\n");
-            ilasmApiFunction.Add("NewLstStr","call string[] class ['chimeralib']'Chimera'.'Utils'::'NewLstStr'(int32)\npop\n");
-            ilasmApiFunction.Add("NewLstBool","call int32[] class ['chimeralib']'Chimera'.'Utils'::'NewLstBool'(int32)\npop\n");
-            ilasmApiFunction.Add("IntToStr","call string class ['chimeralib']'Chimera'.'Utils'::'IntToStr'(int32)\npop\n");
-            ilasmApiFunction.Add("StrToInt","call int32 class ['chimeralib']'Chimera'.'Utils'::'StrToInt'(string)\npop\n");
+            ilasmApiFunction.Add("WrInt","\tcall void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)\n");
+            ilasmApiFunction.Add("WrStr","\tcall void class ['chimeralib']'Chimera'.'Utils'::'WrStr'(string)\n");
+            ilasmApiFunction.Add("WrBool","\tcall void class ['chimeralib']'Chimera'.'Utils'::'WrBool'(int32)\n");
+            ilasmApiFunction.Add("WrLn","\tcall void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()\n");
+            ilasmApiFunction.Add("RdInt","\tcall int32 class ['chimeralib']'Chimera'.'Utils'::'RdInt'()\npop\n");
+            ilasmApiFunction.Add("RdStr","\tcall string class ['chimeralib']'Chimera'.'Utils'::'RdStr'()\npop\n");
+            ilasmApiFunction.Add("AtStr","\tcall string class ['chimeralib']'Chimera'.'Utils'::'AtStr'(string, int32)\npop\n");
+            ilasmApiFunction.Add("LenStr","\tcall int32 class ['chimeralib']'Chimera'.'Utils'::'LenStr'(string)\npop\n");
+            ilasmApiFunction.Add("CmpStr","\tcall int32 class ['chimeralib']'Chimera'.'Utils'::'CmpStr'(string, string)\npop\n");
+            ilasmApiFunction.Add("CatStr","\tcall string class ['chimeralib']'Chimera'.'Utils'::'CatStr'(string, string)\npop\n");
+            ilasmApiFunction.Add("LenLstInt","\tcall int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstInt'(int32[])\npop\n");
+            ilasmApiFunction.Add("LenLstStr","\tcall int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstStr'(string[])\npop\n");
+            ilasmApiFunction.Add("LenLstBool","\tcall int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstBool'(int32[])\npop\n");
+            ilasmApiFunction.Add("NewLstInt","\tcall int32[] class ['chimeralib']'Chimera'.'Utils'::'NewLstInt'(int32)\npop\n");
+            ilasmApiFunction.Add("NewLstStr","\tcall string[] class ['chimeralib']'Chimera'.'Utils'::'NewLstStr'(int32)\npop\n");
+            ilasmApiFunction.Add("NewLstBool","\tcall int32[] class ['chimeralib']'Chimera'.'Utils'::'NewLstBool'(int32)\npop\n");
+            ilasmApiFunction.Add("IntToStr","\tcall string class ['chimeralib']'Chimera'.'Utils'::'IntToStr'(int32)\npop\n");
+            ilasmApiFunction.Add("StrToInt","\tcall int32 class ['chimeralib']'Chimera'.'Utils'::'StrToInt'(string)\npop\n");
         }
 
         string VisitChildren(Node node) {
@@ -349,26 +349,19 @@ namespace Chimera {
 
         public string Visit(Assignment node) {
             var result = "";
-            //if(localSymbolTables.ContainsKey(localscope) || functionParamTables.ContainsKey(node[0].AnchorToken.Lexeme)){
+            if(localSymbolTables.ContainsKey(localscope)){
                 result += Visit((dynamic) node[1])
-                + "stdloc '" + node[0].AnchorToken.Lexeme + "'\n";
+                + "\tstdloc '" + node[0].AnchorToken.Lexeme + "'\n";
                 return result;
-            /*}else{//global
+            }else if (functionParamTables.ContainsKey(node[0].AnchorToken.Lexeme)){
+                result += Visit((dynamic) node[1])
+                + "\tstdarg '" + node[0].AnchorToken.Lexeme + "'\n";
+                return result;
+            }else{//global
                 result += VisitChildren(node)
-                + "stdloc '" + node[0].AnchorToken.Lexeme + "'\n";
+                + "\tstsfld '" + node[0].GetType() + " 'ChimeraProgram'::'" + node[0].AnchorToken.Lexeme + "'\n";
                 return result;
-            }*/
-            /*if(functionParamTables.ContainsKey(node.AnchorToken.Lexeme)){
-                return VisitChildren(node) + "\tstarg.s" + functionParamTables[node.AnchorToken.Lexeme] + "\n";
-            } else if(localSymbolTables.ContainsKey(node.AnchorToken.Lexeme)){
-                return VisitChildren(node) + "\tstloc '" + node.AnchorToken.Lexeme + "'\n";
-            } else{
-                if(node.AnchorToken.Lexeme != ":="){
-                    return VisitChildren(node) + "\tstsfld " + node.GetType() + " 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
-                }else{
-                    return "";
-                }
-            }*/
+            }
         }
 
         public string Visit(Loop node) {
@@ -392,27 +385,7 @@ namespace Chimera {
         }
 
         public string Visit(List node) {
-            //count children
             return VisitChildren(node);
-            /*result +=
-            "ldc.i4";*/
-            /*Type expectedType = Visit((dynamic) node[0]);
-            foreach( var n  in node) {
-                Type type = Visit((dynamic) n);
-                if (type != expectedType) {
-                    throw new SemanticError("Expected "+expectedType+" as return but got instead "+ type, node.AnchorToken);
-                }
-            }
-            switch (expectedType) {
-                case Type.INT:
-                    return Type.LIST_INT;
-                case Type.BOOL:
-                    return Type.LIST_BOOL;
-                case Type.STR:
-                    return Type.LIST_STR;
-                default:
-                    return Type.VOID;
-            };*/
         }
 
         public string Visit(ChimeraType node){
@@ -420,20 +393,6 @@ namespace Chimera {
         }
 
         public string Visit(ListType node){
-            /*Type type = Type.VOID;
-            if (node[0] is ChimeraType) {
-                type = Visit((dynamic) node[0]);
-            } 
-            switch (type) {
-                case Type.INT:
-                    return Type.LIST_INT;
-                case Type.BOOL:
-                    return Type.LIST_BOOL;
-                case Type.STR:
-                    return Type.LIST_STR;
-                default:
-                    return Type.VOID;
-            }*/
             return "ListType node code\n";
         }
 
@@ -458,7 +417,7 @@ namespace Chimera {
         }
 
          public string Visit(StrLiteral node){
-            return "ldstr " + node.AnchorToken.Lexeme + "\n";
+            return "\tldstr " + node.AnchorToken.Lexeme + "\n";
         }
 
         public string Visit(VarDeclaration node){
@@ -517,7 +476,7 @@ namespace Chimera {
 
         public string Visit(Identifier node){
             if(functionParamTables[localscope].Contains(node.AnchorToken.Lexeme)){
-                return "\tldarg " + node.AnchorToken.Lexeme + "\n";
+                return "\tldarg " + "'" + node.AnchorToken.Lexeme + "'" + "\n";
             } else if(localSymbolTables.ContainsKey(node.AnchorToken.Lexeme)){
                 return "\tldloc '" + node.AnchorToken.Lexeme + "'\n";
             }else if(globalSymbolTable.Contains(node.AnchorToken.Lexeme)){
@@ -536,14 +495,14 @@ namespace Chimera {
             var label2 = GenerateLabel();
             foreach(var n in node){
                 result += Visit((dynamic) n)
-                + "ldc.i4.1\n"
-                + "bne.un '" + label1 + "'\n";
+                + "\tldc.i4.1\n"
+                + "\tbne.un '" + label1 + "'\n";
             }
             return result
-            + "ldc.i4.1\n"
-            + "br " + label2 + "\n"
+            + "\tldc.i4.1\n"
+            + "\tbr " + label2 + "\n"
             + label1 + ":\n"
-            + "ldc.i4.0\n"
+            + "\tldc.i4.0\n"
             + label2 + ":\n";
         }
 
@@ -553,14 +512,14 @@ namespace Chimera {
             var falseCond = GenerateLabel();
             foreach(var n in node){
                 result += Visit((dynamic) n)
-                + "ldc.i4.0\n"
-                + "bne.un '" + trueCond + "'\n";
+                + "\tldc.i4.0\n"
+                + "\tbne.un '" + trueCond + "'\n";
             }
             return result
-            + "ldc.i4.0\n"
-            + "br " + falseCond + "\n"
+            + "\tldc.i4.0\n"
+            + "\tbr " + falseCond + "\n"
             + trueCond + ":\n"
-            + "ldc.i4.0\n"
+            + "\tldc.i4.0\n"
             + falseCond + ":\n";
         }
 
@@ -568,7 +527,7 @@ namespace Chimera {
             var result = "";
             result += Visit((dynamic) node[0])
             + Visit((dynamic) node[1])
-            + "xor\n";
+            + "\txor\n";
             return result;
         }
 
@@ -577,7 +536,7 @@ namespace Chimera {
             result +=
               Visit((dynamic) node[0]) + "\n"
             + Visit((dynamic) node[1]) + "\n"
-            + "ceq\n";
+            + "\tceq\n";
             return result;
         }
 
@@ -586,9 +545,9 @@ namespace Chimera {
             result +=
               Visit((dynamic) node[0]) + "\n"
             + Visit((dynamic) node[1]) + "\n"
-            + "ceq\n"
-            + "ldc.i4.0\n"
-            + "ceq\n";
+            + "\tceq\n"
+            + "\tldc.i4.0\n"
+            + "\tceq\n";
             return result;
         }
 
@@ -597,7 +556,7 @@ namespace Chimera {
             result +=
               Visit((dynamic) node[0]) + "\n"
             + Visit((dynamic) node[1]) + "\n"
-            + "clt\n";
+            + "\tclt\n";
             return result;
         }
 
@@ -606,7 +565,7 @@ namespace Chimera {
             result +=
               Visit((dynamic) node[0]) + "\n"
             + Visit((dynamic) node[1]) + "\n"
-            + "cgt\n";
+            + "\tcgt\n";
             return result;
         }
 
@@ -615,9 +574,9 @@ namespace Chimera {
             result +=
               Visit((dynamic) node[0]) + "\n"
             + Visit((dynamic) node[1]) + "\n"
-            + "cgt\n"
-            + "ldc.i4.0\n"
-            + "ceq\n";
+            + "\tcgt\n"
+            + "\tldc.i4.0\n"
+            + "\tceq\n";
             return result;
         }
 
@@ -626,39 +585,39 @@ namespace Chimera {
             result +=
               Visit((dynamic) node[0]) + "\n"
             + Visit((dynamic) node[1]) + "\n"
-            + "clt\n"
-            + "ldc.i4.0\n"
-            + "ceq\n";
+            + "\tclt\n"
+            + "\tldc.i4.0\n"
+            + "\tceq\n";
             return result;
         }
 
         public string Visit(Plus node){
             return
-             Visit((dynamic) node[0])+"\n"
-            +Visit((dynamic) node[1])+"\nadd\n";
+             Visit((dynamic) node[0])
+            +Visit((dynamic) node[1])+"\tadd\n";
         }
 
         public string Visit(Neg node){//also for substraction?
             if (node[1] != null ) {
-                return Visit((dynamic) node[0])+"\n"+Visit((dynamic) node[1])+"\nsub\n";
+                return Visit((dynamic) node[0]) + Visit((dynamic) node[1])+"sub\n";
             }
-           return Visit((dynamic) node[0])+"\nneg\n";
+            return Visit((dynamic) node[0])+"neg\n";
         }
 
         public string Visit(Mul node){
-            return Visit((dynamic) node[0])+"\n"+Visit((dynamic) node[1])+"\nmul\n";
+            return Visit((dynamic) node[0])+Visit((dynamic) node[1])+"mul\n";
         }
 
         public string Visit(Div node){
-            return Visit((dynamic) node[0])+"\n"+Visit((dynamic) node[1])+"\ndiv\n";
+            return Visit((dynamic) node[0])+Visit((dynamic) node[1])+"div\n";
         }
 
         public string Visit(Rem node){
-            return Visit((dynamic) node[0])+"\n"+Visit((dynamic) node[1])+"\nrem\n";
+            return Visit((dynamic) node[0])+Visit((dynamic) node[1])+"rem\n";
         }
 
         public string Visit(Not node){
-            return Visit((dynamic) node[0])+"\nldc.i4.0\nceq\n";
+            return Visit((dynamic) node[0])+"ldc.i4.0\nceq\n";
         }
     }
 }
