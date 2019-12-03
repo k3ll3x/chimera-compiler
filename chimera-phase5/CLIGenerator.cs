@@ -53,7 +53,6 @@ namespace Chimera {
 
 
         int labelCounter = 0;
-        bool insideFunction = false;
         string endLoop = "";
         string ifLabel = "";
 
@@ -162,7 +161,6 @@ namespace Chimera {
 
 //Constant declaration missing
         public string Visit(ProcDeclaration node) {
-            insideFunction = true;
             localscope = node[0].AnchorToken.Lexeme;
             currentLocalConstTable = localConstTables[localscope];
             currentLocalSymbolTable = localSymbolTables[localscope];
@@ -225,7 +223,6 @@ namespace Chimera {
             sb.Append(localscope);
             globalSymbolAssLoad.Add(localscope,functionLoad.ToString());
             localscope = null;
-            insideFunction = false;
             return sb.ToString();
         }
         public string Visit(ProcParam node) {
@@ -530,9 +527,11 @@ namespace Chimera {
         }
 
         public string Visit(Xor node){
-            /*VisitBinaryOperator("xor",node, Type.BOOL);
-            return Type.BOOL;*/
-            return "Xor node code\n";
+            var result = "";
+            result += Visit((dynamic) node[0])
+            + Visit((dynamic) node[1])
+            + "xor\n";
+            return result;
         }
 
         public string Visit(Equal node){
