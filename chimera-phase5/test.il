@@ -2,20 +2,137 @@
 .assembly 'chimera' {}
 .assembly extern 'chimeralib' {}
 .class public 'ChimeraProgram' extends ['mscorlib']'System'.'Object' {
-		.locals init (int32[] 'lst')
-		.locals init (int32 'one')
-		.locals init (string 's')
-		.locals init (int32 'two')
-.method public static 'VOID'(.method public static 'INT'(.method public static 'INT'(.method public static 'VOID'(Assignment node code
-other declared functions into ilasm
+		.field  public static int32[] lst
+		.field  public static int32 one
+		.field  public static string s
+		.field  public static int32 two
+instance default void Print (int32[] lst) cil managed 
+{
+.locals init (int32 V_0,
+int32 V_1)
+Assignment node code
+ldstr "{"
+call void class ['chimeralib']'Chimera'.'Utils'::'WrStr'(string)
+	ldsfld int32 'ChimeraProgram'::'i'
+	ldsfld int32 'ChimeraProgram'::'lst'
+	ldsfld int32 'ChimeraProgram'::'first'
+ldc.i4.1
+bne.un '$000000'
+	ldsfld int32 'ChimeraProgram'::'i'
+call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
+ldstr "}"
+call void class ['chimeralib']'Chimera'.'Utils'::'WrStr'(string)
+
+} // end of method ChimeraProgram::Printinstance default int32 Sum (int32[] lst) cil managed 
+{
+.locals init (int32 V_0,
+int32 V_1)
+Assignment node code
+	ldsfld int32 'ChimeraProgram'::'i'
+	ldsfld int32 'ChimeraProgram'::'lst'
+Assignment node code
+	ldsfld int32 'ChimeraProgram'::'sum'
+	ret
+
+} // end of method ChimeraProgram::Suminstance default int32 Max (int32[] lst) cil managed 
+{
+.locals init (int32 V_0,
+int32 V_1,
+int32 V_2)
+Assignment node code
+	ldsfld int32 'ChimeraProgram'::'n'
+
+	ldc.i4.0
+
+ceq
+ldc.i4.1
+bne.un '$000002'
+Assignment node code
+Assignment node code
+	$000004:
+	ldsfld int32 'ChimeraProgram'::'i'
+
+	ldsfld int32 'ChimeraProgram'::'n'
+
+clt
+
+ldc.i4.0
+ceq
+ldc.i4.1
+bne.un '$000006'
+Assignment node code
+
+br $000004$000005
+	ldsfld int32 'ChimeraProgram'::'largest'
+	ret
+
+} // end of method ChimeraProgram::Maxinstance default void BubbleSort (int32[] lst) cil managed 
+{
+.locals init (int32 V_0,
+int32 V_1,
+int32 V_2,
+int32 V_3,
+int32 V_4)
+Assignment node code
+Assignment node code
+	$000008:
+	ldsfld int32 'ChimeraProgram'::'i'
+
+	ldsfld int32 'ChimeraProgram'::'n'
+
+	ldc.i4.1
+
+sub
+
+ceq
+ldc.i4.1
+bne.un '$000010'
+Assignment node code
+Assignment node code
+	$000012:
+	ldsfld int32 'ChimeraProgram'::'j'
+
+	ldsfld int32 'ChimeraProgram'::'n'
+
+	ldsfld int32 'ChimeraProgram'::'i'
+
+sub
+
+	ldc.i4.1
+
+sub
+
+ceq
+ldc.i4.1
+bne.un '$000014'
+Assignment node code
+
+br $000012$000013
+	ldsfld int32 'ChimeraProgram'::'swap'
+
+ldc.i4.0
+ceq
+ldc.i4.1
+bne.un '$000016'
+Assignment node code
+
+br $000008$000009
+
+} // end of method ChimeraProgram::BubbleSortAssignment node code
+	ldsfld int32 'ChimeraProgram'::'lst'
+call void class 'ChimeraProgram'::'Print'(int32[])
 call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 Assignment node code
 Assignment node code
+	ldsfld int32 'ChimeraProgram'::'one'
 call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
 call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
+	ldsfld int32 'ChimeraProgram'::'two'
 call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
 call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
-other declared functions into ilasm
-other declared functions into ilasm
+	ldsfld int32 'ChimeraProgram'::'lst'
+call void class 'ChimeraProgram'::'BubbleSort'(int32[])
+	ldsfld int32 'ChimeraProgram'::'lst'
+call void class 'ChimeraProgram'::'Print'(int32[])
 call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 }

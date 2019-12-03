@@ -194,8 +194,12 @@ namespace Chimera {
                 functionLoad.Append(CILTypes[kvp.Value]);
                 sb.Append(" ");
                 sb.Append(kvp.Key);
-                currentLocalVar.Add(kvp.Key, count);
-                localSymbolAssLoad.Add(kvp.Key, "ldarg."+count);
+                try {
+                    currentLocalVar.Add(kvp.Key, count);
+                    localSymbolAssLoad.Add(kvp.Key, "ldarg."+count);
+                }catch{
+
+                }
                 count ++;
             }
             sb.Append(") cil managed \n{");
@@ -212,9 +216,13 @@ namespace Chimera {
                 sb.Append(" ");
                 sb.Append("V_");
                 sb.Append(count);
-                currentLocalVar.Add(kvp.Key, count);
-                localSymbolAssAssign.Add(kvp.Key, "stloc."+count);
-                localSymbolAssLoad.Add(kvp.Key, "ldloc."+count);
+                try{
+                    currentLocalVar.Add(kvp.Key, count);
+                    localSymbolAssAssign.Add(kvp.Key, "stloc."+count);
+                    localSymbolAssLoad.Add(kvp.Key, "ldloc."+count);
+                }catch{
+                    
+                }
                 count ++; 
             }
             sb.Append(")\n");           
@@ -449,6 +457,7 @@ namespace Chimera {
                                 entry.Key
                         )
                     );
+                    try{
                     globalSymbolAssLoad.Add(entry.Key, String.Format(
                             "ldsfld {0} ChimeraProgram::{1}\n",                              
                             CILTypes[entry.Value],
@@ -459,6 +468,9 @@ namespace Chimera {
                             CILTypes[entry.Value],
                                 entry.Key
                         ));
+                    }catch{
+
+                    }
                 } 
             }
             return sb.ToString();
@@ -472,9 +484,17 @@ namespace Chimera {
             var varName = node[0].AnchorToken.Lexeme;
             var type = Visit((dynamic) node[1]);
             if (localscope !=  null ) {
-                localSymbolAssLoad.Add(varName, type);
+                try {
+                    localSymbolAssLoad.Add(varName, type);
+                }catch{
+
+                }
             } else {
-                globalSymbolAssLoad.Add(varName, type);
+                try {
+                    globalSymbolAssLoad.Add(varName, type);
+                }catch{
+
+                }
             }
             return "";
         }
