@@ -141,8 +141,42 @@ namespace Chimera {
             + "['mscorlib']'System'.'Object' {\n"
             + Visit((dynamic) node[0]) //DeclarationList
             + Visit((dynamic) node[1]) //StatementList
-            + "}\n";
-           
+            + ".method private static hidebysig specialname rtspecialname\n"
+            + "default void '.cctor' ()  cil managed\n"
+            + " {\n"
+            + GlobalVarDec()
+            + "ret\n}\n}\n";
+        }
+
+        public string GlobalVarDec() {
+            var sb = new StringBuilder();
+            foreach (var entry in globalSymbolTable) {
+                //If not a function
+                if (!globalFunctionTable.Contains(entry.Key)) {
+                    sb.Append(
+                        String.Format(
+                            "\t\t{2}\n"
+                            + "\t\tstsfld {0} 'ChimeraProgram'::'{1}' \n",                              
+                            CILTypes[entry.Value],
+                                entry.Key,
+                                getInitVal(CILTypes[entry.Value])
+                        )
+                    );
+                }
+            }
+            return sb.ToString();
+        }
+        public string getInitVal(string type) {
+            switch(type) {
+                case "string":
+                    return "ldstr \" \"";
+                case "int32":
+                    return "ldc.i4.0 ";
+                case "bool":
+                    return "ldc.i4.0 ";
+            }
+            return "";
+            
         }
 
         public string Visit(Expression node){
@@ -233,9 +267,16 @@ namespace Chimera {
                 }
                 count ++; 
             }
-            sb.Append(")\n");           
+            sb.Append(")\n");
+            foreach (KeyValuePair<string, Type> kvp in currentLocalSymbolTable) {
+                sb.Append(String.Format(
+                            "\t\t{0}\n"
+                            +localSymbolAssAssign[kvp.Key]+"\n",
+                            getInitVal(CILTypes[kvp.Value])
+                        ));
+            }        
             sb.Append(Visit((dynamic) node[5]));
-            sb.Append("\n} // end of method ChimeraProgram::");
+            sb.Append("\nret\n} // end of method ChimeraProgram::");
             sb.Append(localscope);
             globalSymbolAssLoad.Add(localscope,functionLoad.ToString());
             localscope = null;
@@ -367,8 +408,15 @@ namespace Chimera {
                 + "\tstarg '" + node[0].AnchorToken.Lexeme + "'\n";
                 return result;
             }else{//global
-                result += VisitChildren(node)
-                + "\tstfld " + CILTypes[globalSymbolTable[node[0].AnchorToken.Lexeme]] + " 'ChimeraProgram'::'" + node[0].AnchorToken.Lexeme + "'\n";
+                var isFirst  = true;
+                foreach ( var n in node) {
+                    if (isFirst){
+                        isFirst = false;
+                    } else {
+                        result += Visit((dynamic)n);
+                    }
+                }
+                result += "\tstsfld " + CILTypes[globalSymbolTable[node[0].AnchorToken.Lexeme]] + " 'ChimeraProgram'::'" + node[0].AnchorToken.Lexeme + "'\n";
                 return result;
             }
         }
@@ -416,9 +464,7 @@ namespace Chimera {
 
         public string Visit(IntLiteral node){
             var value = Convert.ToInt32(node.AnchorToken.Lexeme);
-            if(value <= 8){
-                return "\tldc.i4." + value + "\n";
-            }else if(value <= 127){
+           if(value <= 127){
                 return "\tldc.i4.s " + value + "\n";
             }else{
                 return "\tldc.i4 " + value + "\n";
@@ -443,12 +489,12 @@ namespace Chimera {
                     );
                     try{
                     globalSymbolAssLoad.Add(entry.Key, String.Format(
-                            "ldsfld {0} 'ChimeraProgram'::'{1}'\n",                              
+                            "\t\tldsfld {0} 'ChimeraProgram'::'{1}'\n",                              
                             CILTypes[entry.Value],
                                 entry.Key
                         ));
                     globalSymbolAssAssign.Add(entry.Key, String.Format(
-                            "stsfld {0} 'ChimeraProgram'::'{1}'\n",                              
+                            "\t\tstsfld {0} 'ChimeraProgram'::'{1}'\n",                              
                             CILTypes[entry.Value],
                                 entry.Key
                         ));
@@ -457,7 +503,7 @@ namespace Chimera {
                     }
                 }
             }
-            foreach (var entry in globalConstTable) {
+            /*foreach (var entry in globalConstTable) {
                 sb.Append(
                     String.Format(
                         "\t\t.field public static {0} '{1}'\n",                              
@@ -465,7 +511,7 @@ namespace Chimera {
                             entry.Key
                     )
                 );
-            }
+            }*/
             return sb.ToString();
         }
 
@@ -493,6 +539,12 @@ namespace Chimera {
         }
 
         public string Visit(Identifier node){
+            if (globalSymbolAssLoad.ContainsKey(node.AnchorToken.Lexeme)) {
+                return globalSymbolAssLoad[node.AnchorToken.Lexeme];
+            } 
+            if (localSymbolAssLoad.ContainsKey(node.AnchorToken.Lexeme)) {
+                return localSymbolAssLoad[node.AnchorToken.Lexeme];
+            }
             if(functionParamTables[localscope].Contains(node.AnchorToken.Lexeme)){
                 return "\tldarg " + "'" + node.AnchorToken.Lexeme + "'" + "\n";
             } else if(localSymbolTables.ContainsKey(node.AnchorToken.Lexeme)){

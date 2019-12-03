@@ -2,9 +2,9 @@ using System;
 using System.Text;
 
 public class Const {
-    static int i3 ;
-    static string hi;
-    static int i4;
+    static int i3  = 0;
+    static string hi = " ";
+    static bool i4 = false;
 	public static void Main(){
 		const int i = 10;
         const string s = "hola";
