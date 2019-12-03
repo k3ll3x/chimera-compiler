@@ -17,6 +17,10 @@ public class Str {
 		string x = "yeah";
 	}
 	
+	public static void localVars4(int z){
+		z = 3;
+	}
+	
 	public static void Main(){
 		string s = "Siegfried";
 		Console.WriteLine(s);

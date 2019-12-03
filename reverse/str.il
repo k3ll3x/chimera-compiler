@@ -12,7 +12,7 @@
   .hash algorithm 0x00008004
   .ver  0:0:0:0
 }
-.module str.exe // GUID = {68A9ECE2-FEA4-47AD-AF8C-83807BA9CDCC}
+.module str.exe // GUID = {22141339-7C2B-478D-9B01-15FED17E8775}
 
 
   .class public auto ansi beforefieldinit Str
@@ -78,9 +78,21 @@
 
     // method line 5
     .method public static hidebysig 
+           default void localVars4 (int32 z)  cil managed 
+    {
+        // Method begins at RVA 0x208f
+	// Code size 4 (0x4)
+	.maxstack 8
+	IL_0000:  ldc.i4.3 
+	IL_0001:  starg.s 0
+	IL_0003:  ret 
+    } // end of method Str::localVars4
+
+    // method line 6
+    .method public static hidebysig 
            default void Main ()  cil managed 
     {
-        // Method begins at RVA 0x2090
+        // Method begins at RVA 0x2094
 	.entrypoint
 	// Code size 13 (0xd)
 	.maxstack 1
