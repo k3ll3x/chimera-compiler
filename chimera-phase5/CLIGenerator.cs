@@ -351,17 +351,17 @@ namespace Chimera {
 
         public string Visit(Assignment node) {
             var result = "";
-            if(localSymbolTables.ContainsKey(localscope)){
+            if(localSymbolTables.ContainsKey(localscope) && localSymbolTables[localscope].Contains(node[0].AnchorToken.Lexeme)){
                 result += Visit((dynamic) node[1])
-                + "\tstdloc '" + node[0].AnchorToken.Lexeme + "'\n";
+                + "\tstloc '" + node[0].AnchorToken.Lexeme + "'\n";
                 return result;
             }else if (functionParamTables.ContainsKey(node[0].AnchorToken.Lexeme)){
                 result += Visit((dynamic) node[1])
-                + "\tstdarg '" + node[0].AnchorToken.Lexeme + "'\n";
+                + "\tstarg '" + node[0].AnchorToken.Lexeme + "'\n";
                 return result;
             }else{//global
                 result += VisitChildren(node)
-                + "\tstsfld '" + node[0].GetType() + " 'ChimeraProgram'::'" + node[0].AnchorToken.Lexeme + "'\n";
+                + "\tstfld " + CILTypes[globalSymbolTable[node[0].AnchorToken.Lexeme]] + " 'ChimeraProgram'::'" + node[0].AnchorToken.Lexeme + "'\n";
                 return result;
             }
         }

@@ -17,11 +17,12 @@ int32 'x')
 	ldsfld int32 'ChimeraProgram'::'x'
 	ldsfld int32 'ChimeraProgram'::'konstant'
 	add
-	stdloc 'x'
+	stloc 'x'
+	ldsfld int32 'ChimeraProgram'::'y'
 	ldsfld int32 'ChimeraProgram'::'y'
 	ldsfld int32 'ChimeraProgram'::'konstant'
 	add
-	stdloc 'y'
+	stfld int32 'ChimeraProgram'::'y'
 	ldsfld int32 'ChimeraProgram'::'x'
 	call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
 	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
@@ -34,13 +35,14 @@ int32 'x')
 .locals init (
 int32 'y')
 	ldsfld int32 'ChimeraProgram'::'x'
+	ldsfld int32 'ChimeraProgram'::'x'
 	ldsfld int32 'ChimeraProgram'::'konstant'
 	add
-	stdloc 'x'
+	stfld int32 'ChimeraProgram'::'x'
 	ldsfld int32 'ChimeraProgram'::'y'
 	ldsfld int32 'ChimeraProgram'::'konstant'
 	add
-	stdloc 'y'
+	stloc 'y'
 	ldsfld int32 'ChimeraProgram'::'x'
 	call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
 	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
