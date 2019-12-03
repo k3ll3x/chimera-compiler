@@ -3,10 +3,10 @@ using System.Text;
 using System.Collections.Generic;
 
 public class Str {
+	public static int g = 42;
 	public static void localVars(){
-		int x;
-		x = 0;
-		int y = 0;
+		int x = 3;
+		int y = x + x;
 	}
 	
 	public static void localVars2(){
@@ -18,11 +18,14 @@ public class Str {
 	}
 	
 	public static void localVars4(int z){
-		z = 3;
+		int x = z + 2;
+	}
+	
+	public static void callGlobal(){
+		int x = g;
 	}
 	
 	public static void Main(){
-		string s = "Siegfried";
-		Console.WriteLine(s);
+		callGlobal();
 	}
 }
