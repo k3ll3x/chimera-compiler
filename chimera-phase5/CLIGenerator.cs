@@ -535,9 +535,12 @@ namespace Chimera {
         }
 
         public string Visit(Equal node){
-            /*VisitBinaryOperator("=",node, Type.INT);
-            return Type.BOOL;*/
-            return "Equal node code\n";
+            var result = "";
+            result +=
+              Visit((dynamic) node[0]) + "\n"
+            + Visit((dynamic) node[1]) + "\n"
+            + "ceq\n";
+            return result;
         }
 
         public string Visit(BoolIneq node){//also for int ineq
