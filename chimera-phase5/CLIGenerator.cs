@@ -203,7 +203,7 @@ namespace Chimera {
                 count ++;
             }
             sb.Append(") cil managed \n{");
-            sb.Append("\n.locals init (");
+            sb.Append("\n.locals init (\n");
             count = 0;
             flag = false;
             foreach (KeyValuePair<string, Type> kvp in currentLocalSymbolTable) {
@@ -348,7 +348,16 @@ namespace Chimera {
         }
 
         public string Visit(Assignment node) {
-            if(functionParamTables.ContainsKey(node.AnchorToken.Lexeme)){
+            var result = "";
+            if(localSymbolTables.ContainsKey(localscope) || functionParamTables.ContainsKey(node[0].AnchorToken.Lexeme)){
+                result += VisitChildren(node[1])
+                + "stdloc '" + node[0].AnchorToken.Lexeme + "'\n";
+                return result;
+            }else{//global
+
+            }
+            return "";
+            /*if(functionParamTables.ContainsKey(node.AnchorToken.Lexeme)){
                 return VisitChildren(node) + "\tstarg.s" + functionParamTables[node.AnchorToken.Lexeme] + "\n";
             } else if(localSymbolTables.ContainsKey(node.AnchorToken.Lexeme)){
                 return VisitChildren(node) + "\tstloc '" + node.AnchorToken.Lexeme + "'\n";
@@ -358,7 +367,7 @@ namespace Chimera {
                 }else{
                     return "";
                 }
-            }
+            }*/
         }
 
         public string Visit(Loop node) {
@@ -382,6 +391,10 @@ namespace Chimera {
         }
 
         public string Visit(List node) {
+            //count children
+            return VisitChildren(node);
+            /*result +=
+            "ldc.i4";*/
             /*Type expectedType = Visit((dynamic) node[0]);
             foreach( var n  in node) {
                 Type type = Visit((dynamic) n);
@@ -399,7 +412,6 @@ namespace Chimera {
                 default:
                     return Type.VOID;
             };*/
-            return "List node code\n";
         }
 
         public string Visit(ChimeraType node){
@@ -503,12 +515,14 @@ namespace Chimera {
         }
 
         public string Visit(Identifier node){
-            if(functionParamTables.ContainsKey(node.AnchorToken.Lexeme)){
-                return "\tldarg." + functionParamTables[node.AnchorToken.Lexeme] + "\n";
+            if(functionParamTables[localscope].Contains(node.AnchorToken.Lexeme)){
+                return "\tldarg " + node.AnchorToken.Lexeme + "\n";
             } else if(localSymbolTables.ContainsKey(node.AnchorToken.Lexeme)){
                 return "\tldloc '" + node.AnchorToken.Lexeme + "'\n";
-            }else{
-                return "\tldsfld int32 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
+            }else if(globalSymbolTable.Contains(node.AnchorToken.Lexeme)){
+                return "\tldsfld " + CILTypes[globalSymbolTable[node.AnchorToken.Lexeme]] + " 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
+            }else{//const table
+                return "\tldsfld " + CILTypes[globalConstTable[node.AnchorToken.Lexeme]] + " 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
             }
         }
 
@@ -618,7 +632,9 @@ namespace Chimera {
         }
 
         public string Visit(Plus node){
-            return Visit((dynamic) node[0])+"\n"+Visit((dynamic) node[1])+"\nadd\n";
+            return
+             Visit((dynamic) node[0])+"\n"
+            +Visit((dynamic) node[1])+"\nadd\n";
         }
 
         public string Visit(Neg node){//also for substraction?

@@ -1,0 +1,201 @@
+Chimera compiler, version 0.4
+Copyright © 2013 by A. Ortiz, ITESM CEM.
+This program is free software; you may redistribute it under the terms of
+the GNU General Public License version 3 or later.
+This program has absolutely no warranty.
+
+Included in this release:
+   * Lexical analysis
+   * Syntax analysis
+   * AST construction
+   * Semantic analysis
+   * CLI code generation
+
+Filename: ../chimeraPrograms/variables.chimera
+Program {PROG, "program", @(52, 1)}
+  DeclarationList 
+    ConstList {CONST, "const", @(6, 1)}
+      ConstDeclaration {ASSIGN, ":=", @(7, 14)}
+        Identifier {IDENTIFIER, "konstant", @(7, 5)}
+        IntLiteral {INT_LITERAL, "1", @(7, 17)}
+    VarDeclaration {VAR, "var", @(9, 1)}
+      Var 
+        IdentifierList 
+          Identifier {IDENTIFIER, "x", @(10, 5)}
+          Identifier {IDENTIFIER, "y", @(10, 8)}
+        ChimeraType {INT, "integer", @(10, 11)}
+    ProcDeclaration {PROC, "procedure", @(12, 1)}
+      Identifier {IDENTIFIER, "F", @(12, 11)}
+      ProcParam 
+        ParamDeclaration 
+          IdentifierList 
+            Identifier {IDENTIFIER, "b", @(13, 9)}
+          ChimeraType {BOOL, "boolean", @(13, 12)}
+        ParamDeclaration 
+          IdentifierList 
+            Identifier {IDENTIFIER, "z", @(14, 9)}
+          ChimeraType {INT, "integer", @(14, 12)}
+      ProcType 
+      ProcConst 
+        ConstList {CONST, "const", @(17, 5)}
+          ConstDeclaration {ASSIGN, ":=", @(18, 18)}
+            Identifier {IDENTIFIER, "konstant", @(18, 9)}
+            IntLiteral {INT_LITERAL, "1000", @(18, 21)}
+      ProcVar 
+        VarDeclaration {VAR, "var", @(20, 5)}
+          Var 
+            IdentifierList 
+              Identifier {IDENTIFIER, "x", @(21, 9)}
+            ChimeraType {INT, "integer", @(21, 12)}
+      ProcStatement {BEGIN, "begin", @(23, 5)}
+        CallStatement {IDENTIFIER, "WrBool", @(24, 9)}
+          Identifier {IDENTIFIER, "b", @(24, 16)}
+        CallStatement {IDENTIFIER, "WrLn", @(25, 9)}
+        CallStatement {IDENTIFIER, "WrInt", @(26, 9)}
+          Identifier {IDENTIFIER, "z", @(26, 15)}
+        CallStatement {IDENTIFIER, "WrLn", @(27, 9)}
+        Assignment {ASSIGN, ":=", @(29, 11)}
+          Identifier {IDENTIFIER, "x", @(29, 9)}
+          Plus {PLUS, "+", @(29, 16)}
+            Identifier {IDENTIFIER, "x", @(29, 14)}
+            Identifier {IDENTIFIER, "konstant", @(29, 18)}
+        Assignment {ASSIGN, ":=", @(30, 11)}
+          Identifier {IDENTIFIER, "y", @(30, 9)}
+          Plus {PLUS, "+", @(30, 16)}
+            Identifier {IDENTIFIER, "y", @(30, 14)}
+            Identifier {IDENTIFIER, "konstant", @(30, 18)}
+        CallStatement {IDENTIFIER, "WrInt", @(31, 9)}
+          Identifier {IDENTIFIER, "x", @(31, 15)}
+        CallStatement {IDENTIFIER, "WrLn", @(32, 9)}
+        CallStatement {IDENTIFIER, "WrInt", @(33, 9)}
+          Identifier {IDENTIFIER, "y", @(33, 15)}
+        CallStatement {IDENTIFIER, "WrLn", @(34, 9)}
+    ProcDeclaration {PROC, "procedure", @(37, 1)}
+      Identifier {IDENTIFIER, "G", @(37, 11)}
+      ProcParam 
+      ProcType 
+      ProcConst 
+      ProcVar 
+        VarDeclaration {VAR, "var", @(39, 5)}
+          Var 
+            IdentifierList 
+              Identifier {IDENTIFIER, "y", @(40, 9)}
+            ChimeraType {INT, "integer", @(40, 12)}
+      ProcStatement {BEGIN, "begin", @(42, 5)}
+        Assignment {ASSIGN, ":=", @(43, 11)}
+          Identifier {IDENTIFIER, "x", @(43, 9)}
+          Plus {PLUS, "+", @(43, 16)}
+            Identifier {IDENTIFIER, "x", @(43, 14)}
+            Identifier {IDENTIFIER, "konstant", @(43, 18)}
+        Assignment {ASSIGN, ":=", @(44, 11)}
+          Identifier {IDENTIFIER, "y", @(44, 9)}
+          Plus {PLUS, "+", @(44, 16)}
+            Identifier {IDENTIFIER, "y", @(44, 14)}
+            Identifier {IDENTIFIER, "konstant", @(44, 18)}
+        CallStatement {IDENTIFIER, "WrInt", @(45, 9)}
+          Identifier {IDENTIFIER, "x", @(45, 15)}
+        CallStatement {IDENTIFIER, "WrLn", @(46, 9)}
+        CallStatement {IDENTIFIER, "WrInt", @(47, 9)}
+          Identifier {IDENTIFIER, "y", @(47, 15)}
+        CallStatement {IDENTIFIER, "WrLn", @(48, 9)}
+        CallStatement {IDENTIFIER, "F", @(49, 9)}
+          False {FALSE, "false", @(49, 11)}
+          IntLiteral {INT_LITERAL, "5", @(49, 18)}
+  StatementList 
+    CallStatement {IDENTIFIER, "G", @(53, 5)}
+
+Syntax OK.
+Semantics OK.
+Table 0: globalSymbolTable
+Symbol Table
+====================
+- [F, VOID] 
+- [G, VOID] 
+- [x, INT] 
+- [y, INT] 
+====================
+
+Table 1: globalFunctionTable
+Function Table
+====================
+AtStr: 2
+CatStr: 2
+CmpStr: 2
+F: 2
+G: 0
+IntToStr: 1
+LenLstBool: 1
+LenLstInt: 1
+LenLstStr: 1
+LenStr: 1
+NewLstBool: 1
+NewLstInt: 1
+NewLstStr: 1
+RdInt: 0
+RdStr: 0
+StrToInt: 1
+WrBool: 1
+WrInt: 1
+WrLn: 0
+WrStr: 1
+====================
+
+Table 2: globalConstTable
+Symbol Table
+====================
+- [konstant, INT] 
+====================
+
+Table 3: localSymbolTables
+F:	Symbol Table
+====================
+- [x, INT] 
+====================
+
+G:	Symbol Table
+====================
+- [y, INT] 
+====================
+
+
+Table 4: localConstTables
+F:	Symbol Table
+====================
+- [konstant, INT] 
+====================
+
+G:	Symbol Table
+====================
+====================
+
+
+Table 5: functionParamTables
+F:	Symbol Table
+====================
+- [b, BOOL] 
+- [z, INT] 
+====================
+
+G:	Symbol Table
+====================
+====================
+
+
+Table 6: currentLocalSymbolTable
+Symbol Table
+====================
+- [y, INT] 
+====================
+
+Table 7: currentLocalConstTable
+Symbol Table
+====================
+====================
+
+Table 8: currentFunctionParamTable
+Symbol Table
+====================
+====================
+
+Generated CIL code to 'variables.il'.
+

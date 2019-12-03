@@ -8,7 +8,8 @@
 		.field  public static int32 two
 instance default void Print (int32[] lst) cil managed 
 {
-.locals init (int32 V_0,
+.locals init (
+int32 V_0,
 int32 V_1)
 ldstr "{"
 call void class ['chimeralib']'Chimera'.'Utils'::'WrStr'(string)
@@ -24,7 +25,8 @@ call void class ['chimeralib']'Chimera'.'Utils'::'WrStr'(string)
 
 } // end of method ChimeraProgram::Printinstance default int32 Sum (int32[] lst) cil managed 
 {
-.locals init (int32 V_0,
+.locals init (
+int32 V_0,
 int32 V_1)
 	ldsfld int32 'ChimeraProgram'::'i'
 	ldsfld int32 'ChimeraProgram'::'lst'
@@ -33,7 +35,8 @@ int32 V_1)
 
 } // end of method ChimeraProgram::Suminstance default int32 Max (int32[] lst) cil managed 
 {
-.locals init (int32 V_0,
+.locals init (
+int32 V_0,
 int32 V_1,
 int32 V_2)
 	ldsfld int32 'ChimeraProgram'::'n'
@@ -61,7 +64,8 @@ br $000004$000005
 
 } // end of method ChimeraProgram::Maxinstance default void BubbleSort (int32[] lst) cil managed 
 {
-.locals init (int32 V_0,
+.locals init (
+int32 V_0,
 int32 V_1,
 int32 V_2,
 int32 V_3,
