@@ -10,7 +10,9 @@ instance default void Print (int32[] lst) cil managed
 {
 .locals init (int32 V_0,
 int32 V_1)
-Assignment node code
+	ldsfld int32 'ChimeraProgram'::'first'
+	ldc.i4 1
+	stsfld int32 'ChimeraProgram'::':='
 ldstr "{"
 call void class ['chimeralib']'Chimera'.'Utils'::'WrStr'(string)
 	ldsfld int32 'ChimeraProgram'::'i'
@@ -27,10 +29,18 @@ call void class ['chimeralib']'Chimera'.'Utils'::'WrStr'(string)
 {
 .locals init (int32 V_0,
 int32 V_1)
-Assignment node code
+	ldsfld int32 'ChimeraProgram'::'sum'
+	ldc.i4.0
+	stsfld int32 'ChimeraProgram'::':='
 	ldsfld int32 'ChimeraProgram'::'i'
 	ldsfld int32 'ChimeraProgram'::'lst'
-Assignment node code
+	ldsfld int32 'ChimeraProgram'::'sum'
+	ldsfld int32 'ChimeraProgram'::'sum'
+
+	ldsfld int32 'ChimeraProgram'::'i'
+
+add
+	stsfld int32 'ChimeraProgram'::':='
 	ldsfld int32 'ChimeraProgram'::'sum'
 	ret
 
@@ -39,7 +49,11 @@ Assignment node code
 .locals init (int32 V_0,
 int32 V_1,
 int32 V_2)
-Assignment node code
+	ldsfld int32 'ChimeraProgram'::'n'
+	ldsfld int32 'ChimeraProgram'::'lst'
+call int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstInt'(int32[])
+pop
+	stsfld int32 'ChimeraProgram'::':='
 	ldsfld int32 'ChimeraProgram'::'n'
 
 	ldc.i4.0
@@ -47,8 +61,12 @@ Assignment node code
 ceq
 ldc.i4.1
 bne.un '$000002'
-Assignment node code
-Assignment node code
+	ldsfld int32 'ChimeraProgram'::'largest'
+	ldsfld int32 'ChimeraProgram'::'lst'
+	stsfld int32 'ChimeraProgram'::':='
+	ldsfld int32 'ChimeraProgram'::'i'
+	ldc.i4.1
+	stsfld int32 'ChimeraProgram'::':='
 	$000004:
 	ldsfld int32 'ChimeraProgram'::'i'
 
@@ -60,7 +78,13 @@ ldc.i4.0
 ceq
 ldc.i4.1
 bne.un '$000006'
-Assignment node code
+	ldsfld int32 'ChimeraProgram'::'i'
+	ldsfld int32 'ChimeraProgram'::'i'
+
+	ldc.i4.1
+
+add
+	stsfld int32 'ChimeraProgram'::':='
 
 br $000004$000005
 	ldsfld int32 'ChimeraProgram'::'largest'
@@ -73,8 +97,14 @@ int32 V_1,
 int32 V_2,
 int32 V_3,
 int32 V_4)
-Assignment node code
-Assignment node code
+	ldsfld int32 'ChimeraProgram'::'n'
+	ldsfld int32 'ChimeraProgram'::'lst'
+call int32 class ['chimeralib']'Chimera'.'Utils'::'LenLstInt'(int32[])
+pop
+	stsfld int32 'ChimeraProgram'::':='
+	ldsfld int32 'ChimeraProgram'::'i'
+	ldc.i4.0
+	stsfld int32 'ChimeraProgram'::':='
 	$000008:
 	ldsfld int32 'ChimeraProgram'::'i'
 
@@ -87,8 +117,12 @@ sub
 ceq
 ldc.i4.1
 bne.un '$000010'
-Assignment node code
-Assignment node code
+	ldsfld int32 'ChimeraProgram'::'swap'
+	ldc.i4 0
+	stsfld int32 'ChimeraProgram'::':='
+	ldsfld int32 'ChimeraProgram'::'j'
+	ldc.i4.0
+	stsfld int32 'ChimeraProgram'::':='
 	$000012:
 	ldsfld int32 'ChimeraProgram'::'j'
 
@@ -105,7 +139,13 @@ sub
 ceq
 ldc.i4.1
 bne.un '$000014'
-Assignment node code
+	ldsfld int32 'ChimeraProgram'::'j'
+	ldsfld int32 'ChimeraProgram'::'j'
+
+	ldc.i4.1
+
+add
+	stsfld int32 'ChimeraProgram'::':='
 
 br $000012$000013
 	ldsfld int32 'ChimeraProgram'::'swap'
@@ -114,16 +154,32 @@ ldc.i4.0
 ceq
 ldc.i4.1
 bne.un '$000016'
-Assignment node code
+	ldsfld int32 'ChimeraProgram'::'i'
+	ldsfld int32 'ChimeraProgram'::'i'
+
+	ldc.i4.1
+
+add
+	stsfld int32 'ChimeraProgram'::':='
 
 br $000008$000009
 
-} // end of method ChimeraProgram::BubbleSortAssignment node code
+} // end of method ChimeraProgram::BubbleSort	ldsfld int32 'ChimeraProgram'::'lst'
+List node code
+	stsfld int32 'ChimeraProgram'::':='
 	ldsfld int32 'ChimeraProgram'::'lst'
 call void class 'ChimeraProgram'::'Print'(int32[])
 call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
-Assignment node code
-Assignment node code
+	ldsfld int32 'ChimeraProgram'::'one'
+	ldsfld int32 'ChimeraProgram'::'lst'
+call int32 class 'ChimeraProgram'::'Sum'(int32[])
+pop
+	stsfld int32 'ChimeraProgram'::':='
+	ldsfld int32 'ChimeraProgram'::'two'
+	ldsfld int32 'ChimeraProgram'::'lst'
+call int32 class 'ChimeraProgram'::'Max'(int32[])
+pop
+	stsfld int32 'ChimeraProgram'::':='
 	ldsfld int32 'ChimeraProgram'::'one'
 call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
 call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()

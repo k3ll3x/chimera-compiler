@@ -221,7 +221,7 @@ namespace Chimera {
                     localSymbolAssAssign.Add(kvp.Key, "stloc."+count);
                     localSymbolAssLoad.Add(kvp.Key, "ldloc."+count);
                 }catch{
-                    
+
                 }
                 count ++; 
             }
@@ -348,14 +348,13 @@ namespace Chimera {
         }
 
         public string Visit(Assignment node) {
-            /*if(functionParamTables.Contains(node.AnchorToken.Lexeme)){
-                return VisitChildren(node) + "\tstarg.s" + params[node.AnchorToken.Lexeme] + "\n";
-            } else if(localSymbolTables.Contains(node.AnchorToken.Lexeme)){
+            if(functionParamTables.ContainsKey(node.AnchorToken.Lexeme)){
+                return VisitChildren(node) + "\tstarg.s" + functionParamTables[node.AnchorToken.Lexeme] + "\n";
+            } else if(localSymbolTables.ContainsKey(node.AnchorToken.Lexeme)){
                 return VisitChildren(node) + "\tstloc '" + node.AnchorToken.Lexeme + "'\n";
             } else{
                 return VisitChildren(node) + "\tstsfld int32 'ChimeraProgram'::'" + node.AnchorToken.Lexeme + "'\n";
-            }*/
-            return "Assignment node code\n";
+            }
         }
 
         public string Visit(Loop node) {
