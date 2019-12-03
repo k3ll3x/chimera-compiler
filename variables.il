@@ -10,9 +10,12 @@
 int32 'x')
 		ldc.i4.0 
 stloc.0
-ldarg.0	call void class ['chimeralib']'Chimera'.'Utils'::'WrBool'(int32)
+
+ldarg.0
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrBool'(int32)
 	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
-ldarg.1	call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
+ldarg.1
+	call void class ['chimeralib']'Chimera'.'Utils'::'WrInt'(int32)
 	call void class ['chimeralib']'Chimera'.'Utils'::'WrLn'()
 		ldsfld int32 'ChimeraProgram'::'x'
 	ldc.i4.s 1
@@ -37,6 +40,7 @@ ret
 int32 'y')
 		ldc.i4.0 
 stloc.0
+
 		ldsfld int32 'ChimeraProgram'::'x'
 	ldc.i4.s 1
 	add
