@@ -555,27 +555,43 @@ namespace Chimera {
         }
 
         public string Visit(Less node){
-            /*VisitBinaryOperator("<",node,Type.INT);
-            return Type.BOOL;*/
-            return "Less node code\n";
+            var result = "";
+            result +=
+              Visit((dynamic) node[0]) + "\n"
+            + Visit((dynamic) node[1]) + "\n"
+            + "clt\n";
+            return result;
         }
 
         public string Visit(More node){
-            /*VisitBinaryOperator(">",node,Type.INT);
-            return Type.BOOL;*/
-            return "More node code\n";
+            var result = "";
+            result +=
+              Visit((dynamic) node[0]) + "\n"
+            + Visit((dynamic) node[1]) + "\n"
+            + "cgt\n";
+            return result;
         }
 
         public string Visit(LessEq node){
-            /*VisitBinaryOperator("<=",node,Type.INT);
-            return Type.BOOL;*/
-            return "LessEq node code\n";
+            var result = "";
+            result +=
+              Visit((dynamic) node[0]) + "\n"
+            + Visit((dynamic) node[1]) + "\n"
+            + "cgt\n"
+            + "ldc.i4.0\n"
+            + "ceq\n";
+            return result;
         }
 
         public string Visit(MoreEq node){
-            /*VisitBinaryOperator(">=",node,Type.INT);
-            return Type.BOOL;*/
-            return "MoreEq node code\n";
+            var result = "";
+            result +=
+              Visit((dynamic) node[0]) + "\n"
+            + Visit((dynamic) node[1]) + "\n"
+            + "clt\n"
+            + "ldc.i4.0\n"
+            + "ceq\n";
+            return result;
         }
 
         public string Visit(Plus node){
